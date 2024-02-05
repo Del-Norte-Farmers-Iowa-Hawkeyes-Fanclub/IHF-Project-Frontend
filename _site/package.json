@@ -1,0 +1,12 @@
+{
+  "name": "the-del-norte-association-of-farmers-presents-interactive-sustainable-farming-initiative",
+  "version": "1.0.0",
+  "description": "Fully mobile responsive, portrait and landscape compatible template for **HTML5 games** written using the [Phaser](https://phaser.io/) 3 game engine. See it online at: [enclavegames.github.io/Enclave-Phaser-Template/](https://enclavegames.github.io/Enclave-Phaser-Template/)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
