@@ -29,7 +29,7 @@ var gameConfig = {
 		autoCenter: Phaser.Scale.CENTER_BOTH,
 		width: window.innerWidth,
 		height: window.innerHeight,
-	},
+	}, 
 	scene: [Boot, Preloader, MainMenu, Settings, Story, Game]
 }
 game = new Phaser.Game(gameConfig);
