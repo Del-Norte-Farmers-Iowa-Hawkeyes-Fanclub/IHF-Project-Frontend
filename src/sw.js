@@ -31,6 +31,7 @@ var appShellFiles = [
   './js/MainMenu.js',
   './js/Settings.js',
   './js/Story.js',
+  './js/Login.js',
   './js/Game.js',
   './img/background.png',
   './img/banner-beer.png',

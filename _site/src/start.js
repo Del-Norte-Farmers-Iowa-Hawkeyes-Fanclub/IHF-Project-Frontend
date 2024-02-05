@@ -31,7 +31,7 @@ var gameConfig = {
 		width: window.innerWidth,
 		height: window.innerHeight,  
 	},
-	scene: [Boot, Preloader, MainMenu, Settings, Story, Game]
+	scene: [Boot, Preloader, MainMenu, Settings, Story, LoginScene, Game]
 }
 game = new Phaser.Game(gameConfig);
 window.focus(); 
