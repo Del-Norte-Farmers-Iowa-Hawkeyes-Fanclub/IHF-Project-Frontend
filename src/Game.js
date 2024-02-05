@@ -6,7 +6,7 @@ class Game extends Phaser.Scene {
         this.add.sprite(0, 0, 'background').setOrigin(0,0);
         this.stateStatus = null;
         this._money = 0;
-        this._week = 10;
+        this._week = 0;
 		this._time = 0;
 		this._gamePaused = false;
 		this._runOnce = false;
