@@ -261,7 +261,8 @@ EPT.Lang = {
       'gameplay-paused': 'PAUSED',
       'gameplay-gameover': 'GAME OVER',
       'menu-highscore': 'Highscore: ',
-      'screen-story-howto': 'Story / how to play\nscreen'
+      'screen-story-howto': 'Story / how to play\nscreen',
+      'login-title': 'Enter Credentials or Create an Account',
     },
     'pl': {
       'FONT': 'Arial',
