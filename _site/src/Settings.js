@@ -267,6 +267,6 @@ class Settings extends Phaser.Scene {
 	}
 	clickEnclave() {
 		EPT.Sfx.play('click');
-		window.top.location.href = 'https://enclavegames.com/';
+		window.top.location.href = 'https://rkmist.github.io/Del-Norte-Association-of-Sustainable-Farmers-Saftey-and-OSHA-Log-Book/';
 	}
 };
