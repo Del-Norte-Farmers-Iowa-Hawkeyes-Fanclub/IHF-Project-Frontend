@@ -3,8 +3,8 @@ class Boot extends Phaser.Scene {
         super('Boot');
     }
     preload() {
-        this.load.image('background', 'img/farming.jpg');
-        this.load.image('logo-enclave', 'img/logo-enclave.png');
+        this.load.image('background', 'img/farming_Landscape.jpg');
+        this.load.image('logo-enclave', 'img/image.png');
         this.load.image('loading-background', 'img/loading-background.png');
         WebFont.load({ custom: { families: ['Berlin'], urls: ['fonts/BRLNSDB.css'] } });
     }
