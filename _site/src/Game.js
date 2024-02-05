@@ -5,8 +5,9 @@ class Game extends Phaser.Scene {
     create() {
         this.add.sprite(0, 0, 'background').setOrigin(0,0);
         this.stateStatus = null;
-        this._score = 0;
-        this._time = 10;
+        this._money = 0;
+        this._week = 10;
+		this._time = 0;
 		this._gamePaused = false;
 		this._runOnce = false;
 
@@ -14,19 +15,16 @@ class Game extends Phaser.Scene {
         this.buttonDummy.setOrigin(0.5,0.5);
         this.buttonDummy.setAlpha(0);
         this.buttonDummy.setScale(0.1);
-        this.tweens.add({targets: this.buttonDummy, alpha: 1, duration: 500, ease: 'Linear'});
-        this.tweens.add({targets: this.buttonDummy, scale: 1, duration: 500, ease: 'Back'});
         
         this.initUI();
         this.currentTimer = this.time.addEvent({
             delay: 1000,
             callback: function(){
-                this._time--;
+                this._time++;
                 this.textTime.setText(EPT.text['gameplay-timeleft']+this._time);
-                if(!this._time) {
-                    this._runOnce = false;
-                    this.stateStatus = 'gameover';
-                }
+				if(this._time % 1000 == 0){
+					this._week++;
+				}
             },
             callbackScope: this,
             loop: true
@@ -104,16 +102,14 @@ class Game extends Phaser.Scene {
 				self._runOnce = false;
 			}, this);
 			this.screenPausedBack.x = 100;
-			this.tweens.add({targets: this.screenPausedBack, x: -this.screenPausedBack.width-20, duration: 500, ease: 'Back'});
 			this.screenPausedContinue.x = EPT.world.width-100;
-			this.tweens.add({targets: this.screenPausedContinue, x: EPT.world.width+this.screenPausedContinue.width+20, duration: 500, ease: 'Back'});
         }
     }
 	statePlaying() {
-        if(this._time === 0) {
-            this._runOnce = false;
-            this.stateStatus = 'gameover';
-        }
+        // if(this._time === 0) {
+        //     this._runOnce = false;
+        //     this.stateStatus = 'gameover';
+        // }
 	}
 	statePaused() {
         this.screenPausedGroup.toggleVisible();
@@ -145,7 +141,7 @@ class Game extends Phaser.Scene {
 		this.textScore.y = -this.textScore.height-20;
 		this.tweens.add({targets: this.textScore, y: 45, duration: 500, delay: 100, ease: 'Back'});
 
-		this.textTime = this.add.text(30, EPT.world.height-30, EPT.text['gameplay-timeleft']+this._time, fontScore);
+		this.textTime = this.add.text(30, EPT.world.height-30, EPT.text['gameplay-timeleft']+this._week, fontScore);
 		this.textTime.setOrigin(0,1);
 
 		this.textTime.y = EPT.world.height+this.textTime.height+30;
