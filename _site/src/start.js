@@ -23,17 +23,18 @@ if(enablePWA) {
 	}
 }
 
+// GAME CONFIG Changes
 var gameConfig = {
 	scale: {
 		mode: Phaser.Scale.FIT,
 		autoCenter: Phaser.Scale.CENTER_BOTH,
 		width: window.innerWidth,
-		height: window.innerHeight,
-	}, 
+		height: window.innerHeight,  
+	},
 	scene: [Boot, Preloader, MainMenu, Settings, Story, Game]
 }
 game = new Phaser.Game(gameConfig);
-window.focus();
+window.focus(); 
 
 // Usage tracking
 window.dataLayer = window.dataLayer || [];
