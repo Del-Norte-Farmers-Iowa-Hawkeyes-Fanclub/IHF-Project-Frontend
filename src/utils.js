@@ -257,7 +257,7 @@ EPT.Lang = {
       'key-gameover': 'Game over screen',
       'key-try': 'T - try again',
       'gameplay-score': 'Score: ',
-      'gameplay-timeleft': 'Time left: ',
+      'gameplay-timeleft': 'Week: ',
       'gameplay-paused': 'PAUSED',
       'gameplay-gameover': 'GAME OVER',
       'menu-highscore': 'Highscore: ',
