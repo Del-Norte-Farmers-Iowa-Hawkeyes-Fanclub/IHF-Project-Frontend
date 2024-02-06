@@ -31,6 +31,9 @@ var gameConfig = {
 		width: window.innerWidth,
 		height: window.innerHeight,  
 	},
+    dom: {
+        createContainer: true
+    },
 	scene: [Boot, Preloader, MainMenu, Settings, Story, LoginScene, Game]
 }
 game = new Phaser.Game(gameConfig);
