@@ -4,7 +4,7 @@ class MainMenu extends Phaser.Scene {
         this.bgFilesLoaded = false;
     }
     create() {
-        this.add.sprite(-800, -600, 'background').setOrigin(0,0);
+        this.add.sprite(0, -80, 'background').setOrigin(0,0);
     
         this.add.sprite(0, 0, `titleAuthor`).setOrigin(0,0);
 		EPT.Storage.initUnset('EPT-highscore', 0);
