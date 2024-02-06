@@ -50,7 +50,7 @@ class LoginScene extends Phaser.Scene {
         textStory.setOrigin(0.5);
         
         //rectangle for position testing
-        this.add.rectangle(400, 300, 800, 600, 0xff0000);
+        // this.add.rectangle(400, 300, 800, 600, 0xff0000);
         const element = this.add.dom(400, 600).createFromCache('nameform');
 
         // element.setPerspective(800);
@@ -100,6 +100,22 @@ class LoginScene extends Phaser.Scene {
             duration: 3000,
             ease: 'Power3'
         });
+
+        var buttonContinue = new Button(this.cameras.main.width - 20, this.cameras.main.height - 20, 'button-continue', this.clickContinue, this);
+        buttonContinue.setOrigin(1);
+
+        buttonContinue.x = this.cameras.main.width + buttonContinue.width + 20;
+        this.tweens.add({ targets: buttonContinue, x: this.cameras.main.width - 20, duration: 500, ease: 'Back' });
+
+        this.keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        this.keyEnter.on('down', function (key, event) { this.clickContinue(); }, this);
+
+        this.cameras.main.fadeIn(250, 0, 0, 0);
+
+    }
+    clickContinue() {
+        EPT.Sfx.play('click');
+        EPT.fadeOutScene('Story', this);
     }
 }
 
