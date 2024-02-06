@@ -14,7 +14,6 @@
     position: relative;
 }
 
-
 .form-box{
     width: 90%;
     max-width: 450px; 
@@ -34,6 +33,12 @@
     color: #3c00a0;
     position: relative;
 }
+.form-box h1{
+    font-size: 30px;
+    margin-bottom: 60px;
+    color: #3c00a0;
+    position: relative;
+}
 .form-box h1::after{
     content: ''; 
     width: 30px; 
@@ -45,8 +50,7 @@
     left: 50%; 
     transform: translateX(-50%);
 }
-
-input-field{
+.input-field{
     background: #eaeaea;
     margin: 15px 0; 
     border-radius: 3px;
@@ -54,9 +58,22 @@ input-field{
     align-items: center;
 }
 input{
-    width: 100%; 
-    background: transparent;
-    border: 0; 
+    width: 100%;
+    background: transparent; 
+    border: 0;
     outline: 0; 
     padding: 18px 15px;
+}
+.input-field i{
+    margin-left: 15px;
+    color: #999;
+}
+
+form p {
+    text-align: left;
+    font-size: 13px; 
+}
+form p a{
+    text-decoration: none;
+    color:#3c00a0;
 }
