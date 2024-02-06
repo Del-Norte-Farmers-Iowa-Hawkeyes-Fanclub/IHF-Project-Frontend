@@ -49,6 +49,7 @@ class LoginScene extends Phaser.Scene {
         var textStory = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY-(0.75*this.cameras.main.centerY), EPT.text['login-title'], fontStory);
         textStory.setOrigin(0.5);
         
+        //rectangle for position testing
         this.add.rectangle(400, 300, 800, 600, 0xff0000);
         const element = this.add.dom(400, 600).createFromCache('nameform');
 
