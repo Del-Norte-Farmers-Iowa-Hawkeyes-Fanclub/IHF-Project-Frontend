@@ -14,6 +14,7 @@ class MainMenu extends Phaser.Scene {
 
         var titleAuthor = this.add.sprite(EPT.world.centerX, EPT.world.centerY+50, 'titleAuthor');
         titleAuthor.setOrigin(-2,0);
+
         var title = this.add.sprite(EPT.world.centerX-10, EPT.world.centerY+40, 'title');
         // title.setOrigin(0.5);
 
