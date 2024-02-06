@@ -4,8 +4,9 @@ class MainMenu extends Phaser.Scene {
         this.bgFilesLoaded = false;
     }
     create() {
-        this.add.sprite(0, 0, 'background').setOrigin(0,0);
-        this.add.sprite(0, 0, `titleAuthor`).setOrigin(0,0);
+        this.add.sprite(0, -80, 'background').setOrigin(0,0);
+        
+        this.add.sprite(-200, -400, `titleAuthor`).setOrigin(0,0);
 		EPT.Storage.initUnset('EPT-highscore', 0);
 		var highscore = EPT.Storage.get('EPT-highscore');
 
@@ -13,7 +14,8 @@ class MainMenu extends Phaser.Scene {
 
         var titleAuthor = this.add.sprite(EPT.world.centerX, EPT.world.centerY+50, 'titleAuthor');
         titleAuthor.setOrigin(-2,0);
-        var title = this.add.sprite(EPT.world.centerX, EPT.world.centerY-50, 'title');
+
+        var title = this.add.sprite(EPT.world.centerX-10, EPT.world.centerY+40, 'title');
         // title.setOrigin(0.5);
 
         this.input.keyboard.on('keydown', this.handleKey, this);
