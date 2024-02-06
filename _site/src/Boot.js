@@ -4,6 +4,7 @@ class Boot extends Phaser.Scene {
     }
     preload() {
         this.load.image('background', 'img/farming_Landscape.jpg');
+        this.load.image(`titleAuthor`, 'img/titleAuthor.png');
         this.load.image('logo-enclave', 'img/image.png');
         this.load.image('loading-background', 'img/loading-background.png');
         WebFont.load({ custom: { families: ['Berlin'], urls: ['fonts/BRLNSDB.css'] } });
