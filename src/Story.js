@@ -8,7 +8,7 @@ class Story extends Phaser.Scene {
     preload() {
         // Load your tile images
 		this.load.image('background-color', 'img/tiles/background.png');
-		this.load.image('erase', 'img/tiles/corn/Corn stage 1.png');
+		this.load.image('erase', 'img/tiles/blank-tile.png');
         this.load.image('corn', 'img/tiles/corn/Corn stage 2.png');
         this.load.image('corn2', 'img/tiles/corn/corn-stage-3.png');
         // Add more tiles as needed
@@ -48,9 +48,16 @@ class Story extends Phaser.Scene {
             tile.setScale(2);
             tile.on('pointerdown', () => {
                 this.selectedTile = tileKey; // Changed to use 'this.selectedTile'
+
+				tiles.forEach((otherTile) => {
+                    if (otherTile !== tileKey) {
+                        sidebar.getByName(otherTile).clearTint();
+                    }
+                });
+                tile.setTint(0x00ff00); // Change color to highlight (e.g., green)
             }, this);
 
-            sidebar.add(tile);
+            sidebar.add(tile, false, tileKey); // Add tile with a name
         });
     }
 
