@@ -5,7 +5,7 @@ class MainMenu extends Phaser.Scene {
     }
     create() {
         this.add.sprite(0, 0, 'background').setOrigin(0,0);
-
+        this.add.sprite(0, 0, `titleAuthor`).setOrigin(0,0);
 		EPT.Storage.initUnset('EPT-highscore', 0);
 		var highscore = EPT.Storage.get('EPT-highscore');
 
