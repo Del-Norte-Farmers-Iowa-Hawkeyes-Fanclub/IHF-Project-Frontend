@@ -3,6 +3,7 @@ class Story extends Phaser.Scene {
         super('Story');
         this.selectedTile; 
         this.tilemapData = []; 
+        this.mapSize = 14
     }
 
     preload() {
@@ -11,16 +12,21 @@ class Story extends Phaser.Scene {
 		this.load.image('erase', 'img/tiles/blank-tile.png');
         this.load.image('corn', 'img/tiles/corn/Corn stage 2.png');
         this.load.image('corn2', 'img/tiles/corn/corn-stage-3.png');
-        // Add more tiles as needed
+        this.load.image('corn-button', 'img/buttons/corn-button.png')
+        this.load.image('erase-button', 'img/buttons/erase-button.png')
+        
+        // tile options (tile, button)
+        this.erase = ['erase', 'erase-button']
+        this.corn = ['corn', 'corn-button']
     }
 
     create() {
         this.add.sprite(0, 0, 'background-color').setOrigin(0, 0);
 
         // Create a grid of tiles
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < this.mapSize; i++) {
             this.tilemapData[i] = [];
-            for (let j = 0; j < 10; j++) {
+            for (let j = 0; j < this.mapSize; j++) {
                 this.tilemapData[i][j] = null;
             }
         }
@@ -41,16 +47,16 @@ class Story extends Phaser.Scene {
     displaySidebarTiles() {
         const sidebar = this.add.group();
 
-        const tiles = ['erase','corn', 'corn2']; // Add more tile keys as needed
+        const tiles = [this.erase, this.corn]; // Add more tile keys as needed
 
         tiles.forEach((tileKey, index) => {
-            const tile = this.add.image(700, index * 70 + 50, tileKey).setInteractive();
+            const tile = this.add.image(700, index * 70 + 50, tileKey[1]).setInteractive();
             tile.setScale(2);
             tile.on('pointerdown', () => {
-                this.selectedTile = tileKey; // Changed to use 'this.selectedTile'
+                this.selectedTile = tileKey[0]; // Changed to use 'this.selectedTile'
 
 				tiles.forEach((otherTile) => {
-                    if (otherTile !== tileKey) {
+                    if (otherTile !== tileKey[0]) {
                         sidebar.getByName(otherTile).clearTint();
                     }
                 });
@@ -66,7 +72,7 @@ class Story extends Phaser.Scene {
             const row = Math.floor(pointer.y / 60);
             const col = Math.floor(pointer.x / 60);
 
-            if (row >= 0 && row < 10 && col >= 0 && col < 10) {
+            if (row >= 0 && row < this.mapSize && col >= 0 && col < this.mapSize) {
                 // Place the selected tile on the grid
                 if (this.tilemapData[row][col]) {
                     this.tilemapData[row][col].destroy();
