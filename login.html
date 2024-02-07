@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log In To Del Norte High Schools Association of Farmers</title>
+    <link rel="stylesheet" href="style1.css">
+    <script src="https://kit.fontawesome.com/61457d4eee.js" crossorigin="anonymous"></script>
+</head>
+<body> 
+    <div class="container">
+        <div class="form-box">
+            <h1 id="title">Sign In</h1>
+            <form> 
+                <div class="input-group" id="nameField">
+                    <div class="input-field">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="username" placeholder="Email">
+                    </div>
+                    <div class="input-field">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" placeholder="Password">
+                    </div>
+                    <p>Lost password <a href="#">Click Here!</a></p>
+                </div>
+                <div class="btn-field">
+                    <button type="button" id="signupBtn">Sign Up</button>
+                    <button type="button" id="signinBtn" class="disable">Sign In</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+let signupBtn = document.getElementById("signupBtn");
+let signinBtn = document.getElementById("signinBtn");
+let nameField = document.getElementById("nameField");
+let title = document.getElementById("title");
+
+signinBtn.onclick = function(){
+    nameField.style.maxHeight = "0"; 
+    title.innerHTML = "Sign In"; 
+    signupBtn.classList.add("disable"); // corrected from classlist to classList
+    signinBtn.classList.remove("disable"); // corrected from classlist to classList
+}
+signupBtn.onclick = function(){
+    nameField.style.maxHeight = "150px"; // changed height for better visibility
+    title.innerHTML = "Sign Up"; 
+    signupBtn.classList.remove("disable"); // corrected from classlist to classList
+    signinBtn.classList.add("disable"); // corrected from classlist to classList
+}
+</script>
+</body>
+</html>
