@@ -255,6 +255,7 @@ EPT.Lang = {
       'key-back': 'B - back to main menu',
       'key-return': 'P - return to the game',
       'key-gameover': 'Game over screen',
+      'leaderboard-text': 'Eco Score Board: ',
       'key-try': 'T - try again',
       'gameplay-score': 'Score: ',
       'gameplay-timeleft': 'Week: ',
