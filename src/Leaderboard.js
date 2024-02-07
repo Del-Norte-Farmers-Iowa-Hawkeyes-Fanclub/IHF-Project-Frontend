@@ -74,8 +74,6 @@ $.ajax({
     },
     success: function(data) {
         scores = data;
-        // Once data is retrieved, create leaderboard scene
-        // game.scene.add('Leaderboard', Leaderboard, true);
     },
     error: function(xhr) {
         console.log(xhr);
