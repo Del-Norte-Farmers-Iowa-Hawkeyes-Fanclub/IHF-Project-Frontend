@@ -105,7 +105,7 @@ class MainMenu extends Phaser.Scene {
             if(this.loadImage) {
                 this.loadImage.destroy();
             }
-            EPT.fadeOutScene('Story', this);
+            EPT.fadeOutScene('Leaderboard', this);
         }
         else {
             var animationFrames = this.anims.generateFrameNumbers('loader');
