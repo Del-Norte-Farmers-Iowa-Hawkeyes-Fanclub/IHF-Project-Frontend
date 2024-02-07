@@ -17,7 +17,7 @@ class Leaderboard extends Phaser.Scene {
 
     preload() {
         // Load bitmap font
-        this.load.bitmapFont('arcade', '/img/arcade.png', '/arcade.xml');
+        this.load.bitmapFont('arcade', '/bitmap/arcade.png', '/bitmap/arcade.xml');
     }
 
     create() {
@@ -25,8 +25,9 @@ class Leaderboard extends Phaser.Scene {
         this.add.sprite(0, 0, 'background').setOrigin(0, 0);
 
         // Add leaderboard text
-        var fontStory = { font: '30px ' + EPT.text['FONT'], fill: '#ffde00', stroke: '#000', strokeThickness: 5, align: 'center' };
-        var textStory = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - (0.75 * this.cameras.main.centerY), EPT.text['leaderboard-text'], fontStory);
+        // var fontStory = { font: '30px ' + EPT.text['FONT'], fill: '#ffde00', stroke: '#000', strokeThickness: 5, align: 'center' };
+        // var textStory = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - (0.85 * this.cameras.main.centerY), EPT.text['leaderboard-text'], fontStory);
+        var textStory = this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY - (0.85 * this.cameras.main.centerY), 'arcade', EPT.text['leaderboard-text']).setTint(0x000000);
         textStory.setOrigin(0.5);
 
         // Add continue button
@@ -43,17 +44,23 @@ class Leaderboard extends Phaser.Scene {
         this.cameras.main.fadeIn(250, 0, 0, 0);
         
         // Add leaderboard text
-        this.add.bitmapText(100, 110, 'arcade', 'Eco Score | Profit | Primary Crop | Username').setTint(0xffffff);
+        this.add.bitmapText(100, 110, 'arcade', 'Eco Score | Profit | Primary-Crop | Username').setTint(0x000000);
 
         // Display scores
         for (let i = 0; i < 5; i++) {
             const scoreData = scores[i];
             if (scoreData) {
                 const { eco, cash, primaryCrop, name } = scoreData;
-                const text = `${eco}     ${cash}     ${primaryCrop}     ${name}`;
-                this.add.bitmapText(100, 160 + 50 * (i + 1), 'arcade', text).setTint(0xffffff).setLetterSpacing(-5);
+                const formattedEco = eco.toString().padStart(3, ' ');
+                const formattedCash = cash.toString().padStart(3, ' ');
+                let truncatedName = name;
+                if (name.length > 8) {
+                    truncatedName = name.substring(0, 7) + '.';
+                }
+                const text = `  ${formattedEco}       ${formattedCash}        ${primaryCrop}      ${truncatedName}`;
+                this.add.bitmapText(100, 160 + 50 * (i + 1), 'arcade', text).setTint(0xffffff).setLetterSpacing(0).setTint(0x000000);
             } else {
-                this.add.bitmapText(100, 160 + 50 * (i + 1), 'arcade', ` ---      ---     ---      ---`).setTint(0xffffff).setLetterSpacing(-5);
+                this.add.bitmapText(100, 160 + 50 * (i + 1), 'arcade', `   ---       ---       ----      -------`).setTint(0x000000).setLetterSpacing(0);
             }
         }
     }
