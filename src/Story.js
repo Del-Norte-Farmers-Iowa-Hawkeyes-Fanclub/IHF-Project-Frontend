@@ -3,7 +3,8 @@ class Story extends Phaser.Scene {
         super('Story');
         this.selectedTile; 
         this.tilemapData = []; 
-        this.mapSize = 14
+        this.mapSize = 14; // map is a square (equal width and height)
+        this.tileSize = 60; 
     }
 
     preload() {
@@ -34,6 +35,9 @@ class Story extends Phaser.Scene {
         // Display tiles on the sidebar for selection
         this.displaySidebarTiles();
 
+        // display grid
+        this.drawGrid();
+
         // Handle input events
         this.input.on('pointerdown', this.handlePointerDown, this);
 
@@ -50,7 +54,7 @@ class Story extends Phaser.Scene {
         const tiles = [this.erase, this.corn]; // Add more tile keys as needed
 
         tiles.forEach((tileKey, index) => {
-            const tile = this.add.image(70*this.mapSize, index * 70 + 50, tileKey[1]).setInteractive();
+            const tile = this.add.image(this.tileSize*this.mapSize + 100, index * this.tileSize + this.tileSize, tileKey[1]).setInteractive();
             tile.setScale(2);
             tile.on('pointerdown', () => {
                 this.selectedTile = tileKey[0]; // Changed to use 'this.selectedTile'
@@ -60,10 +64,10 @@ class Story extends Phaser.Scene {
                         sidebar.getByName(otherTile).clearTint();
                     }
                 });
-                tile.setTint(0x00ff00); // Change color to highlight (e.g., green)
+                tile.setTint(0xb3f7ff); // Change color to highlight (e.g., green)
             }, this);
 
-            sidebar.add(tile, false, tileKey); // Add tile with a name
+            //sidebar.add(tile, false, tileKey); // Add tile with a name
         });
     }
 
@@ -81,6 +85,31 @@ class Story extends Phaser.Scene {
                 const tile = this.add.image(col * 60 + 30, row * 60 + 30, this.selectedTile); // Changed to use 'this.add.image'
                 tile.setScale(4);
                 this.tilemapData[row][col] = tile;
+            }
+        }
+    }
+
+    drawGrid(){
+        // colors
+        const white = 0xffffff; 
+        const lightBrown = 0xeaa81e
+
+            // Loop through the grid and create squares
+        for (var i = 0; i < this.mapSize; i++) {
+            for (var j = 0; j < this.mapSize; j++) {
+                // Calculate position for each square
+                var posX = i * this.tileSize;
+                var posY = j * this.tileSize;
+
+                // Create the square shape
+                var graphics = this.add.graphics({
+                    x: posX,
+                    y: posY
+                });
+                graphics.fillStyle(lightBrown); // Fill color of the square
+                graphics.fillRect(0, 0, this.tileSize, this.tileSize); // Draw the square
+                graphics.lineStyle(1, white); // Line style for the grid lines
+                graphics.strokeRect(0, 0, this.tileSize, this.tileSize); // Draw the grid lines
             }
         }
     }
