@@ -50,7 +50,7 @@ class Story extends Phaser.Scene {
         const tiles = [this.erase, this.corn]; // Add more tile keys as needed
 
         tiles.forEach((tileKey, index) => {
-            const tile = this.add.image(700, index * 70 + 50, tileKey[1]).setInteractive();
+            const tile = this.add.image(70*this.mapSize, index * 70 + 50, tileKey[1]).setInteractive();
             tile.setScale(2);
             tile.on('pointerdown', () => {
                 this.selectedTile = tileKey[0]; // Changed to use 'this.selectedTile'
