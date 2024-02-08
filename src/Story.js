@@ -14,15 +14,17 @@ class Story extends Phaser.Scene {
         // Load your tile images
 		this.load.image('background-color', 'img/tiles/background.png');
 		this.load.image('erase', 'img/tiles/blank-tile.png');
-        this.load.image('corn', 'img/tiles/corn/Corn stage 2.png');
-        this.load.image('corn2', 'img/tiles/corn/corn-stage-3.png');
+        this.load.image('corn0', 'img/tiles/corn/corn-stage-0.png');
+        this.load.image('corn1', 'img/tiles/corn/corn-stage-1.png');
+        this.load.image('corn2', 'img/tiles/corn/corn-stage-2.png');
+        this.load.image('corn3', 'img/tiles/corn/corn-stage-3.png');
         this.load.image('corn-button', 'img/buttons/corn-button.png')
         this.load.image('erase-button', 'img/buttons/erase-button.png')
         this.load.image('week-button', 'img/buttons/week-button.png')
         
         // tile options (tile, button)
-        this.erase = ['erase', 'erase-button']
-        this.corn = ['corn', 'corn-button']
+        this.erase = ['erase', 'erase', 'erase-button']
+        this.corn = ['corn', 'corn0', 'corn-button']
     }
 
     create() {
@@ -71,13 +73,13 @@ class Story extends Phaser.Scene {
         const tiles = [this.erase, this.corn]; // Add more tile keys as needed
 
         tiles.forEach((tileKey, index) => {
-            const tile = this.add.image(this.tileSize*this.mapSize + 250, index * this.tileSize + this.tileSize + 120, tileKey[1]).setInteractive();
+            const tile = this.add.image(this.tileSize*this.mapSize + 250, index * this.tileSize + this.tileSize + 120, tileKey[2]).setInteractive();
             tile.setScale(2);
             tile.on('pointerdown', () => {
                 this.selectedTile = tileKey; // Changed to use 'this.selectedTile'
 
 				tiles.forEach((otherTile) => {
-                    if (otherTile !== tileKey[0]) {
+                    if (otherTile !== tileKey[1]) {
                         sidebar.getByName(otherTile).clearTint();
                     }
                 });
@@ -88,7 +90,6 @@ class Story extends Phaser.Scene {
     }
 
     displayWeekButton() {
-        //const weekButton = this.add.text(700, 500, 'Next Week', { fontSize: '24px', fill: '#fff' }).setInteractive();
         const weekButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 100, 'week-button').setInteractive();
 
         weekButton.on('pointerdown', () => {
@@ -116,7 +117,7 @@ class Story extends Phaser.Scene {
                         });
                     }
     
-                    const tile = this.add.image(col * 60 + 130, row * 60 + 30, this.selectedTile[0]);
+                    const tile = this.add.image(col * 60 + 130, row * 60 + 30, this.selectedTile[1]);
                     tile.setScale(4);
                     this.tilemapData[row][col][0] = tile; // Store the image at index 0
     
