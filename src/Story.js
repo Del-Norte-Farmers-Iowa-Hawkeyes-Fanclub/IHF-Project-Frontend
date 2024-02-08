@@ -26,13 +26,20 @@ class Story extends Phaser.Scene {
     }
 
     create() {
+        document.addEventListener('contextmenu', function(event) {
+            event.preventDefault();
+        });
+
         this.add.sprite(0, 0, 'background-color').setOrigin(0, 0);
 
         // Create a grid of tiles
         for (let i = 0; i < this.mapSize; i++) {
             this.tilemapData[i] = [];
             for (let j = 0; j < this.mapSize; j++) {
-                this.tilemapData[i][j] = null;
+                this.tilemapData[i][j] = []; 
+                for (let k = 0; k < 3; k++) {
+                    this.tilemapData[i][j][k] = null;
+                }
             }
         }
 
@@ -64,10 +71,10 @@ class Story extends Phaser.Scene {
         const tiles = [this.erase, this.corn]; // Add more tile keys as needed
 
         tiles.forEach((tileKey, index) => {
-            const tile = this.add.image(this.tileSize*this.mapSize + 200, index * this.tileSize + this.tileSize + 120, tileKey[1]).setInteractive();
+            const tile = this.add.image(this.tileSize*this.mapSize + 250, index * this.tileSize + this.tileSize + 120, tileKey[1]).setInteractive();
             tile.setScale(2);
             tile.on('pointerdown', () => {
-                this.selectedTile = tileKey[0]; // Changed to use 'this.selectedTile'
+                this.selectedTile = tileKey; // Changed to use 'this.selectedTile'
 
 				tiles.forEach((otherTile) => {
                     if (otherTile !== tileKey[0]) {
@@ -78,17 +85,15 @@ class Story extends Phaser.Scene {
             }, this);
             //sidebar.add(tile, false, tileKey); // Add tile with a name
         });
-        
     }
 
     displayWeekButton() {
         //const weekButton = this.add.text(700, 500, 'Next Week', { fontSize: '24px', fill: '#fff' }).setInteractive();
-        const weekButton = this.add.image(this.tileSize*this.mapSize + 200, this.tileSize * 6 + 100, 'week-button').setInteractive();
+        const weekButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 100, 'week-button').setInteractive();
 
         weekButton.on('pointerdown', () => {
             this.week++; // Increment week
             this.updateText()
-            console.log("week++")
         }, this);
 
         // Display current week
@@ -98,19 +103,53 @@ class Story extends Phaser.Scene {
     handlePointerDown(pointer) {
         if (this.selectedTile) { // Changed to use 'this.selectedTile'
             const row = Math.floor(pointer.y / 60);
-            const col = Math.floor(pointer.x / 60);
+            const col = Math.floor((pointer.x - 100) / 60);
 
             if (row >= 0 && row < this.mapSize && col >= 0 && col < this.mapSize) {
-                // Place the selected tile on the grid
-                if (this.tilemapData[row][col]) {
-                    this.tilemapData[row][col].destroy();
-                }
-
-                const tile = this.add.image(col * 60 + 30, row * 60 + 30, this.selectedTile); // Changed to use 'this.add.image'
-                tile.setScale(4);
-                this.tilemapData[row][col] = tile;
+                if (pointer.leftButtonDown()) {
+                    // Place the selected tile on the grid
+                    if (this.tilemapData[row][col]) {
+                        this.tilemapData[row][col].forEach((dataPoint) => {
+                            if (dataPoint) {
+                                dataPoint.destroy();
+                            }
+                        });
+                    }
+    
+                    const tile = this.add.image(col * 60 + 130, row * 60 + 30, this.selectedTile[0]);
+                    tile.setScale(4);
+                    this.tilemapData[row][col][0] = tile; // Store the image at index 0
+    
+                    // Example: Store additional data points
+                    // You can add more data points as needed
+                    this.tilemapData[row][col][1] = this.selectedTile[0];
+                    this.tilemapData[row][col][2] = 1;
+    
+                    tile.setScale(4);
+                } else if (pointer.rightButtonDown()) {
+                    // Handle right mouse button
+                    // Display the name of the tile to the left of the tilemap
+                    this.displayTileData(this.tilemapData[row][col], row, col);
+                    console.log(this.selectedTile)
+                    console.log(this.tilemapData)
+                } 
             }
         }
+    }
+
+    displayTileData(tileData, row, col) {
+        if (this.tileName) {
+            this.tileName.destroy(); // Clear existing tile name text
+        }
+        if (this.tileStage) {
+            this.tileStage.destroy(); // Clear existing tile name text
+        }
+        if (this.tilePos) {
+            this.tilePos.destroy(); // Clear existing tile name text
+        }
+        this.tileName = this.add.text(10, 50, tileData[1], { fontSize: '16px', fill: '#fff' }); // displays tile name
+        this.tileStage = this.add.text(10, 80, 'Stage: '+tileData[2], { fontSize: '16px', fill: '#fff' }); // displays tile stage
+        this.tilePos = this.add.text(10, 110, '('+row+', '+col+')', { fontSize: '16px', fill: '#fff' }); // displays tile stage
     }
 
     drawGrid(){
