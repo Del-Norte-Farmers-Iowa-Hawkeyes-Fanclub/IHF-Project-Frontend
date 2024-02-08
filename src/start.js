@@ -31,7 +31,12 @@ var gameConfig = {
 		width: window.innerWidth,
 		height: window.innerHeight,  
 	},
-	scene: [Boot, Preloader, MainMenu, Settings, Story, Game, Leaderboard]
+
+	scene: [Boot, Preloader, MainMenu, Settings, Story, Game],
+	render: {
+        pixelArt: true // Enable pixel art mode
+    }
+
 }
 game = new Phaser.Game(gameConfig);
 window.focus(); 
