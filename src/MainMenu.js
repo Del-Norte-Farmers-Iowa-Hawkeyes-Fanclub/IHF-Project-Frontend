@@ -4,22 +4,23 @@ class MainMenu extends Phaser.Scene {
         this.bgFilesLoaded = false;
     }
     create() {
-        this.add.sprite(0, 0, 'background').setOrigin(0,0);
-
+        this.add.sprite(0, -80, 'background').setOrigin(0,0);
+        
+        this.add.sprite(-200, -400, `titleAuthor`).setOrigin(0,0);
 		EPT.Storage.initUnset('EPT-highscore', 0);
 		var highscore = EPT.Storage.get('EPT-highscore');
 
         this.waitingForSettings = false;
 
         var titleAuthor = this.add.sprite(EPT.world.centerX, EPT.world.centerY+50, 'titleAuthor');
-        titleAuthor.setOrigin(1);
-        var title = this.add.sprite(EPT.world.centerX, EPT.world.centerY-50, 'title');
-        title.setOrigin(0.5);
+        titleAuthor.setOrigin(-2,0);
+        var title = this.add.sprite(EPT.world.centerX-10, EPT.world.centerY+40, 'title');
+        // title.setOrigin(0.5);
 
         this.input.keyboard.on('keydown', this.handleKey, this);
 
-        this.tweens.add({targets: title, angle: title.angle-2, duration: 1000, ease: 'Sine.easeInOut' });
-        this.tweens.add({targets: title, angle: title.angle+4, duration: 2000, ease: 'Sine.easeInOut', yoyo: 1, loop: -1, delay: 1000 });
+        // this.tweens.add({targets: title, angle: title.angle-2, duration: 1000, ease: 'Sine.easeInOut' });
+        // this.tweens.add({targets: title, angle: title.angle+4, duration: 2000, ease: 'Sine.easeInOut', yoyo: 1, loop: -1, delay: 1000 });
 
         this.buttonSettings = new Button(20, 20, 'button-settings', this.clickSettings, this);
         this.buttonSettings.setOrigin(0, 0);
@@ -104,7 +105,7 @@ class MainMenu extends Phaser.Scene {
             if(this.loadImage) {
                 this.loadImage.destroy();
             }
-            EPT.fadeOutScene('Story', this);
+            EPT.fadeOutScene('Leaderboard', this);
         }
         else {
             var animationFrames = this.anims.generateFrameNumbers('loader');
