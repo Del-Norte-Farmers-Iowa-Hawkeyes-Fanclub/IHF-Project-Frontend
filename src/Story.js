@@ -3,8 +3,11 @@ class Story extends Phaser.Scene {
         super('Story');
         this.selectedTile; 
         this.tilemapData = []; 
-        this.mapSize = 14; // map is a square (equal width and height)
+        this.mapSize = 12; // map is a square (equal width and height)
         this.tileSize = 60; 
+        this.week = 1
+        this.money = 100
+        this.eco = 0
     }
 
     preload() {
@@ -15,6 +18,7 @@ class Story extends Phaser.Scene {
         this.load.image('corn2', 'img/tiles/corn/corn-stage-3.png');
         this.load.image('corn-button', 'img/buttons/corn-button.png')
         this.load.image('erase-button', 'img/buttons/erase-button.png')
+        this.load.image('week-button', 'img/buttons/week-button.png')
         
         // tile options (tile, button)
         this.erase = ['erase', 'erase-button']
@@ -38,6 +42,12 @@ class Story extends Phaser.Scene {
         // display grid
         this.drawGrid();
 
+        // Display the week button
+        this.displayWeekButton();
+
+         // Update the displayed data text
+        this.updateText();
+
         // Handle input events
         this.input.on('pointerdown', this.handlePointerDown, this);
 
@@ -54,7 +64,7 @@ class Story extends Phaser.Scene {
         const tiles = [this.erase, this.corn]; // Add more tile keys as needed
 
         tiles.forEach((tileKey, index) => {
-            const tile = this.add.image(this.tileSize*this.mapSize + 100, index * this.tileSize + this.tileSize, tileKey[1]).setInteractive();
+            const tile = this.add.image(this.tileSize*this.mapSize + 200, index * this.tileSize + this.tileSize + 120, tileKey[1]).setInteractive();
             tile.setScale(2);
             tile.on('pointerdown', () => {
                 this.selectedTile = tileKey[0]; // Changed to use 'this.selectedTile'
@@ -66,9 +76,23 @@ class Story extends Phaser.Scene {
                 });
                 tile.setTint(0xb3f7ff); // Change color to highlight (e.g., green)
             }, this);
-
             //sidebar.add(tile, false, tileKey); // Add tile with a name
         });
+        
+    }
+
+    displayWeekButton() {
+        //const weekButton = this.add.text(700, 500, 'Next Week', { fontSize: '24px', fill: '#fff' }).setInteractive();
+        const weekButton = this.add.image(this.tileSize*this.mapSize + 200, this.tileSize * 6 + 100, 'week-button').setInteractive();
+
+        weekButton.on('pointerdown', () => {
+            this.week++; // Increment week
+            this.updateText()
+            console.log("week++")
+        }, this);
+
+        // Display current week
+        this.weekText = this.add.text(900, 50, `Week: ${this.week}`, { fontSize: '24px', fill: '#fff' });
     }
 
     handlePointerDown(pointer) {
@@ -98,7 +122,7 @@ class Story extends Phaser.Scene {
         for (var i = 0; i < this.mapSize; i++) {
             for (var j = 0; j < this.mapSize; j++) {
                 // Calculate position for each square
-                var posX = i * this.tileSize;
+                var posX = i * this.tileSize + 100;
                 var posY = j * this.tileSize;
 
                 // Create the square shape
@@ -112,5 +136,14 @@ class Story extends Phaser.Scene {
                 graphics.strokeRect(0, 0, this.tileSize, this.tileSize); // Draw the grid lines
             }
         }
+    }
+    updateText() {
+        this.weekText.setText(`Week: ${this.week}`);
+
+        this.moneyText = this.add.text(900, 80, `Money: ${this.money}`, { fontSize: '24px', fill: '#fff' });
+        this.moneyText.setText(`Money: ${this.money}`);
+
+        this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
+        this.ecoText.setText(`Eco Points: ${this.eco}`);
     }
 };
