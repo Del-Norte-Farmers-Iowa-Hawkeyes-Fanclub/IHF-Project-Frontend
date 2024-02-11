@@ -32,7 +32,7 @@ var gameConfig = {
 		height: window.innerHeight,  
 	},
 
-	scene: [Boot, Preloader, MainMenu, Settings, Story, Game],
+	scene: [Boot, Preloader, MainMenu, Settings, Story, Game, Leaderboard],
 	render: {
         pixelArt: true // Enable pixel art mode
     }
