@@ -68,7 +68,7 @@ class Leaderboard extends Phaser.Scene {
     clickContinue() {
         // Play click sound and fade out scene
         EPT.Sfx.play('click');
-        EPT.fadeOutScene('Story', this);
+        EPT.fadeOutScene('World', this);
     }
 }
 
