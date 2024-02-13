@@ -101,6 +101,7 @@ class Story extends Phaser.Scene {
 
         // Display current week
         this.weekText = this.add.text(900, 50, `Week: ${this.week}`, { fontSize: '24px', fill: '#fff' });
+        this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
     }
 
     handlePointerDown(pointer) {
@@ -190,14 +191,14 @@ class Story extends Phaser.Scene {
         //this.moneyText = this.add.text(900, 80, `Money: ${this.money}`, { fontSize: '24px', fill: '#fff' });
         //this.moneyText.setText(`Money: ${this.money}`);
 
-        //this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
-        //this.ecoText.setText(`Eco Points: ${this.eco}`);
+        this.ecoText.setText(`Eco Points: ${this.eco}`);
     }
     updateStages(){
         // iterate through all tiles in array (1st and 2nd layers only)
         for (let i = 0; i < this.mapSize; i++) {
             for (let j = 0; j < this.mapSize; j++) {
                 if (this.tilemapData[i][j][0] && this.tilemapData[i][j][2] < 3 && this.tilemapData[i][j][1] != 'erase'){ // check that a tile is present
+                    this.eco += 1
                     this.tilemapData[i][j][2] += 1; // update the stage of every tile
                     this.tilemapData[i][j][0] = this.tilemapData[i][j][0].setTexture(this.tilemapData[i][j][3].slice(0, -1) + (this.tilemapData[i][j][2])) // replace the image of every tile
                 }
