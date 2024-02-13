@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Form</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .container {
+        width: 300px;
+        margin: 0 auto;
+    }
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        box-sizing: border-box;
+    }
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Login Form</h2>
+        <h3>Sign Up</h3>
+        <form id="signUpForm">
+            <label for="email">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your Name">
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" placeholder="Enter your email">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password">
+            <button type="button" onclick="createUser()">Sign Up</button>
+        </form>
+</div>
+
+<div class="container">
+   
+    <h3>Sign In</h3>
+    <form id="loginForm">
+        <label for="email">Email:</label>
+        <input type="text" id="emailLogin" name="emailLogin" placeholder="Enter your email">
+        <label for="password">Password:</label>
+        <input type="password" id="passwordLogin" name="passwordLogin" placeholder="Enter your password">
+        <input type="submit" id="submitLogin" value="Login">
+    </form>
+</div>
+
+<script>
+    document.getElementById("signUpForm").addEventListener("submit", function(event){
+        event.preventDefault(); // Prevent default form submission
+        
+        // Get values from the form
+        var name= document.getElementById("name").value;
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        
+        // Print values to the console
+        console.log("Name: " + name);
+        console.log("Email: " + email);
+        console.log("Password: " + password);
+    });
+</script>
+
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function(event){
+        event.preventDefault(); // Prevent default form submission
+        
+        // Get values from the form
+        var emailLogin = document.getElementById("emailLogin").value;
+        var passwordLogin = document.getElementById("passwordLogin").value;
+        
+        // Print values to the console
+        console.log("Email: " + emailLogin);
+        console.log("Password: " + passwordLogin);
+    });
+</script>
+
+<script>
+    
+    function createUser() {
+      //const formData = new FormData(document.getElementById('signUpForm'));
+      
+     
+    url = 'http://localhost:6943/api/user/Sree';
+
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      },
+  
+    };
+
+
+    fetch(url, options)
+.then(response => {
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  if (response.ok) {
+    console.log(response);
+  }
+  return response.json();
+})
+.then(data => {
+  console.log(data);
+})
+.catch(error => {
+  console.error("There was a problem with the fetch operation:", error);
+});
+    }
+    </script>
+
+
+
+
+</body>
+</html>

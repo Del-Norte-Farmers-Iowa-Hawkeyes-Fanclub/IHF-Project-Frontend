@@ -2,27 +2,23 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Log In To Del Norte High Schools Assocation of Farmers</title>
+    <title>Log In To Del Norte High Schools Association of Farmers</title>
     <link rel="stylesheet" href="style1.css">
     <script src="https://kit.fontawesome.com/61457d4eee.js" crossorigin="anonymous"></script>
 </head>
 <body> 
     <div class="container">
         <div class="form-box">
-            <h1 id="title">Sign Up</h1>
+            <h1 id="title">Sign In</h1>
             <form> 
                 <div class="input-group" id="nameField">
                     <div class="input-field">
-                        <i class="fa-solid fa-user"></i>
-                        <input type="text" placeholder="Name">
-                    </div>
-                    <div class="input-field">
                         <i class="fa-solid fa-envelope"></i>
-                        <input type="email" placeholder="Email">
+                        <input type="email" id="username" placeholder="Email">
                     </div>
                     <div class="input-field">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" placeholder="Password">
+                        <input type="password" id="password" placeholder="Password">
                     </div>
                     <p>Lost password <a href="#">Click Here!</a></p>
                 </div>
@@ -43,16 +39,15 @@ let title = document.getElementById("title");
 signinBtn.onclick = function(){
     nameField.style.maxHeight = "0"; 
     title.innerHTML = "Sign In"; 
-    signupBtn.classlist.add("disable");
-    signinBtn.classlist.remove("disable");
+    signupBtn.classList.add("disable"); // corrected from classlist to classList
+    signinBtn.classList.remove("disable"); // corrected from classlist to classList
 }
 signupBtn.onclick = function(){
-    nameField.style.maxHeight = "60px"; 
+    nameField.style.maxHeight = "150px"; // changed height for better visibility
     title.innerHTML = "Sign Up"; 
-    signupBtn.classlist.remove("disable");
-    signinBtn.classlist.add("disable");
+    signupBtn.classList.remove("disable"); // corrected from classlist to classList
+    signinBtn.classList.add("disable"); // corrected from classlist to classList
 }
 </script>
-<script src="login.js"></script>
 </body>
 </html>
