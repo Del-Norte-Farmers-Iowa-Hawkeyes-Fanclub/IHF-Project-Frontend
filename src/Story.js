@@ -80,10 +80,10 @@ class Story extends Phaser.Scene {
 
 				tiles.forEach((otherTile) => {
                     if (otherTile !== tileKey[1]) {
-                        sidebar.getByName(otherTile).clearTint();
+                        //sidebar.getByName(otherTile).clearTint();
                     }
                 });
-                tile.setTint(0xb3f7ff); // Change color to highlight (e.g., green)
+                //tile.setTint(0xb3f7ff); // Change color to highlight (e.g., green)
             }, this);
             //sidebar.add(tile, false, tileKey); // Add tile with a name
         });
@@ -93,7 +93,9 @@ class Story extends Phaser.Scene {
         const weekButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 100, 'week-button').setInteractive();
 
         weekButton.on('pointerdown', () => {
+            console.log('week')
             this.week++; // Increment week
+            this.updateStages()
             this.updateText()
         }, this);
 
@@ -124,7 +126,8 @@ class Story extends Phaser.Scene {
                     // Example: Store additional data points
                     // You can add more data points as needed
                     this.tilemapData[row][col][1] = this.selectedTile[0];
-                    this.tilemapData[row][col][2] = 1;
+                    this.tilemapData[row][col][2] = 0;
+                    this.tilemapData[row][col][3] = this.selectedTile[0] + 1;
     
                     tile.setScale(4);
                 } else if (pointer.rightButtonDown()) {
@@ -185,5 +188,16 @@ class Story extends Phaser.Scene {
 
         this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
         this.ecoText.setText(`Eco Points: ${this.eco}`);
+    }
+    updateStages(){
+        // iterate through all tiles in array (1st and 2nd layers only)
+        for (let i = 0; i < this.mapSize; i++) {
+            for (let j = 0; j < this.mapSize; j++) {
+                if (this.tilemapData[i][j][0] && this.tilemapData[i][j][2] < 3){ // check that a tile is present
+                    this.tilemapData[i][j][2] += 1; // update the stage of every tile
+                    this.tilemapData[i][j][0] = this.tilemapData[i][j][0].setTexture(this.tilemapData[i][j][3].slice(0, -1) + (this.tilemapData[i][j][2])) // replace the image of every tile
+                }
+            }
+        }
     }
 };
