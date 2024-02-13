@@ -33,29 +33,57 @@
 <body> 
     <div class="container">
         <div class="form-box">
-            <h1>Sign Up</h1>
-            <form> 
+            <h1>Login</h1>
+            <form id="loginForm"> 
                 <div class="input-group">
                     <div class="input-field">
-                        <i class="fa-solid fa-user"></i>
-                        <input type="text" placeholder="Name">
-                    </div>
-                    <div class="input-field">
                         <i class="fa-solid fa-envelope"></i>
-                        <input type="email" placeholder="Email">
+                        <input type="email" name="password" placeholder="Email">
                     </div>
                     <div class="input-field">
                         <i class="fa-solid fa-lock"></i>
-                        <input type="password" placeholder="Password">
+                        <input type="password" name="password" placeholder="Password">
                     </div>
-                    <p>Lost password <a href="#">Click Here!</a></p>
+                    <p>No Account? <a href="{{site.baseurl}}/signup.html">Click Here!</a></p>
+
                 </div>
             </form>
-            <button type="submit" class="btn">Login</button>
+            <button type="submit" class="btn" onclick="login()">Login</button>
         </div>
     </div>
 </body>
 <script>
-
+    function login() {
+        const form = document.getElementById('loginForm');
+        const email = form.querySelector('input[type="email"]').value;
+        const password = form.querySelector('input[type="password"]').value;
+    
+        const data = {
+            email,
+            password
+        };
+        
+        fetch('http://localhost:6942/authenticate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle successful login
+                console.log('Login successful');
+                window.location.href = 'http://localhost:4000/game';
+            } else {
+                // Handle login error
+                console.log('Login failed');
+            }
+        })
+        .catch(error => {
+            // Handle network error
+            console.log('Network error');
+        });
+    }
 </script>
 </html>
