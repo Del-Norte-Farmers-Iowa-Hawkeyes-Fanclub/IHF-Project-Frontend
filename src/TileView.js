@@ -41,9 +41,9 @@ create() {
     const tileset = map.addTilesetImage("tuxmon-sample-32px-extruded", "tiles");
   
     // Parameters: layer name (or index) from Tiled, tileset, x, y
-    const belowLayer = map.createLayer("Below Player", tileset, 0, 0);
-    const worldLayer = map.createLayer("World", tileset, 0, 0);
-    const aboveLayer = map.createLayer("Above Player", tileset, 0, 0);
+    const belowLayer = map.createLayer("Below Player", tileset, 75, 0);
+    const worldLayer = map.createLayer("World", tileset, 75, 0);
+    const aboveLayer = map.createLayer("Above Player", tileset, 75, 0);
   
     // Phaser supports multiple cameras, but you can access the default camera like this:
     const camera = this.cameras.main;
