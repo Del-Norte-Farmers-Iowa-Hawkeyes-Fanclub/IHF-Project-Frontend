@@ -186,9 +186,11 @@ class Story extends Phaser.Scene {
         for (let i = 0; i < this.mapSize; i++) {
             for (let j = 0; j < this.mapSize; j++) {
                 if (this.tilemapData[i][j][0] && this.tilemapData[i][j][2] < 2 && this.tilemapData[i][j][1] != 'erase'){ // check that a tile is present
-                    this.eco += 1
-                    this.tilemapData[i][j][2] += 1; // update the stage of every tile
-                    this.tilemapData[i][j][0] = this.tilemapData[i][j][0].setTexture(this.tilemapData[i][j][3].slice(0, -1) + (this.tilemapData[i][j][2])) // replace the image of every tile
+                    if(Math.floor(Math.random() * 5) != 1){ // random 25/75 chance of tile stage updating
+                        this.eco += 1
+                        this.tilemapData[i][j][2] += 1; // update the stage of every tile
+                        this.tilemapData[i][j][0] = this.tilemapData[i][j][0].setTexture(this.tilemapData[i][j][3].slice(0, -1) + (this.tilemapData[i][j][2])) // replace the image of every tile
+                    }
                 }
             }
         }
