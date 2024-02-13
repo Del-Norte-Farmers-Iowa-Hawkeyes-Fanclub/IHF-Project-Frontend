@@ -1,34 +1,88 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<title>Uber Cool Farming Sim</title>
-	<meta name="author" content="Enclave Games" />
-	<meta name="description" content="Mobile template for HTML5 games created using the Phaser game engine." />
-	<meta name="monetization" content="$ilp.uphold.com/k4eJGQUDF9nw" />
-	<style>*{margin:0;padding:0;}body{background: #ccc url(img/pattern.png) repeat; overflow:hidden;}#banner{display:none;}</style>
-	<meta property="og:image" content="https://enclavegames.github.io/Enclave-Phaser-Template/img/enclave-phaser-template.png" />
-	<meta property="og:url" content="https://enclavegames.github.io/Enclave-Phaser-Template/"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<meta property="og:title" content="Enclave Phaser Template" />
-	<meta property="og:description" content="Mobile template for HTML5 games created using the Phaser game engine." />
-	<meta property="og:type" content="website" />
-	<link rel="shortcut icon" href="favicon.ico" />
-	<link rel="manifest" href="ept.webmanifest" />
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-30485283-26"></script>
-	<script src="src/plugins/webfont.js"></script>
-	<script src="src/phaser.3.60.0.min.js"></script>
-	<script src="src/utils.js"></script>
-	<script src="src/Boot.js"></script>
-	<script src="src/Preloader.js"></script>
-	<script src="src/MainMenu.js"></script>
-	<script src="src/Settings.js"></script>
-    <script src="src/Leaderboard.js"></script>
-	<script src="src/Story.js"></script>
-	<script src="src/Game.js"></script>
+    <head>
+    <meta charset="utf-8" />
+    <title>Uber Cool Farming Sim</title>
+    <meta name="author" content="Enclave Games" />
+    <meta name="description" content="Mobile template for HTML5 games created using the Phaser game engine." />
+    <meta name="monetization" content="$ilp.uphold.com/k4eJGQUDF9nw" />
+    <style>*{margin:0;padding:0;}body{background: #ccc url(img/pattern.png) repeat; overflow:hidden;}#banner{display:none;}</style>
+    <meta property="og:image" content="https://enclavegames.github.io/Enclave-Phaser-Template/img/enclave-phaser-template.png" />
+    <meta property="og:url" content="https://enclavegames.github.io/Enclave-Phaser-Template/"/>
+    <meta property="og:title" content="Enclave Phaser Template" />
+    <meta property="og:description" content="Mobile template for HTML5 games created using the Phaser game engine." />
+    <meta property="og:type" content="website" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="manifest" href="ept.webmanifest" />
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-30485283-26"></script>
+    <script src="src/plugins/webfont.js"></script>
+    <script src="src/phaser.3.60.0.min.js"></script>
+    <script src="src/utils.js"></script>
+    <script src="src/Boot.js"></script>
+    <script src="src/Preloader.js"></script>
+    <script src="src/MainMenu.js"></script>
+    <script src="src/Settings.js"></script>
+    <script src="src/Story.js"></script>
+    <script src="src/Game.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style1.css">
+    <script src="https://kit.fontawesome.com/61457d4eee.js" crossorigin="anonymous"></script>
 </head>
-<body>
-<img id="banner" src="screens/EPT-MainMenu.png" alt="Enclave Phaser Template" />
-<script src="src/start.js"></script>
+<body> 
+    <div class="container">
+        <div class="form-box">
+            <h1>Login</h1>
+            <form id="loginForm"> 
+                <div class="input-group">
+                    <div class="input-field">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" name="password" placeholder="Email">
+                    </div>
+                    <div class="input-field">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password">
+                    </div>
+                    <p>No Account? <a href="http://localhost:4000/signup.html">Click Here!</a></p>
+
+                </div>
+            </form>
+            <button type="submit" class="btn" onclick="login()">Login</button>
+        </div>
+    </div>
 </body>
+<script>
+    function login() {
+        const form = document.getElementById('loginForm');
+        const email = form.querySelector('input[type="email"]').value;
+        const password = form.querySelector('input[type="password"]').value;
+    
+        const data = {
+            email,
+            password
+        };
+        
+        fetch('http://localhost:6942/authenticate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle successful login
+                console.log('Login successful');
+                window.location.href = 'http://localhost:4000/game';
+            } else {
+                // Handle login error
+                console.log('Login failed');
+            }
+        })
+        .catch(error => {
+            // Handle network error
+            console.log('Network error');
+        });
+    }
+</script>
 </html>
