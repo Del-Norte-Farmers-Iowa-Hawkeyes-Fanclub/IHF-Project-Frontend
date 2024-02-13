@@ -112,19 +112,34 @@ class Story extends Phaser.Scene {
             if (row >= 0 && row < this.mapSize && col >= 0 && col < this.mapSize) {
                 if (pointer.leftButtonDown()) {
                     // Place the selected tile on the grid
-                    if (this.tilemapData[row][col]) {
-                        this.tilemapData[row][col].forEach((dataPoint) => {
-                            if (dataPoint) {
-                                dataPoint = null; // Change texture of the image at index 0
-                            }// else {
-                                //this.tilemapData[row][col][index] = null; // Set data point to null
-                                //dataPoint.destroy(); // Destroy the Phaser object
-                            //}
-                        });
+                    for (let i = 0; i < this.mapSize; i++) {
+                        if(i == row){
+                            for (let j = 0; j < this.mapSize; j++) {
+                                if(j == col){
+                                    if(this.tilemapData[i][j][0]){
+                                        console.log(this.tilemapData)
+                                        this.tilemapData[i][j][0].destroy();
+                                        this.tilemapData[i][j] = [null, null, null];
+                                    }
+                                }
+                            }
+                        }
                     }
+                        
+                    // if (this.tilemapData[row][col]) {
+                    //     this.tilemapData[row][col].forEach((dataPoint) => {
+                    //         if (dataPoint) {
+                    //             console.log(dataPoint)
+                    //             dataPoint = null; // Change texture of the image at index 0
+                    //         }// else {
+                    //             //this.tilemapData[row][col][index] = null; // Set data point to null
+                    //             //dataPoint.destroy(); // Destroy the Phaser object
+                    //         //}
+                    //     });
+                    // }
                     
-
-                    const tile = this.add.image(col * 60 + 130, row * 60 + 30, this.selectedTile[1]);
+                    if(this.selectedTile != this.erase){
+                        const tile = this.add.image(col * 60 + 130, row * 60 + 30, this.selectedTile[1]);
                     tile.setScale(4);
                     this.tilemapData[row][col][0] = tile; // Store the image at index 0
     
@@ -135,6 +150,7 @@ class Story extends Phaser.Scene {
                     this.tilemapData[row][col][3] = this.selectedTile[0] + 1;
     
                     tile.setScale(4);
+                    }
                 } else if (pointer.rightButtonDown()) {
                     // Handle right mouse button
                     // Display the name of the tile to the left of the tilemap
@@ -197,7 +213,7 @@ class Story extends Phaser.Scene {
         // iterate through all tiles in array (1st and 2nd layers only)
         for (let i = 0; i < this.mapSize; i++) {
             for (let j = 0; j < this.mapSize; j++) {
-                if (this.tilemapData[i][j][0] && this.tilemapData[i][j][2] < 3 && this.tilemapData[i][j][1] != 'erase'){ // check that a tile is present
+                if (this.tilemapData[i][j][0] && this.tilemapData[i][j][2] < 2 && this.tilemapData[i][j][1] != 'erase'){ // check that a tile is present
                     this.eco += 1
                     this.tilemapData[i][j][2] += 1; // update the stage of every tile
                     this.tilemapData[i][j][0] = this.tilemapData[i][j][0].setTexture(this.tilemapData[i][j][3].slice(0, -1) + (this.tilemapData[i][j][2])) // replace the image of every tile
