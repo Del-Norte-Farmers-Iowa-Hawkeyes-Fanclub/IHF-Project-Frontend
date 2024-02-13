@@ -63,10 +63,6 @@ class Story extends Phaser.Scene {
         this.cameras.main.fadeIn(250, 0, 0, 0);
     }
 
-    update() {
-        // Update logic, if needed
-    }
-
     displaySidebarTiles() {
         const sidebar = this.add.group();
 
@@ -77,15 +73,7 @@ class Story extends Phaser.Scene {
             tile.setScale(2);
             tile.on('pointerdown', () => {
                 this.selectedTile = tileKey; // Changed to use 'this.selectedTile'
-
-				tiles.forEach((otherTile) => {
-                    if (otherTile !== tileKey[1]) {
-                        //sidebar.getByName(otherTile).clearTint();
-                    }
-                });
-                //tile.setTint(0xb3f7ff); // Change color to highlight (e.g., green)
             }, this);
-            //sidebar.add(tile, false, tileKey); // Add tile with a name
         });
     }
 
@@ -93,13 +81,12 @@ class Story extends Phaser.Scene {
         const weekButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 100, 'week-button').setInteractive();
 
         weekButton.on('pointerdown', () => {
-            console.log('week')
             this.week++; // Increment week
             this.updateStages()
             this.updateText()
         }, this);
 
-        // Display current week
+        // Display current week and eco points
         this.weekText = this.add.text(900, 50, `Week: ${this.week}`, { fontSize: '24px', fill: '#fff' });
         this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
     }
@@ -117,7 +104,6 @@ class Story extends Phaser.Scene {
                             for (let j = 0; j < this.mapSize; j++) {
                                 if(j == col){
                                     if(this.tilemapData[i][j][0]){
-                                        console.log(this.tilemapData)
                                         this.tilemapData[i][j][0].destroy();
                                         this.tilemapData[i][j] = [null, null, null];
                                     }
@@ -125,18 +111,6 @@ class Story extends Phaser.Scene {
                             }
                         }
                     }
-                        
-                    // if (this.tilemapData[row][col]) {
-                    //     this.tilemapData[row][col].forEach((dataPoint) => {
-                    //         if (dataPoint) {
-                    //             console.log(dataPoint)
-                    //             dataPoint = null; // Change texture of the image at index 0
-                    //         }// else {
-                    //             //this.tilemapData[row][col][index] = null; // Set data point to null
-                    //             //dataPoint.destroy(); // Destroy the Phaser object
-                    //         //}
-                    //     });
-                    // }
                     
                     if(this.selectedTile != this.erase){
                         const tile = this.add.image(col * 60 + 130, row * 60 + 30, this.selectedTile[1]);
@@ -155,8 +129,6 @@ class Story extends Phaser.Scene {
                     // Handle right mouse button
                     // Display the name of the tile to the left of the tilemap
                     this.displayTileData(this.tilemapData[row][col], row, col);
-                    console.log(this.selectedTile)
-                    console.log(this.tilemapData)
                 } 
             }
         }
