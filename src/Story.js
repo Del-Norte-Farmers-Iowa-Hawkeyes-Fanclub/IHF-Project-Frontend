@@ -187,11 +187,11 @@ class Story extends Phaser.Scene {
     updateText() {
         this.weekText.setText(`Week: ${this.week}`);
 
-        this.moneyText = this.add.text(900, 80, `Money: ${this.money}`, { fontSize: '24px', fill: '#fff' });
-        this.moneyText.setText(`Money: ${this.money}`);
+        //this.moneyText = this.add.text(900, 80, `Money: ${this.money}`, { fontSize: '24px', fill: '#fff' });
+        //this.moneyText.setText(`Money: ${this.money}`);
 
-        this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
-        this.ecoText.setText(`Eco Points: ${this.eco}`);
+        //this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
+        //this.ecoText.setText(`Eco Points: ${this.eco}`);
     }
     updateStages(){
         // iterate through all tiles in array (1st and 2nd layers only)
