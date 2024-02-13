@@ -33,7 +33,7 @@ class MainMenu extends Phaser.Scene {
 
 		var fontHighscore = { font: '38px '+EPT.text['FONT'], fill: '#ffde00', stroke: '#000', strokeThickness: 5 };
 		var textHighscore = this.add.text(EPT.world.width-30, 60, EPT.text['menu-highscore']+highscore, fontHighscore);
-		textHighscore.setOrigin(1, 0);
+		textHighscore.setOrigin(1, 0);  
 
 		this.buttonStart.x = EPT.world.width+this.buttonStart.width+20;
         this.tweens.add({targets: this.buttonStart, x: EPT.world.width-20, duration: 500, ease: 'Back'});
