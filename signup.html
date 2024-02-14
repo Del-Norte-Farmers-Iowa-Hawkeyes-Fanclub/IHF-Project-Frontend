@@ -57,7 +57,7 @@ document.querySelector("#signup-btn").addEventListener("click", async (e) => {
         cash
     };
 
-    localStorage.setItem('data', data);
+    localStorage.setItem('email', email);
 
     try {
         const response = await fetch("http://localhost:6942/api/person/post", {

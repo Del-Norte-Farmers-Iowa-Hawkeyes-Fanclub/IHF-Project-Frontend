@@ -98,13 +98,14 @@ class Story extends Phaser.Scene {
     }
     
     async postData(eco) {
-        var data = JSON.parse(localStorage.getItem('data'));
-        data[5] = this.eco
-
-        console.log(data)
+        var email = JSON.parse(localStorage.getItem('email'));
+        data = {
+            email,
+            eco
+        }
 
         try {
-            const response = await fetch("http://localhost:6942/api/person/post", {
+            const response = await fetch("http://localhost:6942/api/person/ecoUpdate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -113,9 +114,9 @@ class Story extends Phaser.Scene {
             });
     
             if (response.ok) {
-                console.log("Account created successfully!");
+                console.log("eco successful");
             } else {
-                console.error("Failed to create account.");
+                console.error("eco failed");
             }
         } catch (error) {
             console.error("An error occurred:", error);
