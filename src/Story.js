@@ -98,13 +98,18 @@ class Story extends Phaser.Scene {
     }
     
     async postData(eco) {
-        var email = JSON.parse(localStorage.getItem('email'));
-        data = {
-            email,
-            eco
-        }
-
+        var email = localStorage.getItem('email');
+        
         try {
+            if (!email) {
+                throw new Error("Email is missing from local storage");
+            }
+    
+            var data = { 
+                email: email, 
+                eco: eco
+            }
+    
             const response = await fetch("http://localhost:6942/api/person/ecoUpdate", {
                 method: "POST",
                 headers: {
@@ -122,6 +127,7 @@ class Story extends Phaser.Scene {
             console.error("An error occurred:", error);
         }
     }
+    
 
     handlePointerDown(pointer) {
         if (this.selectedTile) { // Changed to use 'this.selectedTile'
