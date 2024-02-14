@@ -8,7 +8,8 @@ class MainMenu extends Phaser.Scene {
         
         this.add.sprite(-200, -400, `titleAuthor`).setOrigin(0,0);
 		EPT.Storage.initUnset('EPT-highscore', 0);
-		var highscore = EPT.Storage.get('EPT-highscore');
+		var highscore = getData();
+        // EPT.Storage.get('EPT-highscore');
 
         this.waitingForSettings = false;
 
@@ -59,6 +60,37 @@ class MainMenu extends Phaser.Scene {
             }, this);
         }
     }
+
+    async getData() {
+        var email = localStorage.getItem('email');
+        try {
+            if (!email){
+                throw new Error("Email is missing from local storage");
+            }
+            var data = { 
+                email: email, 
+            }
+    
+            const response = await fetch("http://localhost:6942/api/person/getEco", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+    
+            if (response.ok) {
+                console.log("eco successfully retrieved");
+            } else {
+                console.error("eco failed to retrieve");
+                return 0;
+            }
+        } catch (error){
+            console.error("An error occurred:", error);
+            return 0;
+        }
+    }
+    
     handleKey(e) {
         switch(e.code) {
             case 'KeyS': {
