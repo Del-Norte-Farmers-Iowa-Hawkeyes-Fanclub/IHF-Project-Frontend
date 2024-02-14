@@ -21,6 +21,7 @@ class Story extends Phaser.Scene {
         this.load.image('corn-button', 'img/buttons/corn-button.png')
         this.load.image('erase-button', 'img/buttons/erase-button.png')
         this.load.image('week-button', 'img/buttons/week-button.png')
+        this.load.image('save-button', 'img/buttons/save-button.png')
         
         // tile options (tile, button)
         this.erase = ['erase', 'erase', 'erase-button']
@@ -79,6 +80,7 @@ class Story extends Phaser.Scene {
 
     displayWeekButton() {
         const weekButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 100, 'week-button').setInteractive();
+        const saveButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 150, 'save-button').setInteractive();
 
         weekButton.on('pointerdown', () => {
             this.week++; // Increment week
@@ -86,9 +88,39 @@ class Story extends Phaser.Scene {
             this.updateText()
         }, this);
 
+        saveButton.on('pointerdown', () => {
+            this.postData(this.eco)
+        }, this);
+
         // Display current week and eco points
         this.weekText = this.add.text(900, 50, `Week: ${this.week}`, { fontSize: '24px', fill: '#fff' });
         this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
+    }
+    
+    async postData(eco) {
+        var email = JSON.parse(localStorage.getItem('email'));
+        data = {
+            email,
+            eco
+        }
+
+        try {
+            const response = await fetch("http://localhost:6942/api/person/ecoUpdate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+    
+            if (response.ok) {
+                console.log("eco successful");
+            } else {
+                console.error("eco failed");
+            }
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
     }
 
     handlePointerDown(pointer) {
