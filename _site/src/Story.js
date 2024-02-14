@@ -29,6 +29,12 @@ class Story extends Phaser.Scene {
     }
 
     create() {
+        // Handle Enter key press
+        this.keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        this.keyEnter.on('down', function (key, event) { this.clickContinue(); }, this);
+
+        this.cameras.main.fadeIn(250, 0, 0, 0);
+
         document.addEventListener('contextmenu', function(event) {
             event.preventDefault();
         });
@@ -62,6 +68,12 @@ class Story extends Phaser.Scene {
         this.input.on('pointerdown', this.handlePointerDown, this);
 
         this.cameras.main.fadeIn(250, 0, 0, 0);
+    }
+
+    clickContinue() {
+        // Play click sound and fade out scene
+        EPT.Sfx.play('click');
+        EPT.fadeOutScene('MainMenu', this);
     }
 
     displaySidebarTiles() {
