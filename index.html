@@ -74,6 +74,9 @@
                 // Handle successful login
                 console.log('Login successful');
                 window.location.href = 'http://localhost:4000/game';
+
+                //saving email to local storage
+                localStorage.setItem('email', email);
             } else {
                 // Handle login error
                 console.log('Login failed');
