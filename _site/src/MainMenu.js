@@ -6,31 +6,25 @@ class MainMenu extends Phaser.Scene {
     
     create() {
         let highscore = 0;
+        this.getData();
         this.add.sprite(0, -80, 'background').setOrigin(0,0);
         this.add.sprite(-200, -400, `titleAuthor`).setOrigin(0,0);
         EPT.Storage.initUnset('EPT-highscore', 0);
-        this.getData().then((data) => {
-            highscore = data;
-            var titleAuthor = this.add.sprite(EPT.world.centerX, EPT.world.centerY+50, 'titleAuthor');
-            titleAuthor.setOrigin(-2,0);
-            var fontHighscore = { font: '38px '+EPT.text['FONT'], fill: '#ffde00', stroke: '#000', strokeThickness: 5 };
-            var textHighscore = this.add.text(EPT.world.width-30, 60, EPT.text['menu-highscore']+data, fontHighscore);
-            textHighscore.setOrigin(1, 0);
-    
-            textHighscore.y = -textHighscore.height-30;
-            this.tweens.add({targets: textHighscore, y: 40, duration: 500, delay: 100, ease: 'Back'});
-        });
 
         this.waitingForSettings = false;
-                // title.setOrigin(0.5);
-
-                this.input.keyboard.on('keydown', this.handleKey, this);
-
-        // this.tweens.add({targets: title, angle: title.angle-2, duration: 1000, ease: 'Sine.easeInOut' });
-        // this.tweens.add({targets: title, angle: title.angle+4, duration: 2000, ease: 'Sine.easeInOut', yoyo: 1, loop: -1, delay: 1000 });
-
+                
+        this.input.keyboard.on('keydown', this.handleKey, this);
         var title = this.add.sprite(EPT.world.centerX-10, EPT.world.centerY+40, 'title');
 
+        var titleAuthor = this.add.sprite(EPT.world.centerX, EPT.world.centerY+50, 'titleAuthor');
+        titleAuthor.setOrigin(-2,0);
+        var fontHighscore = { font: '38px '+EPT.text['FONT'], fill: '#ffde00', stroke: '#000', strokeThickness: 5 };
+        var textHighscore = this.add.text(EPT.world.width-30, 60, EPT.text['menu-highscore']+highscore, fontHighscore);
+        textHighscore.setOrigin(1, 0);
+    
+        textHighscore.y = -textHighscore.height-30;
+        this.tweens.add({targets: textHighscore, y: 40, duration: 500, delay: 100, ease: 'Back'});
+        
         this.buttonSettings = new Button(20, 20, 'button-settings', this.clickSettings, this);
         this.buttonSettings.setOrigin(0, 0);
 
@@ -88,6 +82,7 @@ class MainMenu extends Phaser.Scene {
                 }
             }).then(function(data){
                 console.log(data);
+                highscore = data;
                 return data;
             });
         } catch (error){
