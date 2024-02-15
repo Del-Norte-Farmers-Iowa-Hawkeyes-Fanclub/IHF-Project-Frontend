@@ -82,7 +82,7 @@ class MainMenu extends Phaser.Scene {
                 }
             }).then(function(data){
                 console.log(data);
-                highscore = data;
+                this.getData();
                 return data;
             });
         } catch (error){
