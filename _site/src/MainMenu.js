@@ -5,8 +5,8 @@ class MainMenu extends Phaser.Scene {
     }
     
     create() {
-        let highscore = 0;
         this.getData();
+        let highscore = EPT.Storage.get('EPT-highscore');
         this.add.sprite(0, -80, 'background').setOrigin(0,0);
         this.add.sprite(-200, -400, `titleAuthor`).setOrigin(0,0);
         EPT.Storage.initUnset('EPT-highscore', 0);
@@ -82,7 +82,7 @@ class MainMenu extends Phaser.Scene {
                 }
             }).then(function(data){
                 console.log(data);
-                this.getData();
+                EPT.Storage.set('EPT-highscore', data) 
                 return data;
             });
         } catch (error){
