@@ -3,25 +3,33 @@ class MainMenu extends Phaser.Scene {
         super('MainMenu');
         this.bgFilesLoaded = false;
     }
+    
     create() {
+        let highscore = 0;
         this.add.sprite(0, -80, 'background').setOrigin(0,0);
-        
         this.add.sprite(-200, -400, `titleAuthor`).setOrigin(0,0);
-		EPT.Storage.initUnset('EPT-highscore', 0);
-		var highscore = getData();
-        // EPT.Storage.get('EPT-highscore');
+        EPT.Storage.initUnset('EPT-highscore', 0);
+        this.getData().then((data) => {
+            highscore = data;
+            var titleAuthor = this.add.sprite(EPT.world.centerX, EPT.world.centerY+50, 'titleAuthor');
+            titleAuthor.setOrigin(-2,0);
+            var fontHighscore = { font: '38px '+EPT.text['FONT'], fill: '#ffde00', stroke: '#000', strokeThickness: 5 };
+            var textHighscore = this.add.text(EPT.world.width-30, 60, EPT.text['menu-highscore']+data, fontHighscore);
+            textHighscore.setOrigin(1, 0);
+    
+            textHighscore.y = -textHighscore.height-30;
+            this.tweens.add({targets: textHighscore, y: 40, duration: 500, delay: 100, ease: 'Back'});
+        });
 
         this.waitingForSettings = false;
+                // title.setOrigin(0.5);
 
-        var titleAuthor = this.add.sprite(EPT.world.centerX, EPT.world.centerY+50, 'titleAuthor');
-        titleAuthor.setOrigin(-2,0);
-        var title = this.add.sprite(EPT.world.centerX-10, EPT.world.centerY+40, 'title');
-        // title.setOrigin(0.5);
-
-        this.input.keyboard.on('keydown', this.handleKey, this);
+                this.input.keyboard.on('keydown', this.handleKey, this);
 
         // this.tweens.add({targets: title, angle: title.angle-2, duration: 1000, ease: 'Sine.easeInOut' });
         // this.tweens.add({targets: title, angle: title.angle+4, duration: 2000, ease: 'Sine.easeInOut', yoyo: 1, loop: -1, delay: 1000 });
+
+        var title = this.add.sprite(EPT.world.centerX-10, EPT.world.centerY+40, 'title');
 
         this.buttonSettings = new Button(20, 20, 'button-settings', this.clickSettings, this);
         this.buttonSettings.setOrigin(0, 0);
@@ -31,12 +39,8 @@ class MainMenu extends Phaser.Scene {
 
         this.buttonStart = new Button(EPT.world.width-20, EPT.world.height-20, 'button-start', this.clickStart, this);
         this.buttonStart.setOrigin(1, 1);
-
-		var fontHighscore = { font: '38px '+EPT.text['FONT'], fill: '#ffde00', stroke: '#000', strokeThickness: 5 };
-		var textHighscore = this.add.text(EPT.world.width-30, 60, EPT.text['menu-highscore']+highscore, fontHighscore);
-		textHighscore.setOrigin(1, 0);
-
-		this.buttonStart.x = EPT.world.width+this.buttonStart.width+20;
+        
+        this.buttonStart.x = EPT.world.width+this.buttonStart.width+20;
         this.tweens.add({targets: this.buttonStart, x: EPT.world.width-20, duration: 500, ease: 'Back'});
 
 		buttonEnclave.x = -buttonEnclave.width-20;
@@ -45,8 +49,7 @@ class MainMenu extends Phaser.Scene {
         this.buttonSettings.y = -this.buttonSettings.height-20;
         this.tweens.add({targets: this.buttonSettings, y: 20, duration: 500, ease: 'Back'});
 
-        textHighscore.y = -textHighscore.height-30;
-        this.tweens.add({targets: textHighscore, y: 40, duration: 500, delay: 100, ease: 'Back'});
+        
 
         this.cameras.main.fadeIn(250);
 
@@ -77,14 +80,16 @@ class MainMenu extends Phaser.Scene {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(data)
+            }).then(function(response){
+                if(response.ok){
+                    return response.json();
+                } else {
+                    throw new Error("Error: " + response.status);
+                }
+            }).then(function(data){
+                console.log(data);
+                return data;
             });
-    
-            if (response.ok) {
-                console.log("eco successfully retrieved");
-            } else {
-                console.error("eco failed to retrieve");
-                return 0;
-            }
         } catch (error){
             console.error("An error occurred:", error);
             return 0;
