@@ -30,12 +30,7 @@ class Leaderboard extends Phaser.Scene {
         var textStory = this.add.bitmapText(this.cameras.main.centerX, this.cameras.main.centerY - (0.85 * this.cameras.main.centerY), 'arcade', EPT.text['leaderboard-text']).setTint(0x000000);
         textStory.setOrigin(0.5);
 
-        // Add continue button
-        var buttonContinue = new Button(this.cameras.main.width - 20, this.cameras.main.height - 20, 'button-continue', this.clickContinue, this);
-        buttonContinue.setOrigin(1);
-        buttonContinue.x = this.cameras.main.width + buttonContinue.width + 20;
-        this.tweens.add({ targets: buttonContinue, x: this.cameras.main.width - 20, duration: 500, ease: 'Back' });
-
+        
         // Handle Enter key press
         this.keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.keyEnter.on('down', function (key, event) { this.clickContinue(); }, this);
@@ -47,7 +42,7 @@ class Leaderboard extends Phaser.Scene {
         this.add.bitmapText(100, 110, 'arcade', 'Eco Score | Profit | Primary-Crop | Username').setTint(0x000000);
 
         // Display scores
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 10; i++) {
             const scoreData = scores[i];
             if (scoreData) {
                 const { eco, cash, primaryCrop, name } = scoreData;

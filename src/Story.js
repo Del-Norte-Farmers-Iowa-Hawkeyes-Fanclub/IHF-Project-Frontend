@@ -29,6 +29,12 @@ class Story extends Phaser.Scene {
     }
 
     create() {
+        // Handle Enter key press
+        this.keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        this.keyEnter.on('down', function (key, event) { this.clickContinue(); }, this);
+
+        this.cameras.main.fadeIn(250, 0, 0, 0);
+
         document.addEventListener('contextmenu', function(event) {
             event.preventDefault();
         });
@@ -62,6 +68,12 @@ class Story extends Phaser.Scene {
         this.input.on('pointerdown', this.handlePointerDown, this);
 
         this.cameras.main.fadeIn(250, 0, 0, 0);
+    }
+
+    clickContinue() {
+        // Play click sound and fade out scene
+        EPT.Sfx.play('click');
+        EPT.fadeOutScene('MainMenu', this);
     }
 
     displaySidebarTiles() {
@@ -98,13 +110,18 @@ class Story extends Phaser.Scene {
     }
     
     async postData(eco) {
-        var email = JSON.parse(localStorage.getItem('email'));
-        data = {
-            email,
-            eco
-        }
-
+        var email = localStorage.getItem('email');
+        
         try {
+            if (!email) {
+                throw new Error("Email is missing from local storage");
+            }
+    
+            var data = { 
+                email: email, 
+                eco: eco
+            }
+    
             const response = await fetch("http://localhost:6942/api/person/ecoUpdate", {
                 method: "POST",
                 headers: {
@@ -122,6 +139,7 @@ class Story extends Phaser.Scene {
             console.error("An error occurred:", error);
         }
     }
+    
 
     handlePointerDown(pointer) {
         if (this.selectedTile) { // Changed to use 'this.selectedTile'

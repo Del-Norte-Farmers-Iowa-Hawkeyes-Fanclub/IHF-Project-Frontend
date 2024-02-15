@@ -29,6 +29,12 @@ class Story extends Phaser.Scene {
     }
 
     create() {
+        // Handle Enter key press
+        this.keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+        this.keyEnter.on('down', function (key, event) { this.clickContinue(); }, this);
+
+        this.cameras.main.fadeIn(250, 0, 0, 0);
+
         document.addEventListener('contextmenu', function(event) {
             event.preventDefault();
         });
@@ -55,9 +61,6 @@ class Story extends Phaser.Scene {
         // Display the week button
         this.displayWeekButton();
 
-        // Display the save button
-        this.displaySaveButton();
-
          // Update the displayed data text
         this.updateText();
 
@@ -65,6 +68,12 @@ class Story extends Phaser.Scene {
         this.input.on('pointerdown', this.handlePointerDown, this);
 
         this.cameras.main.fadeIn(250, 0, 0, 0);
+    }
+
+    clickContinue() {
+        // Play click sound and fade out scene
+        EPT.Sfx.play('click');
+        EPT.fadeOutScene('MainMenu', this);
     }
 
     displaySidebarTiles() {
@@ -83,7 +92,7 @@ class Story extends Phaser.Scene {
 
     displayWeekButton() {
         const weekButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 100, 'week-button').setInteractive();
-        const saveButton = this.add.image(this.tileSize*this.mapSize + 220, this.tileSize * 6 + 100, 'week-button').setInteractive();
+        const saveButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 150, 'save-button').setInteractive();
 
         weekButton.on('pointerdown', () => {
             this.week++; // Increment week
@@ -92,22 +101,45 @@ class Story extends Phaser.Scene {
         }, this);
 
         saveButton.on('pointerdown', () => {
-            this.eco++; // Increment week
+            this.postData(this.eco)
         }, this);
 
         // Display current week and eco points
         this.weekText = this.add.text(900, 50, `Week: ${this.week}`, { fontSize: '24px', fill: '#fff' });
         this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
     }
-
-    displaySaveButton() {
-        const saveButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 120, 'week-button').setInteractive();
-        //const saveButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 100, 'save-button').setInteractive();
-
-        // saveButton.on('pointerdown', () => {
-            
-        // }, this);
+    
+    async postData(eco) {
+        var email = localStorage.getItem('email');
+        
+        try {
+            if (!email) {
+                throw new Error("Email is missing from local storage");
+            }
+    
+            var data = { 
+                email: email, 
+                eco: eco
+            }
+    
+            const response = await fetch("http://localhost:6942/api/person/ecoUpdate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+    
+            if (response.ok) {
+                console.log("eco successful");
+            } else {
+                console.error("eco failed");
+            }
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
     }
+    
 
     handlePointerDown(pointer) {
         if (this.selectedTile) { // Changed to use 'this.selectedTile'
