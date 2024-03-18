@@ -43,10 +43,7 @@ class MainMenu extends Phaser.Scene {
         this.buttonSettings.y = -this.buttonSettings.height-20;
         this.tweens.add({targets: this.buttonSettings, y: 20, duration: 500, ease: 'Back'});
 
-        this.buttonShop = new Button(300,500, 'shop', this.clickShop, this);
-        this.buttonShop.onclick = function() {
-            window.location.href = 'https://localhost:4000/shop.html';
-        };        
+        this.buttonShop = new Button(300,500, 'shop', this.clickShop, this);       
         this.cameras.main.fadeIn(250);
 
         if(!this.bgFilesLoaded) {
@@ -133,6 +130,12 @@ class MainMenu extends Phaser.Scene {
             this.loadImage.play('loading');
         }
     }
+
+    clickShop() {
+        EPT.Sfx.play('click');
+        window.top.location.href = 'http://localhost:4000/shop.html';
+    }
+
     clickStart() {
         if(this.bgFilesLoaded) {
             EPT.Sfx.play('click');
