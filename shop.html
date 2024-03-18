@@ -19,8 +19,23 @@
         let corn = localStorage.getItem('cornStorage');
         localStorage.setItem('cornStorage', 0);
         localStorage.getItem('email');
-        
-        fetch("")
-
-    }
+        const data = { email: username };
+        try {
+            const response = fetch('http://localhost:6942/api/person/getCash', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+    
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+    
+                const cash = response.json();
+                return cash;
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                return null;
+            }
+        }
 </script>
