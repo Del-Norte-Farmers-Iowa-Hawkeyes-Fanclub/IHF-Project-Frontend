@@ -19,7 +19,9 @@
         let corn = localStorage.getItem('cornStorage');
         localStorage.setItem('cornStorage', 0);
         localStorage.getItem('email');
-        const data = { email: username };
+    }
+
+    const data = { email: username };
         try {
             const response = fetch('http://localhost:6942/api/person/getCash', {
                 method: 'POST',
@@ -37,5 +39,4 @@
                 console.error('There was a problem with the fetch operation:', error);
                 return null;
             }
-        }
 </script>
