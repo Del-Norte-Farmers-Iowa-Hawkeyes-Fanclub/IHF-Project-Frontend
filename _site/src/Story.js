@@ -33,9 +33,13 @@ class Story extends Phaser.Scene {
         // Handle Enter key press
         this.keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
         this.keyEnter.on('down', function (key, event) { 
+            
+            
             // cache the cornStorage value to local storage
             let corn = localStorage.getItem('cornStorage');
             console.log(corn);
+            
+            
             this.clickContinue(); 
         }, this);
 
