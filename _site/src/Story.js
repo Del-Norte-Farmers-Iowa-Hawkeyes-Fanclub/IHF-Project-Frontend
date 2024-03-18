@@ -5,9 +5,10 @@ class Story extends Phaser.Scene {
         this.tilemapData = []; 
         this.mapSize = 12; // map is a square (equal width and height)
         this.tileSize = 60; 
-        this.week = 1
-        this.money = 100
-        this.eco = 0
+        this.week = 1;
+        this.money = 100;
+        this.eco = 0;
+        this.cornStorage = 0;
     }
 
     preload() {
@@ -31,7 +32,12 @@ class Story extends Phaser.Scene {
     create() {
         // Handle Enter key press
         this.keyEnter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
-        this.keyEnter.on('down', function (key, event) { this.clickContinue(); }, this);
+        this.keyEnter.on('down', function (key, event) { 
+            // cache the cornStorage value to local storage
+            let corn = localStorage.getItem('cornStorage');
+            console.log(corn);
+            this.clickContinue(); 
+        }, this);
 
         this.cameras.main.fadeIn(250, 0, 0, 0);
 
@@ -106,7 +112,8 @@ class Story extends Phaser.Scene {
 
         // Display current week and eco points
         this.weekText = this.add.text(900, 50, `Week: ${this.week}`, { fontSize: '24px', fill: '#fff' });
-        this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' });
+        this.ecoText = this.add.text(900, 110, `Eco Points: ${this.eco}`, { fontSize: '24px', fill: '#fff' })
+        this.corntext = this.add.text(900, 80, `Corn: ${this.cornStorage}`, { fontSize: '24px', fill: '#fff' });
     }
     
     async postData(eco) {
@@ -152,7 +159,7 @@ class Story extends Phaser.Scene {
                     for (let i = 0; i < this.mapSize; i++) {
                         if(i == row){
                             for (let j = 0; j < this.mapSize; j++) {
-                                if(j == col){
+                                if(j == col){                                   
                                     if(this.tilemapData[i][j][0]){
                                         this.tilemapData[i][j][0].destroy();
                                         this.tilemapData[i][j] = [null, null, null];
@@ -196,6 +203,7 @@ class Story extends Phaser.Scene {
         }
         this.tileName = this.add.text(10, 50, tileData[1], { fontSize: '16px', fill: '#fff' }); // displays tile name
         this.tileStage = this.add.text(10, 80, 'Stage: '+tileData[2], { fontSize: '16px', fill: '#fff' }); // displays tile stage
+        console.log(tileData[2]);
         this.tilePos = this.add.text(10, 110, '('+row+', '+col+')', { fontSize: '16px', fill: '#fff' }); // displays tile stage
     }
 
@@ -238,6 +246,15 @@ class Story extends Phaser.Scene {
                 if (this.tilemapData[i][j][0] && this.tilemapData[i][j][2] < 2 && this.tilemapData[i][j][1] != 'erase'){ // check that a tile is present
                     if(Math.floor(Math.random() * 5) != 1){ // random 25/75 chance of tile stage updating
                         this.eco += 1
+                        
+                        // CORN STUFF
+                        // Adding an amount of corn between 80 and 120 with the stage update and then it caps out when all corn is matured simulating the harvest 
+                        this.cornStorage += Math.floor(Math.random() * (120 - 80 + 1)) + 80;
+                        this.corntext?.destroy(); // Clear existing corn text
+                        this.corntext = this.add.text(900, 80, `Corn: ${this.cornStorage}`, { fontSize: '24px', fill: '#fff' });
+                        localStorage.setItem('cornStorage', this.cornStorage);               
+                        console.log(this.cornStorage);
+
                         this.tilemapData[i][j][2] += 1; // update the stage of every tile
                         this.tilemapData[i][j][0] = this.tilemapData[i][j][0].setTexture(this.tilemapData[i][j][3].slice(0, -1) + (this.tilemapData[i][j][2])) // replace the image of every tile
                     }
@@ -245,4 +262,5 @@ class Story extends Phaser.Scene {
             }
         }
     }
+    
 };
