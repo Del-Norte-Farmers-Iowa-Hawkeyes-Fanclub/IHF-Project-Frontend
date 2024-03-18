@@ -1,0 +1,26 @@
+<head>
+    <h1>SHOP</h1>
+</head>
+<body>
+    <div id = 'return'>
+        <button id = 'home', onclick="myFunction()">Return to Home</button>
+    </div>
+
+    <div id = 'cornSell', onclick="sellCorn()">Sell Your Corn</div>
+</body>
+
+<script>
+    function myFunction(){
+        document.getElementById("home");
+         window.location.href = '/game.html';
+    }
+
+    function sellCorn(){
+        let corn = localStorage.getItem('cornStorage');
+        localStorage.setItem('cornStorage', 0);
+        localStorage.getItem('email');
+        
+        fetch("")
+
+    }
+</script>
