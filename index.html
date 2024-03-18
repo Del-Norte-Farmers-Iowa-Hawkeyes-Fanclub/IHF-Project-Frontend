@@ -49,9 +49,24 @@
             </form>
             <button type="submit" class="btn" onclick="login()">Login</button>
         </div>
+        <div id="userStatsContainer">
+            <!-- Container to display user stats -->
+        </div>
     </div>
 </body>
 <script>
+    // This function is called when user stats are received from gettinguserstats.html
+    function receiveUserStats(event) {
+        const userStats = event.data.userStats;
+        if (userStats !== null) {
+            document.getElementById('userStatsContainer').innerHTML = `User cash: $${userStats}`;
+        } else {
+            document.getElementById('userStatsContainer').innerHTML = 'Unable to fetch user stats. Please try again later.';
+        }
+    }
+
+    // Add event listener to receive user stats message
+    window.addEventListener('message', receiveUserStats);
     function login() {
         const form = document.getElementById('loginForm');
         const email = form.querySelector('input[type="email"]').value;
