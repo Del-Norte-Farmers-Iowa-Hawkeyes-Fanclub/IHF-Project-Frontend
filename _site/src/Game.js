@@ -160,6 +160,8 @@ class Game extends Phaser.Scene {
 		this.screenPausedText.setOrigin(0.5,0);
 		this.screenPausedBack = new Button(100, EPT.world.height-100, 'button-mainmenu', this.stateBack, this);
 		this.screenPausedBack.setOrigin(0,1);
+		this.screenPausedBack = new Button(100, EPT.world.height-100, 'nbaanalysis', this.stateBack, this);
+		this.screenPausedBack.setOrigin(0,1);
 		this.screenPausedContinue = new Button(EPT.world.width-100, EPT.world.height-100, 'button-continue', this.managePause, this);
 		this.screenPausedContinue.setOrigin(1,1);
 		this.screenPausedGroup.add(this.screenPausedBg);
@@ -175,6 +177,8 @@ class Game extends Phaser.Scene {
 		this.screenGameoverText = this.add.text(EPT.world.centerX, 100, EPT.text['gameplay-gameover'], fontTitle);
 		this.screenGameoverText.setOrigin(0.5,0);
 		this.screenGameoverBack = new Button(100, EPT.world.height-100, 'button-mainmenu', this.stateBack, this);
+		this.screenGameoverBack.setOrigin(0,1);
+		this.screenGameoverBack = new Button(100, EPT.world.height-100, 'nbaanalysis', this.stateBack, this);
 		this.screenGameoverBack.setOrigin(0,1);
 		this.screenGameoverRestart = new Button(EPT.world.width-100, EPT.world.height-100, 'button-restart', this.stateRestart, this);
 		this.screenGameoverRestart.setOrigin(1,1);

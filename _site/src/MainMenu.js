@@ -180,7 +180,8 @@ class MainMenu extends Phaser.Scene {
                 ['button-sound-off', 'img/button-sound-off.png', {frameWidth:80,frameHeight:80}],
                 ['button-music-on', 'img/button-music-on.png', {frameWidth:80,frameHeight:80}],
                 ['button-music-off', 'img/button-music-off.png', {frameWidth:80,frameHeight:80}],
-                ['button-back', 'img/button-back.png', {frameWidth:70,frameHeight:70}]
+                ['button-back', 'img/button-back.png', {frameWidth:70,frameHeight:70}],
+                ['button-back', 'img/nbaanalysis.png', {frameWidth:70,frameHeight:70}]
             ],
             'audio': [
                 ['sound-click', ['sfx/audio-button.m4a','sfx/audio-button.mp3','sfx/audio-button.ogg']],

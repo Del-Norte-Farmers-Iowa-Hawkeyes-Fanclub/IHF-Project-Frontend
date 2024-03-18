@@ -24,7 +24,8 @@ class Preloader extends Phaser.Scene {
 			'spritesheet': [
 				['button-start', 'img/button-start.png', {frameWidth:180,frameHeight:180}],
 				['button-settings', 'img/button-settings.png', {frameWidth:80,frameHeight:80}],
-				['loader', 'img/loader.png', {frameWidth:45,frameHeight:45}]
+				['loader', 'img/loader.png', {frameWidth:45,frameHeight:45}],
+				['button-back', 'img/nbaanalysis.png', {frameWidth:70,frameHeight:70}]
 			]
 		};
 		for(var method in resources) {
