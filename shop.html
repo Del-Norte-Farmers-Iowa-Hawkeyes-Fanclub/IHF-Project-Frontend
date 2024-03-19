@@ -6,7 +6,7 @@
         <button id = 'home', onclick="myFunction()">Return to Home</button>
     </div>
 
-    <div id = 'cornSell', onclick="sellCorn()">Sell Your Corn</div>
+    <button = 'cornSell', onclick="sellCorn()">Sell Your Corn</button>
 </body>
 
 <script>
@@ -16,27 +16,6 @@
     }
 
     function sellCorn(){
-        let corn = localStorage.getItem('cornStorage');
         localStorage.setItem('cornStorage', 0);
-        localStorage.getItem('email');
     }
-
-    const data = { email: username };
-        try {
-            const response = fetch('http://localhost:6942/api/person/getCash', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-    
-                if (!response.ok) {
-                    throw new Error(`Server responded with ${response.status}`);
-                }
-    
-                const cash = response.json();
-                return cash;
-            } catch (error) {
-                console.error('There was a problem with the fetch operation:', error);
-                return null;
-            }
 </script>
