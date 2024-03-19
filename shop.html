@@ -19,6 +19,9 @@
     }
 
     function sellCorn(){
+        const cornQuant = localStorage.getItem('cornStorage');
+        console.log("Corn Sold: " + cornQuant);
+
         calculateCornPrice();
         localStorage.setItem('cornStorage', 0);
     }
