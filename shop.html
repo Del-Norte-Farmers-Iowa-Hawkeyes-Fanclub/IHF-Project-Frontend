@@ -12,20 +12,70 @@
 
 <script>
     var pricePerCorn = 0;
+    const cornQuant = localStorage.getItem('cornStorage');
+    const mailE = localStorage.getItem('email');
     function myFunction(){
         document.getElementById("home");
          window.location.href = '/game.html';
          console.log(pricePerCorn + " ppc");
     }
-
-    function sellCorn(){
-        const cornQuant = localStorage.getItem('cornStorage');
-        console.log("Corn Sold: " + cornQuant);
-
-        calculateCornPrice();
-        localStorage.setItem('cornStorage', 0);
+    
+    function updateCash(email, cash) {
+        fetch('http://localhost:6942/api/person/cashUpdate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                cash: cash
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Cash updated successfully');
+            } else {
+                console.error('Failed to update cash');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
+
+    function updateCash(email, cash) {
+        fetch('http://localhost:6942/api/person/cashUpdate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: email,
+                cash: cash
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log('Cash updated successfully ' + cash);
+            } else {
+                console.error('Failed to update cash');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    
+    function sellCorn(){
+      //  console.log("Corn Sold: " + cornQuant);
+        console.log("email");
+        // updateCash(localStorage.getItem('email'), 69);
+        // calculateCornPrice();
+       // localStorage.setItem('cornStorage', 0);
+    }
+    
     function calculateCornPrice() {
+        // getting corn futures price
         var name = 'Corn Futures'
         $.ajax({
         method: 'GET',
@@ -42,5 +92,7 @@
             console.error('Error: ', jqXHR.responseText);
         }
     });
+    
     }
+    
 </script>
