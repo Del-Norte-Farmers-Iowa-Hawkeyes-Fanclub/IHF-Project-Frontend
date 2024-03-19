@@ -1,4 +1,5 @@
 <head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <h1>SHOP</h1>
 </head>
 <body>
@@ -10,12 +11,33 @@
 </body>
 
 <script>
+    var pricePerCorn = 0;
     function myFunction(){
         document.getElementById("home");
          window.location.href = '/game.html';
+         console.log(pricePerCorn + " ppc");
     }
 
     function sellCorn(){
+        calculateCornPrice();
         localStorage.setItem('cornStorage', 0);
+    }
+    function calculateCornPrice() {
+        var name = 'Corn Futures'
+        $.ajax({
+        method: 'GET',
+        url: 'https://api.api-ninjas.com/v1/commodityprice?name=' + name,
+        headers: { 'X-Api-Key': 'SfcAe601qaPJvg1Dmy6kmg==XeVguO0mmdWet9h3'},
+        contentType: 'application/json',
+        success: function(result) {
+            console.log(result);
+            console.log(result.price);
+            pricePerCorn = result.price;
+            console.log(pricePerCorn);
+        },
+        error: function ajaxError(jqXHR) {
+            console.error('Error: ', jqXHR.responseText);
+        }
+    });
     }
 </script>
