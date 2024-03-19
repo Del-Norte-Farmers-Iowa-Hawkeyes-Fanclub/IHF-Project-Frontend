@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SHOP</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap">
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f2f2f2; /* Changed background color for better readability */
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -15,44 +16,56 @@
             align-items: center;
             color: #333;
         }
+        .shop-container {
+            border: 2px solid #ff6b6b; /* Border color for the banner */
+            padding: 20px; /* Padding around the shop content */
+            border-radius: 10px; /* Rounded corners for the banner */
+            background-color: #fff; /* Background color for the banner */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+        }
         h1 {
-            font-size: 48px; /* Increased font size for SHOP title */
-            color: #27ae60;
-            margin-bottom: 40px; /* Increased margin for better separation */
+            font-size: 48px;
+            color: #ff6b6b;
+            margin-bottom: 40px;
             text-align: center;
+            text-transform: uppercase;
         }
         #return, #cornSell {
             width: 100%;
             max-width: 300px;
             margin-top: 20px;
         }
-        #return button, #cornSellButton { /* Changed selector to target the cornSellButton specifically */
+        button {
             display: block;
             width: 100%;
             padding: 15px;
-            border-radius: 5px;
+            border-radius: 25px;
             border: none;
-            background-color: #27ae60;
+            background-color: #ff6b6b;
             color: #fff;
             font-weight: bold;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             transition: background-color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
         }
-        #return button:hover, #cornSellButton:hover { /* Changed selector to target the cornSellButton specifically */
-            background-color: #218c54;
+        button:hover {
+            background-color: #ff4d4d;
         }
     </style>
 </head>
 <body>
-    <h1>SHOP</h1>
+    <div class="shop-container">
+        <h1>SHOP</h1>
 
-    <div id="return">
-        <button id="home" onclick="myFunction()">Return to Home</button>
-    </div>
+        <div id="return">
+            <button id="home" onclick="myFunction()">Return to Home</button>
+        </div>
 
-    <div id="cornSell">
-        <button id="cornSellButton" onclick="sellCorn()">Sell Your Corn</button>
+        <div id="cornSell">
+            <button id="cornSellButton" onclick="sellCorn()">Sell Your Corn</button>
+        </div>
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
