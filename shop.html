@@ -1,102 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <h1>SHOP</h1>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHOP</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eaeaea;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+        }
+        h1 {
+            font-size: 36px;
+            color: #27ae60;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        #return, #cornSell {
+            width: 100%;
+            max-width: 300px;
+            margin-top: 20px;
+        }
+        #return button, #cornSell {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            border-radius: 5px;
+            border: none;
+            background-color: #27ae60;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        #return button:hover, #cornSell:hover {
+            background-color: #218c54;
+        }
+    </style>
 </head>
 <body>
-    <div id = 'return'>
-        <button id = 'home', onclick="myFunction()">Return to Home</button>
+    <h1>SHOP</h1>
+
+    <div id="return">
+        <button id="home" onclick="myFunction()">Return to Home</button>
     </div>
 
-    <button = 'cornSell', onclick="sellCorn()">Sell Your Corn</button>
-</body>
+    <div id="cornSell">
+        <button id="cornSellButton" onclick="sellCorn()">Sell Your Corn</button>
+    </div>
 
-<script>
-    var pricePerCorn = 0;
-    const cornQuant = localStorage.getItem('cornStorage');
-    const mailE = localStorage.getItem('email');
-    function myFunction(){
-        document.getElementById("home");
-         window.location.href = '/game.html';
-         console.log(pricePerCorn + " ppc");
-    }
-    
-    function updateCash(email, cash) {
-        fetch('http://localhost:6942/api/person/cashUpdate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                cash: cash
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log('Cash updated successfully');
-            } else {
-                console.error('Failed to update cash');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    function updateCash(email, cash) {
-        fetch('http://localhost:6942/api/person/cashUpdate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: email,
-                cash: cash
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log('Cash updated successfully ' + cash);
-            } else {
-                console.error('Failed to update cash');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    function calculateCornPrice(callback) {
-        // getting corn futures price
-        var name = 'Corn Futures'
-        $.ajax({
-        method: 'GET',
-        url: 'https://api.api-ninjas.com/v1/commodityprice?name=' + name,
-        headers: { 'X-Api-Key': 'SfcAe601qaPJvg1Dmy6kmg==XeVguO0mmdWet9h3'},
-        contentType: 'application/json',
-        success: function(result) {
-            console.log(result);
-            console.log(result.price);
-            pricePerCorn = result.price;
-            console.log(pricePerCorn);
-            if(callback){
-                callback(pricePerCorn);
-            }
-        },
-        error: function ajaxError(jqXHR) {
-            console.error('Error: ', jqXHR.responseText);
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script>
+        var pricePerCorn = 0;
+        const cornQuant = localStorage.getItem('cornStorage');
+        const mailE = localStorage.getItem('email');
+        function myFunction(){
+            document.getElementById("home");
+             window.location.href = '/game.html';
+             console.log(pricePerCorn + " ppc");
         }
         
-    });
-    
-    }
-    function sellCorn(){
-          console.log("corn: " + cornQuant);
-          calculateCornPrice(function(pricePerCorn){
-              console.log("I LOVE PPC: " + pricePerCorn);
-              updateCash(localStorage.getItem('email'), (pricePerCorn * cornQuant));
-          });
-          localStorage.setItem('cornStorage', 0);
-      }
-      
-</script>
+        function updateCash(email, cash) {
+            fetch('http://localhost:6942/api/person/cashUpdate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    cash: cash
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Cash updated successfully ' + cash);
+                } else {
+                    console.error('Failed to update cash');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function calculateCornPrice(callback) {
+            // getting corn futures price
+            var name = 'Corn Futures'
+            $.ajax({
+            method: 'GET',
+            url: 'https://api.api-ninjas.com/v1/commodityprice?name=' + name,
+            headers: { 'X-Api-Key': 'SfcAe601qaPJvg1Dmy6kmg==XeVguO0mmdWet9h3'},
+            contentType: 'application/json',
+            success: function(result) {
+                console.log(result);
+                console.log(result.price);
+                pricePerCorn = result.price;
+                console.log(pricePerCorn);
+                if(callback){
+                    callback(pricePerCorn);
+                }
+            },
+            error: function ajaxError(jqXHR) {
+                console.error('Error: ', jqXHR.responseText);
+            }
+            
+        });
+        
+        }
+        function sellCorn(){
+              console.log("corn: " + cornQuant);
+              calculateCornPrice(function(pricePerCorn){
+                  console.log("I LOVE PPC: " + pricePerCorn);
+                  updateCash(localStorage.getItem('email'), (pricePerCorn * cornQuant));
+              });
+              localStorage.setItem('cornStorage', 0);
+          }
+    </script>
+</body>
+</html>
