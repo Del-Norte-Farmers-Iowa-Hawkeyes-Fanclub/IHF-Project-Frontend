@@ -65,16 +65,8 @@
             console.error('Error:', error);
         });
     }
-    
-    function sellCorn(){
-      //  console.log("Corn Sold: " + cornQuant);
-        console.log("email");
-        // updateCash(localStorage.getItem('email'), 69);
-        // calculateCornPrice();
-       // localStorage.setItem('cornStorage', 0);
-    }
-    
-    function calculateCornPrice() {
+
+    function calculateCornPrice(callback) {
         // getting corn futures price
         var name = 'Corn Futures'
         $.ajax({
@@ -87,12 +79,24 @@
             console.log(result.price);
             pricePerCorn = result.price;
             console.log(pricePerCorn);
+            if(callback){
+                callback(pricePerCorn);
+            }
         },
         error: function ajaxError(jqXHR) {
             console.error('Error: ', jqXHR.responseText);
         }
+        
     });
     
     }
-    
+    function sellCorn(){
+          console.log("corn: " + cornQuant);
+          calculateCornPrice(function(pricePerCorn){
+              console.log("I LOVE PPC: " + pricePerCorn);
+              updateCash(localStorage.getItem('email'), (pricePerCorn * cornQuant));
+          });
+          localStorage.setItem('corn', 0);
+      }
+      
 </script>
