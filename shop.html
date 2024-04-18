@@ -113,7 +113,7 @@
             success: function(result) {
                 console.log(result);
                 console.log(result.price);
-                pricePerCorn = result.price;
+                pricePerCorn = Math.round(result.price);
                 console.log(pricePerCorn);
                 if(callback){
                     callback(pricePerCorn);

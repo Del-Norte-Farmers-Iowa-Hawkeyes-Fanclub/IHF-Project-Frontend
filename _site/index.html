@@ -123,6 +123,7 @@
                 localStorage.setItem('email', email);
                 // Fetch and display user stats
                 displayUserStats(email);
+                window.top.location.href = 'http://localhost:4000/game.html';
             } else {
                 // Handle login error
                 console.log('Login failed');
