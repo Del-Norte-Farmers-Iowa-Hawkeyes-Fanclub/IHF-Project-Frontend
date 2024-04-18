@@ -83,7 +83,7 @@ class Story extends Phaser.Scene {
     clickContinue() {
         // Play click sound and fade out scene
         EPT.Sfx.play('click');
-        EPT.fadeOutScene('MainMenu', this);
+        EPT.fadeOutScene('GameWorld', this);
     }
 
     displaySidebarTiles() {
@@ -136,7 +136,7 @@ class Story extends Phaser.Scene {
             const response = await fetch("http://localhost:6942/api/person/ecoUpdate", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data)
             });
