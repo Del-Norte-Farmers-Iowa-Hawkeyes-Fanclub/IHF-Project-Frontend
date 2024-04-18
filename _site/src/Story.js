@@ -83,7 +83,7 @@ class Story extends Phaser.Scene {
     clickContinue() {
         // Play click sound and fade out scene
         EPT.Sfx.play('click');
-        EPT.fadeOutScene('MainMenu', this);
+        EPT.fadeOutScene('GameMap', this);
     }
 
     displaySidebarTiles() {

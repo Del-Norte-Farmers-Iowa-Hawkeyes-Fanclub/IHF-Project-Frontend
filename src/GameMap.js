@@ -1,21 +1,22 @@
+
 // Register Leaderboard as a GameObjectFactory
-Phaser.GameObjects.GameObjectFactory.register('GameWorld', function () {
-    var scene = new GameWorld();
+Phaser.GameObjects.GameObjectFactory.register('GameMap', function () {
+    var scene = new GameMap();
     this.scene.add(scene.scene.key, scene);
     return scene;
 });
 
-class GameWorld extends Phaser.Scene {
+// Define Leaderboard class
+class GameMap extends Phaser.Scene {
     constructor() {
-        super('GameWorld');
+        super('GameMap');
     }
 
-    preload(){
-
+    preload() {
     }
 
-    create(){
-
+    create() {
+        
     }
 
     clickContinue() {
@@ -24,3 +25,5 @@ class GameWorld extends Phaser.Scene {
         EPT.fadeOutScene('MainMenu', this);
     }
 }
+
+
