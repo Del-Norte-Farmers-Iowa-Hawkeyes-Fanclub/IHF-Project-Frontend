@@ -1,34 +1,37 @@
 <!DOCTYPE html>
 <html>
-<head>
     <head>
-    <meta charset="utf-8" />
-    <title>Uber Cool Farming Sim</title>
-    <meta name="author" content="Enclave Games" />
-    <meta name="description" content="Mobile template for HTML5 games created using the Phaser game engine." />
-    <meta name="monetization" content="$ilp.uphold.com/k4eJGQUDF9nw" />
-    <style>*{margin:0;padding:0;}body{background: #ccc url(img/pattern.png) repeat; overflow:hidden;}#banner{display:none;}</style>
-    <meta property="og:image" content="https://enclavegames.github.io/Enclave-Phaser-Template/img/enclave-phaser-template.png" />
-    <meta property="og:url" content="https://enclavegames.github.io/Enclave-Phaser-Template/"/>
-    <meta property="og:title" content="Enclave Phaser Template" />
-    <meta property="og:description" content="Mobile template for HTML5 games created using the Phaser game engine." />
-    <meta property="og:type" content="website" />
-    <link rel="shortcut icon" href="favicon.ico" />
-    <link rel="manifest" href="ept.webmanifest" />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-30485283-26"></script>
-    <script src="src/plugins/webfont.js"></script>
-    <script src="src/phaser.3.60.0.min.js"></script>
-    <script src="src/utils.js"></script>
-    <script src="src/Boot.js"></script>
-    <script src="src/Preloader.js"></script>
-    <script src="src/MainMenu.js"></script>
-    <script src="src/Settings.js"></script>
-    <script src="src/Story.js"></script>
-    <script src="src/Game.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style1.css">
-    <script src="https://kit.fontawesome.com/61457d4eee.js" crossorigin="anonymous"></script>
-</head>
+        <head>
+        <meta charset="utf-8" />
+        <title>Uber Cool Farming Sim</title>
+        <meta name="author" content="Enclave Games" />
+        <meta name="description" content="Mobile template for HTML5 games created using the Phaser game engine." />
+        <meta name="monetization" content="$ilp.uphold.com/k4eJGQUDF9nw" />
+        <style>*{margin:0;padding:0;}body{background: #ccc url(img/pattern.png) repeat; overflow:hidden;}#banner{display:none;}</style>
+        <meta property="og:image" content="https://enclavegames.github.io/Enclave-Phaser-Template/img/enclave-phaser-template.png" />
+        <meta property="og:url" content="https://enclavegames.github.io/Enclave-Phaser-Template/"/>
+        <meta property="og:title" content="Enclave Phaser Template" />
+        <meta property="og:description" content="Mobile template for HTML5 games created using the Phaser game engine." />
+        <meta property="og:type" content="website" />
+        <link rel="shortcut icon" href="favicon.ico" />
+        <link rel="manifest" href="ept.webmanifest" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-30485283-26"></script>
+        <script src="src/plugins/webfont.js"></script>
+        <script src="src/phaser.3.60.0.min.js"></script>
+        <script src="src/utils.js"></script>
+        <script src="src/Boot.js"></script>
+        <script src="src/Preloader.js"></script>
+        <script src="src/MainMenu.js"></script>
+        <script src="src/Settings.js"></script>
+        <script src="src/Story.js"></script>
+        <script src="src/Game.js"></script>
+
+        <script src="src/Leaderboard.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style1.css">
+        <script src="https://kit.fontawesome.com/61457d4eee.js" crossorigin="anonymous"></script>
+    </head>    
 <body> 
     <div class="container">
         <div class="form-box">
@@ -49,55 +52,9 @@
             </form>
             <button type="submit" class="btn" onclick="login()">Login</button>
         </div>
-        <div id="userStatsContainer">
-            <!-- Container to display user stats -->
-        </div>
     </div>
 </body>
 <script>
-    // This function fetches the user stats
-    async function fetchUserStats(username) {
-        if (!username) {
-            return null;
-        }
-
-        const data = { email: username };
-
-        try {
-            const response = await fetch('http://localhost:6942/api/person/getCash', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-
-            if (!response.ok) {
-                throw new Error(`Server responded with ${response.status}`);
-            }
-
-            const cash = await response.json();
-            return cash;
-        } catch (error) {
-            console.error('There was a problem with the fetch operation:', error);
-            return null;
-        }
-    }
-
-    // This function is called when user stats are received
-    async function displayUserStats(username) {
-        try {
-            const stats = await fetchUserStats(username);
-            if (stats !== null) {
-                document.getElementById('userStatsContainer').innerHTML = `User cash: $${stats}`;
-            } else {
-                document.getElementById('userStatsContainer').innerHTML = 'Unable to fetch user stats. Please try again later.';
-            }
-        } catch (error) {
-            console.error('Error fetching user stats:', error);
-            document.getElementById('userStatsContainer').innerHTML = 'Unable to fetch user stats. Please try again later.';
-        }
-    }
-
-    // This function is called when the login button is clicked
     function login() {
         const form = document.getElementById('loginForm');
         const email = form.querySelector('input[type="email"]').value;
@@ -119,10 +76,9 @@
             if (response.ok) {
                 // Handle successful login
                 console.log('Login successful');
-                // Save email to local storage
                 localStorage.setItem('email', email);
-                // Fetch and display user stats
-                displayUserStats(email);
+                console.log(email);
+                window.location.href = 'http://localhost:4000/game';
                 window.top.location.href = 'http://localhost:4000/game.html';
             } else {
                 // Handle login error
@@ -133,12 +89,6 @@
             // Handle network error
             console.log('Network error');
         });
-    }
-
-    // Load stored email from localStorage and fetch user stats if available
-    const storedEmail = localStorage.getItem('email');
-    if (storedEmail) {
-        displayUserStats(storedEmail);
     }
 </script>
 </html>
