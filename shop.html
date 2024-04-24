@@ -107,16 +107,19 @@
 <body>
     <div class="navbar">
         <h1>Iowa Farmer Basketball Shop</h1>
-        <a href="#">Home</a>
-        <a href="#">Back to Game</a>
-        <a href="#">NBA Fantasy</a>
+        <a href=https://rkmist.github.io/Del-Norte-Association-of-Sustainable-Farmers-Saftey-and-OSHA-Log-Book/>Home</a>
+        <a href="#" onclick="myFunction()">Back to Game</a>
+        <a href="https://csa-trimester-2.github.io/nba-analysis-final/">NBA Fantasy</a>
     </div>
     <div class="container">
         <div class="home">
             <button class="button" id="homeButton" onclick="myFunction()">Return to Home</button>
         </div>
         <div class="convert-form">
-            <label for="corn-amount">Select a product to sell:</label>
+            <label for="corn-amount">I'll sell:</label>
+            <select name="crop" id="crop">
+                <option value="corn">Corn</option>
+              </select>
             <input type="number" id="corn-amount" name="corn-amount" min="1" value="1">
             <button type="submit" class="button" onclick="sellCorn()">Convert to Dollars</button>
         </div>
@@ -135,7 +138,7 @@
                 <img src="img/tree.gif" alt="Product 2">
                 <p>Price: $30</p>
             </div> -->
-            <div class="product" id = "cornProduct" onclick="setCorn()">
+            <div class="product" id = "cornProduct">
                 <h2>Corn 🌾</h2>
                 <!-- <img src="placeholder-image.png" alt="Product 3"> -->
                 <p>Price: $25</p>
@@ -164,7 +167,7 @@
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
         var pricePerCorn = 0;
-        const cornQuant = localStorage.getItem('cornStorage');
+        var cornQuant = localStorage.getItem('cornStorage');
         const mailE = localStorage.getItem('email');
         function myFunction(){
             document.getElementById("home");
@@ -226,14 +229,16 @@
         function sellCorn(){
               console.log("corn: " + cornQuant);
               var cornSellAmount = document.getElementById("corn-amount").value;
-              if (cornQuant<cornSellAmount) {
+              if (parseInt(cornQuant)<parseInt(cornSellAmount)) {
                 console.log("selling failed");
               } else {
                 calculateCornPrice(function(pricePerCorn){
                     console.log("I LOVE PPC: " + pricePerCorn);
                     updateCash(localStorage.getItem('email'), (pricePerCorn * cornSellAmount));
                 });
-                localStorage.setItem('cornStorage', 0);
+                localStorage.setItem('cornStorage', cornQuant-cornSellAmount);
+                console.log(localStorage.getItem('cornStorage'));
+                cornQuant = localStorage.getItem('cornStorage');
             }
           }
     </script>
