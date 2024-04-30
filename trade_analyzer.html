@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NBA Trade Analyzer</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    h1 {
+        color: #333;
+    }
+    select, button {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+    }
+    button {
+        cursor: pointer;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+    }
+    button:hover {
+        background-color: #0056b3;
+    }
+    p {
+        color: #444;
+        font-size: 16px;
+        margin: 10px 0;
+    }
+    .container {
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        padding: 20px;
+        border-radius: 8px;
+        background: white;
+        width: 300px;
+    }
+</style>
+<script>
+// Hardcoded player data
+const players = [
+    { id: 1, name: 'LeBron James', stats: { points: 25, assists: 7, rebounds: 7 }},
+    { id: 2, name: 'Kevin Durant', stats: { points: 27, assists: 5, rebounds: 7 }},
+    { id: 3, name: 'Stephen Curry', stats: { points: 30, assists: 6, rebounds: 5 }},
+    { id: 4, name: 'Giannis Antetokounmpo', stats: { points: 29, assists: 5, rebounds: 12 }},
+    { id: 5, name: 'James Harden', stats: { points: 26, assists: 11, rebounds: 8 }},
+    { id: 6, name: 'Kawhi Leonard', stats: { points: 25, assists: 4, rebounds: 6 }},
+    { id: 7, name: 'Anthony Davis', stats: { points: 22, assists: 3, rebounds: 10 }},
+    { id: 8, name: 'Luka Doncic', stats: { points: 28, assists: 8, rebounds: 9 }},
+    { id: 9, name: 'Joel Embiid', stats: { points: 27, assists: 3, rebounds: 11 }},
+    { id: 10, name: 'Nikola Jokic', stats: { points: 25, assists: 7, rebounds: 11 }},
+    { id: 11, name: 'Damian Lillard', stats: { points: 26, assists: 7, rebounds: 4 }},
+    { id: 12, name: 'Jimmy Butler', stats: { points: 21, assists: 6, rebounds: 6 }},
+    { id: 13, name: 'Paul George', stats: { points: 23, assists: 4, rebounds: 6 }},
+    { id: 14, name: 'Russell Westbrook', stats: { points: 22, assists: 10, rebounds: 11 }},
+    { id: 15, name: 'Kyrie Irving', stats: { points: 27, assists: 6, rebounds: 4 }}
+];
+
+document.addEventListener('DOMContentLoaded', function() {
+    populatePlayers();
+});
+
+function populatePlayers() {
+    const playerSelect1 = document.getElementById('player1');
+    const playerSelect2 = document.getElementById('player2');
+
+    // Populate the dropdown menus with players
+    players.forEach(player => {
+        const option1 = document.createElement('option');
+        const option2 = document.createElement('option');
+        option1.value = option2.value = player.id;
+        option1.textContent = option2.textContent = player.name;
+        playerSelect1.appendChild(option1);
+        playerSelect2.appendChild(option2);
+    });
+}
+
+async function analyzeTrade() {
+    const player1 = document.getElementById('player1').value;
+    const player2 = document.getElementById('player2').value;
+
+    // Extract player data
+    const playerData1 = players.find(p => p.id == player1);
+    const playerData2 = players.find(p => p.id == player2);
+
+    // Simulate a trade analysis
+    const score1 = playerData1.stats.points + playerData1.stats.assists * 2 + playerData1.stats.rebounds * 1.5;
+    const score2 = playerData2.stats.points + playerData2.stats.assists * 2 + playerData2.stats.rebounds * 1.5;
+
+    // Displaying the results
+    document.getElementById('score1').textContent = `Score for ${playerData1.name}: ${score1}`;
+    document.getElementById('score2').textContent = `Score for ${playerData2.name}: ${score2}`;
+    document.getElementById('recommendation').textContent = `Better Trade: ${score1 > score2 ? playerData1.name : playerData2.name}`;
+}
+</script>
+</head>
+<body>
+<div class="container">
+    <h1>NBA Trade Analyzer</h1>
+
+    <!-- Player Selection -->
+    <select id="player1"></select>
+    <select id="player2"></select>
+    <button onclick="analyzeTrade()">Analyze Trade</button>
+
+    <!-- Results Display -->
+    <p id="score1"></p>
+    <p id="score2"></p>
+    <p id="recommendation"></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,456 @@
+---
+layout: header
+---
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Player Stats</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        header {
+            background: url('https://cdn11.bigcommerce.com/s-jdhnct1/images/stencil/original/products/404/1109/basketball_stadium_horz__55809.1459878564.jpg?c=2') center/cover no-repeat;
+            padding: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #FFFFED;
+            color: #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        canvas {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        input[type=text] {
+            width: 30.4%;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+            background-image: url('searchicon.png');
+            background-size: 20px;
+            background-position: 10px 10px; 
+            background-repeat: no-repeat;
+            padding: 12px 20px 12px 40px;
+            transition: width 0.4s ease-in-out;
+          }
+          
+          input[type=text]:focus {
+            width: 85.9%;
+          }
+          input[type=submit] {
+            background-color: #FFFFED;
+            border-style: solid;
+            border-radius: 5px;
+            border-color: #000000;
+            color: black;
+            padding: 14px 32px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+          }
+          .autocomplete {
+            width:44.2%;
+            padding: 10px;
+            padding-left: 28%;
+            display: inline-block;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          
+          
+          .autocomplete-items {
+            position: relative;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            /*position the autocomplete items to be the same width as the container:*/
+            top: 100%;
+            left: 0;
+            right: 0;
+          }
+          
+          .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff; 
+            border-bottom: 1px solid #d4d4d4; 
+          }
+          
+          /*when hovering an item:*/
+          .autocomplete-items div:hover {
+            background-color: #e9e9e9; 
+          }
+          
+          /*when navigating through the items using the arrow keys:*/
+          .autocomplete-active {
+            background-color: #FFFFED !important; 
+            color: #000000; 
+          }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Basketball Player Stats</h1>
+</header>
+
+    <!-- <div class="search">
+        <input id="searchbar"type="text" placeholder="Search: Ex. Lebron James">
+        <button class="sbutton" id="searchbutton" onclick="search()"><img src="https://cdn-icons-png.flaticon.com/512/149/149852.png" class="searchimg"></button>
+      </div> -->
+
+      <form id="form" onsubmit="return false;">
+        <div class="autocomplete">
+          <input id="searchbar" type="text" placeholder="Search: Ex. LePookie Bear" onkeydown="search()">
+          <input type="submit" onclick="searched()">
+          
+        </div>
+        
+      </form>
+
+<section>
+    <h2>Player Information</h2>
+    <p>Player Name: John Doe</p>
+    <p>Team: Team Name</p>
+    <p>Position: Point Guard</p>
+</section>
+
+<section>
+    <h2>Statistics</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>GAME</th>
+            <th>MIN</th>
+            <th>PTS</th>
+            <th>REB</th>
+            <th>AST</th>
+            <th>BLK</th>
+            <th>STL</th>
+            <th>TO</th>
+            <th>FG</th>
+            <th>FG%</th>
+            <th>3PT</th>
+            <th>3PT%</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>2/2/2024 @ Bucks</td>
+            <td>30</td>
+            <td>12</td>
+            <td>2</td>
+            <td>7</td>
+            <td>1</td>
+            <td>5</td>
+            <td>2</td>
+            <td>4</td>
+            <td>100%</td>
+            <td>0</td>
+            <td>0%</td>
+        </tr>
+        <tr>
+            <td>1/31/2024 @ Lakers</td>
+            <td>26</td>
+            <td>10</td>
+            <td>5</td>
+            <td>3</td>
+            <td>2</td>
+            <td>5</td>
+            <td>1</td>
+            <td>3</td>
+            <td>75%</td>
+            <td>0</td>
+            <td>0%</td>
+        </tr>
+        <tr>
+            <td>SEASON</td>
+            <td>28.5</td>
+            <td>14</td>
+            <td>4</td>
+            <td>7</td>
+            <td>1</td>
+            <td>5</td>
+            <td>2</td>
+            <td>4</td>
+            <td>90%</td>
+            <td>1</td>
+            <td>10%</td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h2>Performance Graph</h2>
+    <canvas id="performanceGraph" width="600" height="300"></canvas>
+    <!-- Add your JavaScript code here to render the graph using a library like Chart.js -->
+</section>
+
+<footer>
+    <p>&copy; 2024 Basketball Stats Page</p>
+</footer>
+
+<!-- Add your JavaScript libraries here, if needed -->
+
+</body>
+
+
+<script>
+    var searchdata;
+    var searchresult;
+    var namesArray=[];
+    var gotID;
+    function search(){
+        let input = document.getElementById("searchbar").value;
+        const apiUrl = 'https://www.balldontlie.io/api/v1/players?search='+input;
+
+        fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+            throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Display data in an HTML element
+            searchdata=JSON.stringify(data, null, 2);
+            //console.log(searchdata);
+
+            sortdata(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    function autocomplete(inp, arr) {
+        /*the autocomplete function takes two arguments,
+        the text field element and an array of possible autocompleted values:*/
+        var currentFocus;
+        /*execute a function when someone writes in the text field:*/
+        inp.addEventListener("input", function(e) {
+            var a, b, i, val = this.value;
+            /*close any already open lists of autocompleted values*/
+            closeAllLists();
+            if (!val) { return false;}
+            currentFocus = -1;
+            /*create a DIV element that will contain the items (values):*/
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            /*append the DIV element as a child of the autocomplete container:*/
+            this.parentNode.appendChild(a);
+            /*for each item in the array...*/
+            for (i = 0; i < arr.length; i++) {
+              /*check if the item starts with the same letters as the text field value:*/
+              if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                /*create a DIV element for each matching element:*/
+                b = document.createElement("DIV");
+                /*make the matching letters bold:*/
+                b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                b.innerHTML += arr[i].substr(val.length);
+                /*insert a input field that will hold the current array item's value:*/
+                b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                /*execute a function when someone clicks on the item value (DIV element):*/
+                b.addEventListener("click", function(e) {
+                    /*insert the value for the autocomplete text field:*/
+                    inp.value = this.getElementsByTagName("input")[0].value;
+                    /*close the list of autocompleted values,
+                    (or any other open lists of autocompleted values:*/
+                    closeAllLists();
+                });
+                a.appendChild(b);
+              }
+            }
+        });
+        inp.addEventListener("keydown", function(e) {
+            var x = document.getElementById(this.id + "autocomplete-list");
+            if (x) x = x.getElementsByTagName("div");
+            if (e.keyCode == 40) {
+              /*If the arrow DOWN key is pressed,
+              increase the currentFocus variable:*/
+              currentFocus++;
+              /*and and make the current item more visible:*/
+              addActive(x);
+            } else if (e.keyCode == 38) { //up
+              /*If the arrow UP key is pressed,
+              decrease the currentFocus variable:*/
+              currentFocus--;
+              /*and and make the current item more visible:*/
+              addActive(x);
+            } else if (e.keyCode == 13) {
+              /*If the ENTER key is pressed, prevent the form from being submitted,*/
+              e.preventDefault();
+              if (currentFocus > -1) {
+                /*and simulate a click on the "active" item:*/
+                if (x) x[currentFocus].click();
+              }
+            }
+        });
+        function addActive(x) {
+          /*a function to classify an item as "active":*/
+          if (!x) return false;
+          /*start by removing the "active" class on all items:*/
+          removeActive(x);
+          if (currentFocus >= x.length) currentFocus = 0;
+          if (currentFocus < 0) currentFocus = (x.length - 1);
+          /*add class "autocomplete-active":*/
+          x[currentFocus].classList.add("autocomplete-active");
+        }
+        function removeActive(x) {
+          /*a function to remove the "active" class from all autocomplete items:*/
+          for (var i = 0; i < x.length; i++) {
+            x[i].classList.remove("autocomplete-active");
+          }
+        }
+        function closeAllLists(elmnt) {
+          /*close all autocomplete lists in the document,
+          except the one passed as an argument:*/
+          var x = document.getElementsByClassName("autocomplete-items");
+          for (var i = 0; i < x.length; i++) {
+            if (elmnt != x[i] && elmnt != inp) {
+              x[i].parentNode.removeChild(x[i]);
+            }
+          }
+        }
+        /*execute a function when someone clicks in the document:*/
+        document.addEventListener("click", function (e) {
+            closeAllLists(e.target);
+        });
+      }
+      
+      autocomplete(document.getElementById("searchbar"), namesArray);
+      function searched(){
+        searchresult = document.getElementById("searchbar").value;
+        document.getElementById("searchbar").value=""
+        console.log(searchresult);
+        const apiUrl = 'https://www.balldontlie.io/api/v1/players?search='+searchresult;
+
+        fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+            throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Display data in an HTML element
+            searchdata=JSON.stringify(data, null, 2);
+            //console.log(searchdata);
+
+            getID(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+      }
+      function getID(arr){
+        gotId=""
+        console.log(arr);
+        namesArray.length = 0;
+        if (arr && arr.data && arr.data.length > 0) {
+                const player = arr.data[0]; // Assuming there is only one player in the array
+          
+                // Extracting full name
+                 gotID = `${player.id}`.trim();
+                console.log(gotID)
+                getNBAStats(gotID)
+          
+          } else {
+            console.error('Data is undefined, null, or empty.');
+          }
+      }
+      function sortdata(arr){
+        console.log(arr);
+        namesArray.length = 0;
+        if (arr && arr.data && arr.data.length > 0) {
+            for(let i = 0;i<arr.data.length;i++){
+                const player = arr.data[i]; // Assuming there is only one player in the array
+          
+                // Extracting full name
+                const fullName = `${player.first_name} ${player.last_name}`.trim();
+                console.log(fullName)
+                namesArray.push(fullName);
+            }
+            console.log(namesArray)
+          
+          } else {
+            console.error('Data is undefined, null, or empty.');
+          }
+      }
+      async function getNBAStats(id) {
+        const isLocalhost = Boolean(
+          window.location.hostname === "localhost" ||
+          window.location.hostname === "[::1]" ||
+          window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
+        );
+        const api = isLocalhost ? "http://localhost:8062" : "https://bob.nighthawkcodingsociety.com";
+        const apiUrl = api+`/nba/stats/2023/${id}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            console.log(data);
+        } catch (error) {
+            console.error('Error fetching NBA stats:', error);
+        }
+    }
+</script>

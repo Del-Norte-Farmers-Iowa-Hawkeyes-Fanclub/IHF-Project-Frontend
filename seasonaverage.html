@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Stats</title>
+</head>
+<body>
+
+<div>
+    <label for="playerIdInput">Enter Player ID:</label>
+    <input type="number" id="playerIdInput" />
+    <button onclick="searchPlayer()">Search</button>
+</div>
+
+<div id="playerStats">
+    <h2>Player Stats</h2>
+    <p id="loadingMessage">Enter a player ID and click 'Search'.</p>
+    <div id="statsContainer" style="display: none;">
+        <p><strong>Games Played:</strong> <span id="gamesPlayed"></span></p>
+        <p><strong>Points per Game:</strong> <span id="pts"></span></p>
+        <p><strong>Assists per Game:</strong> <span id="ast"></span></p>
+        <!-- Add more fields as needed -->
+    </div>
+</div>
+
+<script>
+    function searchPlayer() {
+        const playerId = document.getElementById("playerIdInput").value;
+        const apiUrl = `http://localhost:8062/api/player/${playerId}`;
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                // Update the HTML elements with the fetched data
+                document.getElementById("loadingMessage").style.display = "none";
+                document.getElementById("statsContainer").style.display = "block";
+                document.getElementById("gamesPlayed").innerText = data.data[0].games_played;
+                document.getElementById("pts").innerText = data.data[0].pts;
+                document.getElementById("ast").innerText = data.data[0].ast;
+                // Add more lines for other fields as needed
+            })
+            .catch(error => {
+                console.error("Error fetching player data:", error);
+                document.getElementById("loadingMessage").innerText = "Error fetching data.";
+            });
+    }
+</script>
+
+</body>
+</html>
