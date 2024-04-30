@@ -133,7 +133,7 @@ class MainMenu extends Phaser.Scene {
 
     clickShop() {
         EPT.Sfx.play('click');
-        window.top.location.href = 'https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/shop.html';
+        window.top.location.href = 'localhost:4000/shop.html';
     }
 
     clickStart() {
