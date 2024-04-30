@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Player Stats</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        header {
+            background: url('https://cdn11.bigcommerce.com/s-jdhnct1/images/stencil/original/products/404/1109/basketball_stadium_horz__55809.1459878564.jpg?c=2') center/cover no-repeat;
+            padding: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        section {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #FFFFED;
+            color: #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        canvas {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        input[type=text] {
+            width: 30.4%;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+            background-image: url('searchicon.png');
+            background-size: 20px;
+            background-position: 10px 10px; 
+            background-repeat: no-repeat;
+            padding: 12px 20px 12px 40px;
+            transition: width 0.4s ease-in-out;
+        }
+
+        input[type=text]:focus {
+            width: 85.9%;
+        }
+
+        input[type=submit] {
+            background-color: #FFFFED;
+            border-style: solid;
+            border-radius: 5px;
+            border-color: #000000;
+            color: black;
+            padding: 14px 32px;
+            text-decoration: none;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        .autocomplete {
+            width: 44.2%;
+            padding: 10px;
+            padding-left: 28%;
+            display: inline-block;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .autocomplete-items {
+            position: relative;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
+
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff; 
+            border-bottom: 1px solid #d4d4d4; 
+        }
+
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9; 
+        }
+
+        .autocomplete-active {
+            background-color: #FFFFED !important; 
+            color: #000000; 
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Basketball Player Stats</h1>
+</header>
+
+<form id="form" onsubmit="return false;">
+    <div class="autocomplete">
+        <input id="searchbar" type="text" placeholder="Search: Ex. LeBron James" oninput="autocomplete(event)">
+        <input type="submit" onclick="search()">
+    </div>
+</form>
+
+<section id="playerInfoSection">
+    <h2>Player Information</h2>
+    <!-- Player information will be displayed here dynamically -->
+</section>
+
+<section id="statisticsSection">
+    <h2>Statistics</h2>
+    <table>
+        <!-- Player statistics table will be displayed here dynamically -->
+    </table>
+</section>
+
+<section>
+    <h2>Performance Graph</h2>
+    <canvas id="performanceGraph" width="600" height="300"></canvas>
+    <!-- Add your JavaScript code here to render the graph using a library like Chart.js -->
+</section>
+
+<footer>
+    <p>&copy; 2024 Basketball Stats Page</p>
+</footer>
+
+<script>
+    function autocomplete(event) {
+        // Implement autocomplete functionality if needed
+    }
+
+    function search() {
+        var playerName = document.getElementById("searchbar").value;
+
+        // Assuming your backend is running on localhost:8062
+        fetch(`http://localhost:8062/api/basketball/players/${playerName}`)
+            .then(response => response.json())
+            .then(data => {
+                displayPlayerInfo(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error, e.g., display an error message to the user
+            });
+    }
+
+    function displayPlayerInfo(playerInfo) {
+        var playerInfoSection = document.getElementById("playerInfoSection");
+        var statisticsSection = document.getElementById("statisticsSection");
+
+        playerInfoSection.innerHTML = '';
+        statisticsSection.innerHTML = '';
+
+        if (playerInfo.status) {
+            playerInfoSection.innerHTML = `<p>Error: ${playerInfo.status}</p>`;
+        } else {
+            // Extract relevant information from the provided structure
+            var playerName = `${playerInfo.first_name} ${playerInfo.last_name}`;
+            var teamName = playerInfo.team ? playerInfo.team.full_name : 'Unknown Team';
+
+            // Extract player statistics
+            var stats = playerInfo.stats || {};
+            var tableHtml = `
+                <table border="1">
+                    <tr>
+                        <th>Name</th>
+                        <th>Team</th>
+                    </tr>
+                    <tr>
+                        <td>${playerName}</td>
+                        <td>${teamName}</td>
+                    </tr>
+                </table>
+            `;
+
+            playerInfoSection.innerHTML = `<h2>Player Information</h2>${tableHtml}`;
+
+            // Display player statistics
+            var statsTableHtml = `
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>GAME</th>
+                            <th>MIN</th>
+                            <th>PTS</th>
+                            <th>REB</th>
+                            <th>AST</th>
+                            <th>BLK</th>
+                            <th>STL</th>
+                            <th>TO</th>
+                            <th>FG</th>
+                            <th>FG%</th>
+                            <th>3PT</th>
+                            <th>3PT%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${generateStatsRows(stats)}
+                    </tbody>
+                </table>
+            `;
+
+            statisticsSection.innerHTML = `<h2>Statistics</h2>${statsTableHtml}`;
+        }
+    }
+
+    function generateStatsRows(stats) {
+        // Generate HTML for player statistics rows
+        var rowsHtml = '';
+        for (var i = 0; i < stats.length; i++) {
+            var gameStats = stats[i];
+            rowsHtml += `
+                <tr>
+                    <td>${gameStats.date}</td>
+                    <td>${gameStats.minutes}</td>
+                    <td>${gameStats.points}</td>
+                    <td>${gameStats.rebounds}</td>
+                    <td>${gameStats.assists}</td>
+                    <td>${gameStats.blocks}</td>
+                    <td>${gameStats.steals}</td>
+                    <td>${gameStats.turnovers}</td>
+                    <td>${gameStats.field_goals}</td>
+                    <td>${gameStats.field_goal_percentage}%</td>
+                    <td>${gameStats.three_pointers}</td>
+                    <td>${gameStats.three_point_percentage}%</td>
+                </tr>
+            `;
+        }
+        return rowsHtml;
+    }
+</script>
+
+<!-- Add your JavaScript libraries here, if needed -->
+
+</body>
+</html>

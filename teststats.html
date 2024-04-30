@@ -1,0 +1,146 @@
+---
+layout: header
+---
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Stats</title>
+    <style>
+        header {
+            padding: 50px;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NBA Player Stats</h1>
+        <div class="input-container">
+            <label for="player-id">Player ID:</label>
+            <input type="number" id="player-id" placeholder="Enter player ID">
+            <label for="season">Season:</label>
+            <input type="number" id="season" placeholder="Enter season">
+            <button onclick="displayPlayerStats()">Get Stats</button>
+        </div>
+
+        <table id="stats-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Opponent</th>
+                    <th>Points</th>
+                    <th>Rebounds</th>
+                    <th>Assists</th>
+                    <th>Steals</th>
+                    <th>Blocks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted here dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchPlayerStats(playerId, season) {
+            const response = await fetch(`http://localhost:8062/games/${playerId}/${season}`);
+            const data = await response.json();
+            return data.data;
+        }
+
+        async function displayPlayerStats() {
+            const playerId = document.getElementById("player-id").value;
+            const season = document.getElementById("season").value;
+            
+            if (!playerId || !season) {
+                alert("Please enter both player ID and season.");
+                return;
+            }
+
+            const stats = await fetchPlayerStats(playerId, season);
+            const tableBody = document.querySelector("#stats-table tbody");
+            tableBody.innerHTML = "";
+
+            stats.forEach(stat => {
+                const date = new Date(stat.game.date).toLocaleDateString();
+                const opponent = stat.game.visitor_team_id === stat.team.id ? stat.game.home_team_id : stat.game.visitor_team_id;
+                const points = stat.pts;
+                const rebounds = stat.reb;
+                const assists = stat.ast;
+                const steals = stat.stl;
+                const blocks = stat.blk;
+
+                const row = `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${opponent}</td>
+                        <td>${points}</td>
+                        <td>${rebounds}</td>
+                        <td>${assists}</td>
+                        <td>${steals}</td>
+                        <td>${blocks}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+    </script>
+</body>

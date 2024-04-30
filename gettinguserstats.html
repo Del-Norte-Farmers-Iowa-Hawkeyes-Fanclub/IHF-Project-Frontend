@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Person's Cash</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        .container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            color: #27ae60;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin: 10px 0 5px;
+        }
+        input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #27ae60;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218c54;
+        }
+        p {
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fetch Person's Cash</h1>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" readonly>
+        <button onclick="fetchCash()">Get Cash</button>
+        <p id="cashDisplay"></p>
+    </div>
+
+    <script>
+        async function fetchCash() {
+            const username = document.getElementById('username').value;
+            if (!username) {
+                document.getElementById('cashDisplay').innerText = 'Username not found in local storage.';
+                return;
+            }
+
+            const data = { email: username };
+
+            try {
+                const response = await fetch('http://localhost:6942/api/person/getCash', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+
+                const cash = await response.json();
+                document.getElementById('cashDisplay').innerText = `${username} has $${cash}`;
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                document.getElementById('cashDisplay').innerText = 'Unable to fetch cash. Please try again later.';
+            }
+        }
+
+        // Load stored userEmail from localStorage and auto-fetch cash
+        const storedUsername = localStorage.getItem('userEmail');
+        if (storedUsername) {
+            document.getElementById('username').value = storedUsername;
+            fetchCash(); // Auto-fetch cash if username exists
+        } else {
+            document.getElementById('cashDisplay').innerText = 'No stored username found. Please sign in again.';
+        }
+    </script>
+</body>
+</html>

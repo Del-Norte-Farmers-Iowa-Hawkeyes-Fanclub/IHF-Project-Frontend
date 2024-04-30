@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Betting Site</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: auto;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .game {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #e9e9e9;
+            border-radius: 5px;
+        }
+        .bet-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .bet-button:hover {
+            background-color: #45a049;
+        }
+        .cash-display {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NBA Game Betting</h1>
+        <div class="cash-display">Cash Remaining: <span id="cashAmount">$500</span></div>
+
+        <div class="game">
+            <h3>Lakers vs. Celtics</h3>
+            <button class="bet-button" onclick="placeBet(100, 'Lakers vs. Celtics Over')">Over 210.5 (-$100)</button>
+            <button class="bet-button" onclick="placeBet(100, 'Lakers vs. Celtics Under')">Under 210.5 (-$100)</button>
+        </div>
+
+        <div class="game">
+            <h3>Nets vs. Bucks</h3>
+            <button class="bet-button" onclick="placeBet(100, 'Nets vs. Bucks Over')">Over 198.5 (-$100)</button>
+            <button class="bet-button" onclick="placeBet(100, 'Nets vs. Bucks Under')">Under 198.5 (-$100)</button>
+        </div>
+    </div>
+
+    <script>
+        const userEmail = localStorage.getItem('userEmail');
+
+        async function fetchCash() {
+            if (!userEmail) {
+                document.getElementById('cashAmount').innerText = 'No username found. Please sign in.';
+                return;
+            }
+            try {
+                const response = await fetch('http://localhost:6942/api/person/getCash', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail })
+                });
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.cash === undefined) {
+                    throw new Error('Cash value is undefined.');
+                }
+                const cash = data.cash;
+                document.getElementById('cashAmount').textContent = `$${cash}`;
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+                document.getElementById('cashAmount').textContent = 'Error fetching cash.';
+            }
+        }
+
+        async function placeBet(amount, betType) {
+            let cash = parseInt(localStorage.getItem('userCash'), 10);
+            if (cash >= amount) {
+                cash -= amount;
+                localStorage.setItem('userCash', cash);
+                document.getElementById('cashAmount').textContent = `$${cash}`;
+                alert(`You placed a $${amount} bet on the ${betType}. Remaining cash: $${cash}`);
+            } else {
+                alert('Insufficient cash to place this bet.');
+            }
+        }
+
+        fetchCash(); // Fetch cash on page load
+    </script>
+</body>
+</html>

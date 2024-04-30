@@ -1,0 +1,312 @@
+---
+layout: header
+---
+
+
+<body>
+    <section>
+        <div class="signin-box">
+            <div class="signin-value">
+                <form id="signinForm" autocomplete="off">
+                    <h2>Sign In</h2>
+                    <div class="inputbox" id="emailField" style="display: block;">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="email" id="emailInput" name="email" required>
+                        <label for="emailInput">Email</label>
+                    </div>
+                    <div class="inputbox" id="passwordField" style="display: none;">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input type="password" id="passwordInput" name="password" required>
+                        <label for="passwordInput">Password</label>
+                    </div>
+                    <button onclick="showNextField()">Log In</button>
+                    <div class="register">
+                        <p>Don't have an account? <a href="/nba-analysis-final/signup.html">Sign Up</a></p>
+                    </div>
+                    <div class="goback">
+                        <p>Want to go back to the homepage? <a href="/nba-analysis/">Home</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const login_url = "http://localhost:6942/authenticate";
+        // prepare URL
+        //var url = "https://spring.nighthawkcodingsociety.com/api/person/";
+        // Uncomment next line for localhost testing
+        const read_url = "http://localhost:6942/api/person/";
+        //var url = "https://spring.nighthawkcodingsociety.com/api/person/";
+        // Uncomment next line for localhost testing
+        const post_url = "http://localhost:6942/api/person/post";
+        const put_url = "http://localhost:6942/api/person/update";
+        let currentField = "emailField";
+
+        // //
+        // //set a cookie email
+        // function setCookie(name, email, hours) {
+        // const expires = new Date();
+        // expires.setTime(expires.getTime() + (hours * 60 * 60 * 1000));
+        // document.cookie = `${name}=${email};expires=${expires.toUTCString()};path=/`;
+        // }
+
+        // // const email = emailInput.value;
+        // // setCookie("email", email, 1); // Expires in 1 hour
+
+        // // Function to get a cookie email
+        // function getCookie(name) {
+        // const value = `; ${document.cookie}`;
+        // const parts = value.split(`; ${name}=`);
+        // if (parts.length === 2) return parts.pop().split(';').shift();
+        // }
+        // //
+        function showNextField() {
+            const emailField = document.getElementById("emailField");
+            const passwordField = document.getElementById("passwordField");
+
+            if (currentField === "emailField") {
+                currentField = "passwordField"
+                passwordField.style.display = "block";
+                document.querySelector("button").textContent = "Log In";
+            } else if (currentField === "passwordField") {
+                login_user();
+                read_pull(); //
+            }
+
+        
+        const signinForm = document.getElementById("signinForm");
+        signinForm.addEventListener("submit", function (e) {
+        login_user(e);
+        read_pull(); //
+            })
+        }
+
+
+        function login_user(event) {
+            if (event) {
+            event.preventDefault();
+            // Set body to include login data
+            const emailInput = document.getElementById("emailInput");
+            const passwordInput = document.getElementById("passwordInput");
+
+            if (currentField === "emailField" && emailInput.value.trim() === "") {
+                alert("Please enter your email");
+                return;
+            } else if (currentField === "passwordField" && passwordInput.value.trim() === "") {
+                alert("Please enter your password");
+                return;
+            }
+
+            // Set Headers to support cross-origin
+            const data = {
+                email: emailInput.value,
+                password: passwordInput.value
+            };
+
+            const authOptions = {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            };
+        // new code begin
+            // Fetch JWT 
+            fetch(login_url, authOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        const errorMsg = 'Login error: ' + response.status;
+                        console.log(errorMsg);
+                        return;
+                    }
+                    if (response.ok) {
+                        console.log('Successful fetch');
+                        return;
+                    }
+                    // Success!!!
+                    // Redirect to Database location
+                    // window.location.href = "/APCSA/data/database";
+                });
+            }
+        }
+        // new code end
+        function read_pull() {
+            // Set options for cross-origin header request
+            const options = {
+                method: 'GET',
+                mode: 'cors',
+                cache: 'default',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            };
+
+            // Fetch the API
+            fetch(read_url, options)
+                .then(response => {
+                    if (response.ok) {
+                        console.log(response);
+                        alert("Signed In!")
+                        return;
+                    }
+                    if (response.status !== 200) {
+                        const errorMsg = 'Database response error: ' + response.status;
+                        console.log(errorMsg);
+                        return;
+                    }
+                    // response.json().then(data => {
+                    // // const jwtToken = data.jwt;
+                    // // const email = emailInput.value;
+                    // // setCookie("email", email, 1); // Expires in 1 hour
+                    // // setCookie("jwt", jwtToken, 1); // Expires in 1 hour
+                    // console.log(response);
+                    // alert("Signed In!")
+                    // return;
+                    // });
+                })
+                };
+    </script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+
+<!-- Styles -->
+
+<style>
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.banner{
+    width: 100%;
+    height: 100vh;
+    background-image: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)),url(background.jpg);
+    background-size: cover;
+    background-position: cover;
+}
+
+section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+    background-color: #FFFFED;
+}
+
+.signin-box{
+    position: relative;
+    width: 400px;
+    height: 450px;
+    background: transparent;
+    border: 2px solid rgba(204, 128, 128, 0.5);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h2{
+    font-size: 2em;
+    color: black;
+    text-align: center;
+}
+
+form{
+    padding: 20px;
+    background: none;
+}
+
+.inputbox{
+    position: relative;
+    margin: 30px 0;
+    width: 310px;
+    border-bottom: 2px solid black;
+}
+
+.inputbox label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    color: black;
+    font-size: 1em;
+    pointer-events: none;
+    transition: 0.5s;
+}
+input:focus ~ label,
+input:valid ~ label{   
+    top: -5px;
+}
+
+.inputbox input {
+    width: 100%;
+    height: 50px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    padding:0 35px 0 5px;
+    color: black;
+}
+
+.inputbox ion-icon{
+    position: absolute;
+    right: 8px;
+    color: black;
+    font-size: 1.2em;
+    top: 20px;
+}
+
+button{
+    width: 100%;
+    height: 40px 0;
+    border-radius: 40px;
+    background: #cc8080;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.register{
+    font-size: 0.9em;
+    color: black;
+    text-align: center;
+    margin: 25px 0 ;
+}
+
+.register p a{
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+.register p a:hover{
+    text-decoration: underline;
+}
+
+.goback{
+    font-size: 0.9em;
+    color: black;
+    text-align: center;
+    margin: 25px 0 ;
+}
+
+.goback p a{
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+.goback p a:hover{
+    text-decoration: underline;
+}
+</style>

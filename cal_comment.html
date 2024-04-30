@@ -1,0 +1,258 @@
+---
+layout: header
+---
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/fullcalendar@5/main.min.css' rel='stylesheet' />
+    <script src='https://unpkg.com/fullcalendar@5/main.min.js'></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+        .header {
+            background: #00529B;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .input-group {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .input-group input, .input-group button {
+            padding: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .input-group button {
+            background-color: #00529B;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .input-group button:hover {
+            background-color: #003D79;
+        }
+        #calendar {
+            margin-bottom: 40px;
+        }
+        .comment-section, .calendar-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .comment {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .comment-section input, .comment-section textarea, .comment-section button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .comment-section button {
+            background-color: #00529B;
+            color: white;
+            border: none;
+        }
+        .comment-section button:hover {
+            background-color: #003D79;
+        }
+        .suggestions {
+        border: 1px solid #ddd;
+        border-top: none; /* Align with the input field */
+        position: absolute;
+        z-index: 10;
+        background-color: white;
+        width: calc(100% - 20px); /* Adjust based on the padding of the container */
+        max-height: 200px;
+        overflow-y: auto;
+        }
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+    </div>
+    <div class="container">
+        <div class="calendar-section">
+            <h2>NBA Schedule Calendar</h2>
+            <div class="input-group">
+                <input type="text" id="seasonInput" placeholder="Enter Season Year (e.g., 2024)">
+                <button onclick="fetchSchedule()">Load Schedule</button>
+            </div>
+            <div id='calendar'></div>
+        </div>
+        <div class="comment-section">
+            <h2>Comments</h2>
+            <input type="text" id="gameNameInput" placeholder="Enter game name to view comments" oninput="filterSuggestions()">
+            <div id="suggestions" class="suggestions"></div>
+            <button onclick="fetchComments()">Load Comments</button>
+            <div id="comments"></div>
+            <h3>Add a comment</h3>
+            <input type="text" id="userName" placeholder="Your name">
+            <textarea id="text" placeholder="Your comment"></textarea>
+            <button onclick="postComment()">Post Comment</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: []
+            });
+            calendar.render();
+
+            window.fetchSchedule = function() {
+                const season = document.getElementById('seasonInput').value;
+                const url = `http://localhost:8062/api/nba/schedule/${season}`;
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const events = data.map(game => {
+                            // Directly use 'Day' from the game object for the 'start' property
+                            // Ensure 'Day' exists and is a valid date string
+                            if (!game.Day || isNaN(new Date(game.Day).getTime())) {
+                                console.error('Invalid or missing date for game:', game);
+                                return null; // Skip this game entry
+                            }
+                            return {
+                                title: `${game.AwayTeam} @ ${game.HomeTeam}`,
+                                start: game.Day, // Use the ISO string directly
+                            };
+                        }).filter(event => event); // Filter out null entries
+
+                        calendar.removeAllEvents();
+                        calendar.addEventSource(events);
+                    })
+                    .catch(error => console.error('Error fetching schedule:', error));
+            };
+
+
+        });
+
+
+        function fetchComments() {
+            const gameName = document.getElementById('gameNameInput').value;
+            fetch(`http://localhost:8062/api/comments/${encodeURIComponent(gameName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const commentsDiv = document.getElementById('comments');
+                    commentsDiv.innerHTML = ''; // Clear existing comments
+                    data.forEach(comment => {
+                        const commentDiv = document.createElement('div');
+                        commentDiv.classList.add('comment');
+                        commentDiv.innerHTML = `<strong>${comment.userName}</strong>: ${comment.text}`;
+                        commentsDiv.appendChild(commentDiv);
+                    });
+                })
+                .catch(error => console.error('Error fetching comments:', error));
+        }
+
+        function postComment() {
+            const userName = document.getElementById('userName').value;
+            const gameName = document.getElementById('gameNameInput').value; // Use the same game name for posting
+            const text = document.getElementById('text').value;
+
+            const comment = { userName, gameName, text, timestamp: new Date().toISOString() };
+
+            fetch('http://localhost:8062/api/comments/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(comment),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                fetchComments(); // Refresh comments after posting
+            })
+            .catch((error) => {
+                console.error('Error posting comment:', error);
+            });
+        }
+
+        function deleteComment(id) {
+            fetch(`http://localhost:8062/api/comments/${id}`, {
+                method: 'DELETE',
+            })
+            .then(() => {
+                console.log('Deleted successfully');
+                fetchComments(); // Refresh comments list
+            })
+            .catch(error => console.error('Error deleting comment:', error));
+        }
+
+        function updateComment(id) {
+            const userName = document.getElementById('userName').value;
+            const gameName = document.getElementById('gameNameInput').value;
+            const text = document.getElementById('text').value;
+            const comment = { userName, gameName, text, timestamp: new Date().toISOString() };
+
+            fetch(`http://localhost:8062/api/comments/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(comment),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Updated successfully:', data);
+                fetchComments(); // Refresh comments list
+            })
+            .catch(error => console.error('Error updating comment:', error));
+        }
+        const gameNames = ["Lakers vs Clippers", "Warriors vs Suns", "Nets vs Knicks", "Heat vs Celtics", "Bucks vs 76ers"];
+
+        function filterSuggestions() {
+            const input = document.getElementById('gameNameInput').value.toLowerCase();
+            const suggestionsContainer = document.getElementById('suggestions');
+            suggestionsContainer.innerHTML = ''; // Clear previous suggestions
+
+            // Filter and display suggestions
+            const filteredGameNames = gameNames.filter(name => name.toLowerCase().includes(input));
+            filteredGameNames.forEach(name => {
+                const div = document.createElement('div');
+                div.textContent = name;
+                div.classList.add('suggestion-item');
+                div.onclick = function() {
+                    document.getElementById('gameNameInput').value = name;
+                    suggestionsContainer.innerHTML = ''; // Clear suggestions after selection
+                };
+                suggestionsContainer.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
