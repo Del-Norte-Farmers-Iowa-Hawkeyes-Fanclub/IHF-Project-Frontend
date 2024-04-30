@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comment Section</title>
+    <style>
+        #comment-section {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+
+        #comments {
+            margin-bottom: 20px;
+        }
+
+        .comment {
+            background-color: #f2f2f2;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+
+    <div id="comment-section">
+        <h2>Comments</h2>
+        <input type="text" id="gameNameInput" placeholder="Enter game name to view comments">
+        <button onclick="fetchComments()">Load Comments</button>
+        <div id="comments"></div>
+        <h3>Add a comment</h3>
+        <input type="text" id="userName" placeholder="Your name">
+        <textarea id="text" placeholder="Your comment"></textarea>
+        <button onclick="postComment()">Post Comment</button>
+
+    </div>
+
+    <script>
+        function fetchComments() {
+            const gameName = document.getElementById('gameNameInput').value;
+            fetch(`http://localhost:8062/api/comments/${encodeURIComponent(gameName)}`)
+                .then(response => response.json())
+                .then(data => {
+                    const commentsDiv = document.getElementById('comments');
+                    commentsDiv.innerHTML = ''; // Clear existing comments
+                    data.forEach(comment => {
+                        const commentDiv = document.createElement('div');
+                        commentDiv.classList.add('comment');
+                        commentDiv.innerHTML = `<strong>${comment.userName}</strong>: ${comment.text}`;
+                        commentsDiv.appendChild(commentDiv);
+                    });
+                })
+                .catch(error => console.error('Error fetching comments:', error));
+        }
+
+        function postComment() {
+            const userName = document.getElementById('userName').value;
+            const gameName = document.getElementById('gameNameInput').value; // Use the same game name for posting
+            const text = document.getElementById('text').value;
+
+            const comment = { userName, gameName, text, timestamp: new Date().toISOString() };
+
+            fetch('http://localhost:8062/api/comments/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(comment),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                fetchComments(); // Refresh comments after posting
+            })
+            .catch((error) => {
+                console.error('Error posting comment:', error);
+            });
+        }
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Schedule Calendar</title>
+    <link href='https://unpkg.com/fullcalendar@5/main.min.css' rel='stylesheet' />
+    <script src='https://unpkg.com/fullcalendar@5/main.min.js'></script>
+    <style>
+        body {
+            margin: 40px 10px;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #calendar {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="input-group">
+        <input type="text" id="seasonInput" placeholder="Enter Season Year (e.g., 2024)">
+        <button onclick="fetchSchedule()">Load Schedule</button>
+    </div>
+    <div id='calendar'></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: []
+            });
+            calendar.render();
+
+            window.fetchSchedule = function() {
+                const season = document.getElementById('seasonInput').value;
+                const url = `http://localhost:8062/api/nba/schedule/${season}`;
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const events = data.map(game => {
+                            // Directly use 'Day' from the game object for the 'start' property
+                            // Ensure 'Day' exists and is a valid date string
+                            if (!game.Day || isNaN(new Date(game.Day).getTime())) {
+                                console.error('Invalid or missing date for game:', game);
+                                return null; // Skip this game entry
+                            }
+                            return {
+                                title: `${game.AwayTeam} @ ${game.HomeTeam}`,
+                                start: game.Day, // Use the ISO string directly
+                            };
+                        }).filter(event => event); // Filter out null entries
+
+                        calendar.removeAllEvents();
+                        calendar.addEventSource(events);
+                    })
+                    .catch(error => console.error('Error fetching schedule:', error));
+            };
+
+
+        });
+    </script>
+</body>
+</html>
