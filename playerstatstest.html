@@ -1,0 +1,69 @@
+---
+layout: header
+---
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Stats</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>NBA Player Stats</h1>
+
+    <button onclick="fetchNBAPlayers()">Fetch Players</button>
+
+    <table id="playerTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Position</th>
+                <th>Team</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        function fetchNBAPlayers() {
+            fetch('http://localhost:8062/api/nba/playersall')
+                .then(response => response.json())
+                .then(data => {
+                    displayPlayers(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching NBA players:', error);
+                });
+        }
+
+        function displayPlayers(players) {
+            const tableBody = document.querySelector('#playerTable tbody');
+            tableBody.innerHTML = '';
+
+            players.forEach(player => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = player.id;
+                row.insertCell(1).textContent = player.first_name;
+                row.insertCell(2).textContent = player.last_name;
+                row.insertCell(3).textContent = player.position;
+                row.insertCell(4).textContent = player.team.full_name;
+            });
+        }
+    </script>
+</body>
+</html>
