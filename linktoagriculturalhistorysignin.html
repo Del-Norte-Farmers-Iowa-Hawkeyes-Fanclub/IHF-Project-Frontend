@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Meta tags for character set and viewport -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Title of the page -->
     <title>Sign In</title>
+    <!-- Styling for the page -->
     <style>
+        /* Styling for the body */
         body {
+            /* Font and background color */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
+            /* Centering content vertically and horizontally */
             margin: 0;
             padding: 20px;
             display: flex;
@@ -16,16 +22,21 @@
             height: 100vh;
             color: #333;
         }
+        /* Styling for the form */
         form {
+            /* Background, padding, border radius, and box shadow */
             background-color: #fff;
             padding: 25px;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            /* Full width with a maximum width of 400px */
             width: 100%;
             max-width: 400px;
             text-align: center;
         }
+        /* Styling for input and button elements */
         input, button {
+            /* Width, padding, margin, border, border radius, and display */
             width: calc(100% - 20px); /* Adjust input width considering padding */
             padding: 10px;
             margin: 10px 0;
@@ -33,15 +44,19 @@
             border-radius: 5px;
             display: block;
         }
+        /* Styling for the button */
         button {
+            /* Text and background color, border, and cursor */
             color: white;
             background-color: #27ae60; /* Changed to match the Fetch Person's Cash styling */
             border: none;
             cursor: pointer;
         }
+        /* Hover effect for the button */
         button:hover {
             background-color: #218c54;
         }
+        /* Focus effect for input and button elements */
         input:focus, button:focus {
             outline: none;
             border-color: #27ae60;
@@ -49,19 +64,27 @@
     </style>
 </head>
 <body>
+    <!-- Sign in form -->
     <form id="loginForm">
+        <!-- Email input -->
         <input type="email" id="email" placeholder="Email" required>
+        <!-- Password input -->
         <input type="password" id="password" placeholder="Password" required>
+        <!-- Sign In button -->
         <button type="submit">Sign In</button>
     </form>
 
+    <!-- JavaScript code for form submission -->
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent the default form submission
+            // Prevent the default form submission
+            event.preventDefault(); 
 
+            // Get email and password values from the form
             var email = document.getElementById('email').value;
             var password = document.getElementById('password').value;
 
+            // Fetch request to authenticate the user
             fetch('http://localhost:6942/authenticate', {
                 method: 'POST',
                 headers: {
@@ -70,21 +93,25 @@
                 body: JSON.stringify({email: email, password: password}),
             })
             .then(response => {
+                // Check if the response is successful
                 if (response.ok) {
                     console.log('Authentication successful');
-                    // Here, we store the email in localStorage
+                    // Store the email in localStorage
                     localStorage.setItem('userEmail', email);
-                    // Redirect the user to gettinguserstats.html or another page as needed
+                    // Redirect the user to another page
                     window.location.href = 'statsfortheuser.html';
                 } else if (response.status === 401) {
+                    // Throw an error if authentication fails due to incorrect email or password
                     throw new Error('Incorrect email or password.');
                 } else {
+                    // Throw an error if any other error occurs during authentication
                     throw new Error('An error occurred. Please try again later.');
                 }
             })
             .catch((error) => {
+                // Log and alert the error message if an error occurs during the fetch request
                 console.error('Error:', error);
-                alert(error.message); // Display an error message to the user
+                alert(error.message);
             });
         });
     </script>         
