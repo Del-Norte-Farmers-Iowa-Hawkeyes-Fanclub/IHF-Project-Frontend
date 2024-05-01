@@ -81,7 +81,7 @@
     border-radius: 4px;
     position: relative;
     background: white;
-    min-height: 80vh;
+    height: 800px;
   }
 
   .header {
@@ -145,7 +145,7 @@
 
   .iframe-container iframe {
     width: 100%;
-    height: full;
+    height: 100%;
     border: none;
   }
 
@@ -184,10 +184,11 @@
         <button onclick="requestFullScreen('.farming .iframe-container iframe')"><i class="fas fa-expand"></i> Fullscreen</button>
       </div>
     </div>
-    <div class="iframe-container" id="farming-container">
+    <div class="iframe-container">
       <div class="start-screen">
         <img src="img/farming.gif" alt="Farming Intro">
         <button class="play-button" onclick="startFarming()">Play/Restart</button>
+        <button class="resume-button" onclick="resumeGame('.farming .iframe-container iframe')">Resume Game</button>
       </div>
     </div>
   </div>
@@ -198,10 +199,13 @@
         <button onclick="requestFullScreen('.betting .iframe-container iframe')"><i class="fas fa-expand"></i> Fullscreen</button>
       </div>
     </div>
-    <div class="iframe-container" id="nba-container">
+    <div class="iframe-container">
+      <div class="start-screen">
         <img src="img/200w (2).gif" alt="Sports Betting Intro">
         <button class="play-button dark-blue-button" onclick="startBetting()">Play/Restart</button>
+        <button class="resume-button dark-blue-button" onclick="resumeGame('.betting .iframe-container iframe')">Resume Game</button>
       </div>
+    </div>
   </div>
 </div>
 
@@ -237,13 +241,13 @@ function requestFullScreen(selector) {
 }
 
 function startFarming() {
-  const container = document.getElementById('farming-container');
-  container.innerHTML = '<iframe src="http://localhost:4000/index.html" frameborder="0" style="width:100%; height:100%;"></iframe>';
+  const container = document.querySelector('.farming .iframe-container');
+  container.innerHTML = '<iframe src="https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/game.html" frameborder="0" style="width:100%; height:100%;"></iframe>';
 }
 
 function startBetting() {
-  const container = document.getElementById('nba-container');
-  container.innerHTML = '<iframe src="http://localhost:4000/linktoagriculturalhistorysignin" frameborder="0" style="width:100%; height:100%;"></iframe>';
+  const container = document.querySelector('.betting .iframe-container');
+  container.innerHTML = '<iframe src="http://localhost:4000/statsfortheuser.html" frameborder="0" style="width:100%; height:100%;"></iframe>';
 }
 
 function resumeGame(selector) {
