@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>NBA Trade Analyzer</title>
 <style>
+    /* Styling for the body */
     body {
         font-family: 'Arial', sans-serif;
         background-color: #f4f4f9;
@@ -13,9 +14,11 @@
         flex-direction: column;
         align-items: center;
     }
+    /* Styling for the heading */
     h1 {
         color: #333;
     }
+    /* Styling for select and button elements */
     select, button {
         padding: 10px;
         margin: 5px;
@@ -23,20 +26,24 @@
         border: 1px solid #ddd;
         background-color: #fff;
     }
+    /* Styling for the button */
     button {
         cursor: pointer;
         background-color: #007BFF;
         color: white;
         border: none;
     }
+    /* Styling for the button on hover */
     button:hover {
         background-color: #0056b3;
     }
+    /* Styling for paragraph elements */
     p {
         color: #444;
         font-size: 16px;
         margin: 10px 0;
     }
+    /* Styling for the container */
     .container {
         box-shadow: 0 0 15px rgba(0,0,0,0.1);
         padding: 20px;
@@ -65,41 +72,44 @@ const players = [
     { id: 15, name: 'Kyrie Irving', stats: { points: 27, assists: 6, rebounds: 4 }}
 ];
 
+// Event listener for when the DOM content is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    populatePlayers();
+    populatePlayers(); // Call the function to populate players in dropdowns
 });
 
+// Function to populate players in dropdown menus
 function populatePlayers() {
     const playerSelect1 = document.getElementById('player1');
     const playerSelect2 = document.getElementById('player2');
 
     // Populate the dropdown menus with players
     players.forEach(player => {
-        const option1 = document.createElement('option');
-        const option2 = document.createElement('option');
-        option1.value = option2.value = player.id;
-        option1.textContent = option2.textContent = player.name;
-        playerSelect1.appendChild(option1);
-        playerSelect2.appendChild(option2);
+        const option1 = document.createElement('option'); // Create option element for player 1 dropdown
+        const option2 = document.createElement('option'); // Create option element for player 2 dropdown
+        option1.value = option2.value = player.id; // Set the value of options to player ID
+        option1.textContent = option2.textContent = player.name; // Set the text content of options to player name
+        playerSelect1.appendChild(option1); // Append option to player 1 dropdown
+        playerSelect2.appendChild(option2); // Append option to player 2 dropdown
     });
 }
 
+// Function to analyze the trade
 async function analyzeTrade() {
-    const player1 = document.getElementById('player1').value;
-    const player2 = document.getElementById('player2').value;
+    const player1 = document.getElementById('player1').value; // Get the selected value of player 1 dropdown
+    const player2 = document.getElementById('player2').value; // Get the selected value of player 2 dropdown
 
     // Extract player data
-    const playerData1 = players.find(p => p.id == player1);
-    const playerData2 = players.find(p => p.id == player2);
+    const playerData1 = players.find(p => p.id == player1); // Find player 1 data from the players array
+    const playerData2 = players.find(p => p.id == player2); // Find player 2 data from the players array
 
     // Simulate a trade analysis
-    const score1 = playerData1.stats.points + playerData1.stats.assists * 2 + playerData1.stats.rebounds * 1.5;
-    const score2 = playerData2.stats.points + playerData2.stats.assists * 2 + playerData2.stats.rebounds * 1.5;
+    const score1 = playerData1.stats.points + playerData1.stats.assists * 2 + playerData1.stats.rebounds * 1.5; // Calculate score for player 1
+    const score2 = playerData2.stats.points + playerData2.stats.assists * 2 + playerData2.stats.rebounds * 1.5; // Calculate score for player 2
 
     // Displaying the results
-    document.getElementById('score1').textContent = `Score for ${playerData1.name}: ${score1}`;
-    document.getElementById('score2').textContent = `Score for ${playerData2.name}: ${score2}`;
-    document.getElementById('recommendation').textContent = `Better Trade: ${score1 > score2 ? playerData1.name : playerData2.name}`;
+    document.getElementById('score1').textContent = `Score for ${playerData1.name}: ${score1}`; // Display score for player 1
+    document.getElementById('score2').textContent = `Score for ${playerData2.name}: ${score2}`; // Display score for player 2
+    document.getElementById('recommendation').textContent = `Better Trade: ${score1 > score2 ? playerData1.name : playerData2.name}`; // Display recommendation based on scores
 }
 </script>
 </head>
@@ -107,7 +117,7 @@ async function analyzeTrade() {
 <div class="container">
     <h1>NBA Trade Analyzer</h1>
 
-    <!-- Player Selection -->
+    <!-- Player Selection Dropdowns and Analyze Trade Button -->
     <select id="player1"></select>
     <select id="player2"></select>
     <button onclick="analyzeTrade()">Analyze Trade</button>

@@ -5,102 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NBA Betting Site</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 600px;
-            margin: auto;
-        }
-        h1, h2 {
-            text-align: center;
-        }
-        .game {
-            margin: 20px 0;
-            padding: 10px;
-            background-color: #e9e9e9;
-            border-radius: 5px;
-        }
-        .bet-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .bet-button:hover {
-            background-color: #45a049;
-        }
-        .cash-display {
-            text-align: center;
-            margin-top: 20px;
-        }
+        /* CSS styles for the page */
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Container for the entire content -->
         <h1>NBA Game Betting</h1>
+        <!-- Main heading -->
         <div class="cash-display">Cash Remaining: <span id="cashAmount">$500</span></div>
+        <!-- Display for the user's remaining cash -->
 
         <div class="game">
+            <!-- First game section -->
             <h3>Lakers vs. Celtics</h3>
+            <!-- Heading for the game -->
             <button class="bet-button" onclick="placeBet(100, 'Lakers vs. Celtics Over')">Over 210.5 (-$100)</button>
+            <!-- Button for betting on Over -->
             <button class="bet-button" onclick="placeBet(100, 'Lakers vs. Celtics Under')">Under 210.5 (-$100)</button>
+            <!-- Button for betting on Under -->
         </div>
 
         <div class="game">
+            <!-- Second game section -->
             <h3>Nets vs. Bucks</h3>
+            <!-- Heading for the game -->
             <button class="bet-button" onclick="placeBet(100, 'Nets vs. Bucks Over')">Over 198.5 (-$100)</button>
+            <!-- Button for betting on Over -->
             <button class="bet-button" onclick="placeBet(100, 'Nets vs. Bucks Under')">Under 198.5 (-$100)</button>
+            <!-- Button for betting on Under -->
         </div>
     </div>
 
     <script>
-        const userEmail = localStorage.getItem('userEmail');
+        // JavaScript code
+        const userEmail = localStorage.getItem('userEmail'); // Retrieve user email from local storage
 
         async function fetchCash() {
+            // Function to fetch user's cash from the server
             if (!userEmail) {
+                // If no user email found, display error message
                 document.getElementById('cashAmount').innerText = 'No username found. Please sign in.';
                 return;
             }
             try {
+                // Try fetching cash data from the server
                 const response = await fetch('http://localhost:6942/api/person/getCash', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: userEmail })
                 });
                 if (!response.ok) {
+                    // If response not OK, throw an error
                     throw new Error(`Server responded with ${response.status}`);
                 }
-                const data = await response.json();
+                const data = await response.json(); // Parse response data
                 if (data.cash === undefined) {
+                    // If cash value is undefined, throw an error
                     throw new Error('Cash value is undefined.');
                 }
-                const cash = data.cash;
-                document.getElementById('cashAmount').textContent = `$${cash}`;
+                const cash = data.cash; // Retrieve cash value from data
+                document.getElementById('cashAmount').textContent = `$${cash}`; // Update cash display
             } catch (error) {
+                // Catch any errors during fetch operation and display error message
                 console.error('There was a problem with the fetch operation:', error);
                 document.getElementById('cashAmount').textContent = 'Error fetching cash.';
             }
         }
 
         async function placeBet(amount, betType) {
-            let cash = parseInt(localStorage.getItem('userCash'), 10);
+            // Function to place a bet
+            let cash = parseInt(localStorage.getItem('userCash'), 10); // Retrieve user's cash from local storage
             if (cash >= amount) {
-                cash -= amount;
-                localStorage.setItem('userCash', cash);
-                document.getElementById('cashAmount').textContent = `$${cash}`;
-                alert(`You placed a $${amount} bet on the ${betType}. Remaining cash: $${cash}`);
+                // If user has sufficient cash for the bet
+                cash -= amount; // Deduct the bet amount from cash
+                localStorage.setItem('userCash', cash); // Update cash in local storage
+                document.getElementById('cashAmount').textContent = `$${cash}`; // Update cash display
+                alert(`You placed a $${amount} bet on the ${betType}. Remaining cash: $${cash}`); // Alert user about the bet
             } else {
+                // If user has insufficient cash for the bet, display error message
                 alert('Insufficient cash to place this bet.');
             }
         }
