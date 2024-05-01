@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hawkeye Farmers v0.0.4</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+<style>
+  body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+
+  .navbar {
+    background-color: #f1c40f;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 60px;
+    z-index: 1000;
+  }
+
+  .navbar h1 {
+    color: #333;
+    font-size: 24px;
+    padding: 18px 20px;
+    margin: 0;
+    display: inline-block;
+  }
+
+  .navbar-links {
+    display: none;
+    position: fixed;
+    top: 60px;
+    width: 100%;
+    background-color: #f1c40f;
+    z-index: 1000;
+  }
+
+  .navbar-links a {
+    color: #333;
+    padding: 15px 20px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #fff;
+  }
+
+  .navbar-links a:hover {
+    background-color: #f39c12;
+    color: #fff;
+  }
+
+  .navbar-toggle {
+    float: right;
+    padding: 22px 20px;
+    font-size: 18px;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 60px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    min-height: 90vh;
+  }
+
+  .section {
+    flex: 1 1 50%;
+    margin: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    position: relative;
+    background: white;
+    min-height: 80vh;
+  }
+
+  .header {
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+
+  .header h2 {
+    margin: 0;
+  }
+
+  .controls {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .controls button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    margin-left: 5px;
+  }
+
+  .play-button, .resume-button {
+    font-size: 20px;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #f1c40f;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  .play-button:hover, .resume-button:hover {
+    background-color: #f39c12;
+  }
+
+  .dark-blue-button {
+    background-color: #34495e;
+  }
+
+  .dark-blue-button:hover {
+    background-color: #2c3e50;
+  }
+
+  .iframe-container {
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .iframe-container iframe {
+    width: 100%;
+    height: full;
+    border: none;
+  }
+
+  .start-screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .start-screen img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+</style>
+</head>
+<body>
+<div class="navbar">
+  <h1>Iowa Farmer Basketball Game</h1>
+  <div class="navbar-toggle" id="navbar-toggle">☰</div>
+</div>
+<div class="navbar-links" id="navbar-links">
+  <a href="#">Home</a>
+  <a href="/shop.html">Shop</a>
+  <a href="#">About Us</a>
+  <a href="#" id="navbar-close">Close ×</a>
+</div>
+
+<div class="container">
+  <div class="section farming">
+    <div class="header">
+      <h2>Farming</h2>
+      <div class="controls">
+        <button onclick="requestFullScreen('.farming .iframe-container iframe')"><i class="fas fa-expand"></i> Fullscreen</button>
+      </div>
+    </div>
+    <div class="iframe-container" id="farming-container">
+      <div class="start-screen">
+        <img src="img/farming.gif" alt="Farming Intro">
+        <button class="play-button" onclick="startFarming()">Play/Restart</button>
+      </div>
+    </div>
+  </div>
+  <div class="section betting">
+    <div class="header">
+      <h2>Sports Betting</h2>
+      <div class="controls">
+        <button onclick="requestFullScreen('.betting .iframe-container iframe')"><i class="fas fa-expand"></i> Fullscreen</button>
+      </div>
+    </div>
+    <div class="iframe-container" id="nba-container">
+        <img src="img/200w (2).gif" alt="Sports Betting Intro">
+        <button class="play-button dark-blue-button" onclick="startBetting()">Play/Restart</button>
+      </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>© 2024 Iowa Farmer Basketball Shop</p>
+</div>
+
+<script>
+document.getElementById('navbar-toggle').addEventListener('click', function() {
+  var links = document.getElementById('navbar-links');
+  if (links.style.display === 'block') {
+    links.style.display = 'none';
+  } else {
+    links.style.display = 'block';
+  }
+});
+
+document.getElementById('navbar-close').addEventListener('click', function() {
+  document.getElementById('navbar-links').style.display = 'none';
+});
+
+function requestFullScreen(selector) {
+  const iframe = document.querySelector(selector);
+  if (iframe.requestFullscreen) {
+    iframe.requestFullscreen();
+  } else if (iframe.mozRequestFullScreen) {
+    iframe.mozRequestFullScreen();
+  } else if (iframe.webkitRequestFullscreen) {
+    iframe.webkitRequestFullscreen();
+  } else if (iframe.msRequestFullscreen) {
+    iframe.msRequestFullscreen();
+  }
+}
+
+function startFarming() {
+  const container = document.getElementById('farming-container');
+  container.innerHTML = '<iframe src="http://localhost:4000/index.html" frameborder="0" style="width:100%; height:100%;"></iframe>';
+}
+
+function startBetting() {
+  const container = document.getElementById('nba-container');
+  container.innerHTML = '<iframe src="http://localhost:4000/linktoagriculturalhistorysignin" frameborder="0" style="width:100%; height:100%;"></iframe>';
+}
+
+function resumeGame(selector) {
+  const iframe = document.querySelector(selector);
+  if (iframe.style.display === 'none') {
+    iframe.style.display = 'block'; // Show the iframe if hidden
+  } // Add more logic here if needed to handle game state
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<header class="site-header">
+  <div id="header">
+    <nav>
+      <ul class="left-links">
+        <li>
+          <img src="https://raw.githubusercontent.com/JishnuS420/BlogCSA/main/nba.png" height="50" alt="Floating Image" class="floating-image">
+        </li>
+        <li class="fork"><a href="/">Home</a></li>
+        <li class="fork"><a href="/signin.html"><b>NBA</b> API and Analysis</a></li>
+        <li class="fork"><a href="/individualstats.html">API (pull from frontend) </a></li>
+        <li class="fork"><a href="/namesearch.html">API (pull from backend) </a></li>
+        <li class="fork"><a href="/link.html">link</a></li>
+        <li class="fork"><a href="/fantasydraft.html">Draft</a></li>
+        <li class="fork"><a href="/cal_comment.html">Calendar/SocialTalk</a></li>
+        <li class="title"><a href="https://github.com/Del-Norte-Farmers-Iowa-Hawkeyes-Fanclub/IHF-Project-Frontend#readme">View On GitHub</a></li>
+        <li>
+          <div class="sign-in-button">
+            <a href="/signin.html" class="fork">Sign In</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </div><!-- end header -->
+</header>
+
+<style>
+  /* Style for the header container */
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff; /* Adjust background color as needed */
+  padding: 10px 20px; /* Adjust padding as needed */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visibility */
+  z-index: 999; /* Ensure it's above other content */
+  margin-bottom: 20px;
+}
+
+/* Style for the logo/image */
+#header img {
+  margin-right: 20px; /* Adjust margin as needed */
+}
+
+/* Style for the navigation links */
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;
+}
+
+nav ul li {
+  margin-right: 15px; /* Adjust margin between li elements */
+}
+
+nav ul li:last-child {
+  margin-right: 0; /* Remove margin from the last li element */
+}
+
+/* Style for the sign-in button */
+.sign-in-button {
+  margin-left: auto; /* Push the sign-in button to the right */
+  color: #007bff;
+}
+
+/* Style for the links */
+nav ul li a {
+  text-decoration: none;
+  color: #333333; /* Adjust link color as needed */
+  font-weight: bold; /* Adjust font weight as needed */
+}
+
+/* Style for the hover effect on links (optional) */
+nav ul li a:hover {
+  color: #007bff; /* Adjust hover color as needed */
+}
+</style>
+
+
+<body>
+
+  <div>
+
+      <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Season Statistics</title>
+    <style>
+        h1 {
+            margin-top: 100px;
+            /* Adjust the value as needed */
+        }
+    </style>
+</head>
+<body>
+    <h1>NBA Player Season Statistics</h1>
+    <div>
+        <label for="searchInput">Search by Player Name:</label>
+        <input type="text" id="searchInput" placeholder="Enter Player Name">
+        <button onclick="searchPlayer()">Search</button>
+    </div>
+</body>
+</html>
+    <div id="playerStats"></div>
+
+    <script>
+        async function fetchPlayerIdByName(playerName) {
+            try {
+                const response = await fetch(`http://localhost:8062/api/players?search=${playerName}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data from backend');
+                }
+                const data = await response.json();
+                return data.data[0].id;
+            } catch (error) {
+                console.error('Error:', error.message);
+                return null;
+            }
+        }
+
+        async function fetchPlayerStatistics(playerID) {
+            try {
+                const response = await fetch(`http://localhost:8062/api/nba/playerseason?player_ids=${playerID}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data from backend');
+                }
+                const data = await response.json();
+                displayPlayerStatistics(data);
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        }
+
+        function displayPlayerStatistics(data) {
+            const playerStatsDiv = document.getElementById('playerStats');
+            const playerData = data.data[0];
+            const statsHtml = `
+                <h2>Player Statistics for Season ${playerData.season}</h2>
+                <ul>
+                    <li>Points: ${playerData.pts}</li>
+                            <li>Assists: ${playerData.ast}</li>
+                            <li>Turnovers: ${playerData.turnover}</li>
+                            <li>Personal Fouls: ${playerData.pf}</li>
+                            <li>Field Goals Attempted: ${playerData.fga}</li>
+                            <li>Field Goals Made: ${playerData.fgm}</li>
+                            <li>Free Throws Attempted: ${playerData.fta}</li>
+                            <li>Free Throws Made: ${playerData.ftm}</li>
+                            <li>Three-Point Field Goals Attempted: ${playerData.fg3a}</li>
+                            <li>Three-Point Field Goals Made: ${playerData.fg3m}</li>
+                            <li>Rebounds: ${playerData.reb}</li>
+                            <li>Offensive Rebounds: ${playerData.oreb}</li>
+                            <li>Defensive Rebounds: ${playerData.dreb}</li>
+                            <li>Steals: ${playerData.stl}</li>
+                            <li>Blocks: ${playerData.blk}</li>
+                            <li>Field Goal Percentage: ${playerData.fg_pct}</li>
+                            <li>Three-Point Field Goal Percentage: ${playerData.fg3_pct}</li>
+                            <li>Free Throw Percentage: ${playerData.ft_pct}</li>
+                            <li>Minutes: ${playerData.min}</li>
+                            <li>Games Played: ${playerData.games_played}</li>
+                            <li>Player ID: ${playerData.player_id}</li>
+                    <!-- Add more statistics as needed -->
+                </ul>
+            `;
+            playerStatsDiv.innerHTML = statsHtml;
+        }
+
+        async function searchPlayer() {
+            const playerNameInput = document.getElementById('searchInput');
+            const playerName = playerNameInput.value.trim();
+            if (playerName !== '') {
+                const playerId = await fetchPlayerIdByName(playerName);
+                if (playerId !== null) {
+                    fetchPlayerStatistics(playerId);
+                } else {
+                    alert('Player not found. Please try again.');
+                }
+            } else {
+                alert('Please enter a player name.');
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+  </div>
+</body>
+
+
+</html>

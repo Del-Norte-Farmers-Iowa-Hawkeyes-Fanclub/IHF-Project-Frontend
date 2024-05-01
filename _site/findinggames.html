@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Stats</title>
+</head>
+<body>
+    <h1>NBA Player Stats</h1>
+    
+    <label for="playerName">Player Name:</label>
+    <input type="text" id="playerName">
+    
+    <label for="year">Year:</label>
+    <input type="number" id="year" min="2000" max="2030">
+    
+    <button onclick="getStats()">Get Stats</button>
+    
+    <div id="statsResult"></div>
+
+    <script>
+        function getStats() {
+            const playerName = document.getElementById("playerName").value;
+            const year = document.getElementById("year").value;
+
+            // Replace 'your-backend-url' with the actual backend URL
+            const backendURL = `http://localhost:8062/nba/stats/${year}/${playerName}`;
+
+            fetch(backendURL)
+                .then(response => response.json())
+                .then(data => displayStats(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayStats(data) {
+            const statsResult = document.getElementById("statsResult");
+            statsResult.innerHTML = ""; // Clear previous results
+
+            if (data && data.data && data.data.length > 0) {
+                data.data.forEach(game => {
+                    const gameInfo = game.game;
+                    const playerInfo = game.player;
+
+                    const gameDetails = `
+                        <p>Date: ${gameInfo.date}</p>
+                        <p>Opponent: ${gameInfo.visitor_team_score > gameInfo.home_team_score ? 'vs' : 'at'} ${gameInfo.visitor_team_id}</p>
+                        <p>Points: ${game.pts}</p>
+                        <hr>
+                    `;
+
+                    statsResult.innerHTML += gameDetails;
+                });
+            } else {
+                statsResult.innerHTML = "<p>No data available for the specified player and year.</p>";
+            }
+        }
+    </script>
+</body>
+</html>

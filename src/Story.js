@@ -121,7 +121,7 @@ class Story extends Phaser.Scene {
     }
     
     async postData(eco) {
-        var email = localStorage.getItem('email');
+        var email = localStorage.getItem('Email');
         
         try {
             if (!email) {

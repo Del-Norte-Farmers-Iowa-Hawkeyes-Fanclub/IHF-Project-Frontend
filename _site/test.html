@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Stats</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1em 0;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        #statsContainer {
+            margin-top: 20px;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 12px;
+        }
+
+        h3 {
+            font-size: 1.5em;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            margin: 8px 0;
+            line-height: 1.5;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>NBA Player Stats</h1>
+    </header>
+
+    <main>
+        <label for="year">Enter Year:</label>
+        <input type="number" id="year" min="2000" max="2100" required>
+
+        <label for="playerId">Enter Player ID:</label>
+        <input type="number" id="playerId" required>
+
+        <label for="gameDate">Enter Game Date:</label>
+        <input type="date" id="gameDate">
+
+        <button onclick="getNBAStats()">Get Stats</button>
+
+        <div id="statsContainer">
+            <table id="statsTable">
+                <thead>
+                    <tr>
+                        <th>Stat</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Stats will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        async function getNBAStats() {
+            const yearInput = document.getElementById('year');
+            const playerIdInput = document.getElementById('playerId');
+            const gameDateInput = document.getElementById('gameDate');
+
+            const year = yearInput.value;
+            const playerId = playerIdInput.value;
+            const gameDate = gameDateInput.value;
+
+            if (!year || !playerId || !gameDate) {
+                alert("Please enter year, player ID, and game date.");
+                return;
+            }
+
+            const apiUrl = `http://localhost:8062/nba/stats/${year}/${playerId}?gameDate=${gameDate}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                displayStats(data);
+            } catch (error) {
+                console.error('Error fetching NBA stats:', error);
+            }
+        }
+
+        function displayStats(data) {
+            const statsTableBody = document.querySelector('#statsTable tbody');
+            const playerStats = data.data[0];
+
+            const statsData = [
+                ['Points', playerStats.pts],
+                ['Assists', playerStats.ast],
+                ['Rebounds', playerStats.reb],
+                ['Field Goals Made', playerStats.fgm],
+                ['Field Goals Attempted', playerStats.fga],
+                ['Field Goal Percentage', playerStats.fg_pct],
+                ['3-Pointers Made', playerStats.fg3m],
+                ['3-Pointers Attempted', playerStats.fg3a],
+                ['3-Point Percentage', playerStats.fg3_pct],
+                ['Free Throws Made', playerStats.ftm],
+                ['Free Throws Attempted', playerStats.fta],
+                ['Free Throw Percentage', playerStats.ft_pct],
+                ['Defensive Rebounds', playerStats.dreb],
+                ['Offensive Rebounds', playerStats.oreb],
+                ['Personal Fouls', playerStats.pf],
+                ['Steals', playerStats.stl],
+                ['Blocks', playerStats.blk],
+                ['Turnovers', playerStats.turnover],
+            ];
+
+            // Clear previous content
+            statsTableBody.innerHTML = '';
+
+            // Populate the table dynamically
+            statsData.forEach(stat => {
+                const row = document.createElement('tr');
+                const [statName, statValue] = stat;
+
+                const statNameCell = document.createElement('td');
+                statNameCell.textContent = statName;
+
+                const statValueCell = document.createElement('td');
+                statValueCell.textContent = statValue;
+
+                row.appendChild(statNameCell);
+                row.appendChild(statValueCell);
+
+                statsTableBody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>

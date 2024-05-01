@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+
+<header class="site-header">
+  <div id="header">
+    <nav>
+      <ul class="left-links">
+        <li>
+          <img src="https://raw.githubusercontent.com/JishnuS420/BlogCSA/main/nba.png" height="50" alt="Floating Image" class="floating-image">
+        </li>
+        <li class="fork"><a href="/">Home</a></li>
+        <li class="fork"><a href="/signin.html"><b>NBA</b> API and Analysis</a></li>
+        <li class="fork"><a href="/individualstats.html">API (pull from frontend) </a></li>
+        <li class="fork"><a href="/namesearch.html">API (pull from backend) </a></li>
+        <li class="fork"><a href="/link.html">link</a></li>
+        <li class="fork"><a href="/fantasydraft.html">Draft</a></li>
+        <li class="fork"><a href="/cal_comment.html">Calendar/SocialTalk</a></li>
+        <li class="title"><a href="https://github.com/Del-Norte-Farmers-Iowa-Hawkeyes-Fanclub/IHF-Project-Frontend#readme">View On GitHub</a></li>
+        <li>
+          <div class="sign-in-button">
+            <a href="/signin.html" class="fork">Sign In</a>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </div><!-- end header -->
+</header>
+
+<style>
+  /* Style for the header container */
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff; /* Adjust background color as needed */
+  padding: 10px 20px; /* Adjust padding as needed */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visibility */
+  z-index: 999; /* Ensure it's above other content */
+  margin-bottom: 20px;
+}
+
+/* Style for the logo/image */
+#header img {
+  margin-right: 20px; /* Adjust margin as needed */
+}
+
+/* Style for the navigation links */
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;
+}
+
+nav ul li {
+  margin-right: 15px; /* Adjust margin between li elements */
+}
+
+nav ul li:last-child {
+  margin-right: 0; /* Remove margin from the last li element */
+}
+
+/* Style for the sign-in button */
+.sign-in-button {
+  margin-left: auto; /* Push the sign-in button to the right */
+  color: #007bff;
+}
+
+/* Style for the links */
+nav ul li a {
+  text-decoration: none;
+  color: #333333; /* Adjust link color as needed */
+  font-weight: bold; /* Adjust font weight as needed */
+}
+
+/* Style for the hover effect on links (optional) */
+nav ul li a:hover {
+  color: #007bff; /* Adjust hover color as needed */
+}
+</style>
+
+
+<body>
+
+  <div>
+
+      <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Stats</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>NBA Player Stats</h1>
+
+    <button onclick="fetchNBAPlayers()">Fetch Players</button>
+
+    <table id="playerTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Position</th>
+                <th>Team</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        function fetchNBAPlayers() {
+            fetch('http://localhost:8062/api/nba/playersall')
+                .then(response => response.json())
+                .then(data => {
+                    displayPlayers(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching NBA players:', error);
+                });
+        }
+
+        function displayPlayers(players) {
+            const tableBody = document.querySelector('#playerTable tbody');
+            tableBody.innerHTML = '';
+
+            players.forEach(player => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = player.id;
+                row.insertCell(1).textContent = player.first_name;
+                row.insertCell(2).textContent = player.last_name;
+                row.insertCell(3).textContent = player.position;
+                row.insertCell(4).textContent = player.team.full_name;
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+  </div>
+</body>
+
+
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Player Draft</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        h1, h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 30px;
+        }
+        .side {
+            width: 45%;
+            margin: 0 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .slot {
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative; /* Added for positioning tooltip */
+        }
+        .slot:hover {
+            background-color: #f0f0f0;
+        }
+        .selectedSlot {
+            background-color: lightblue;
+        }
+        .playerSelected {
+            background-color: lightgreen;
+        }
+        .playerStats {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 100;
+        }
+        .slot:hover .playerStats {
+            display: block;
+        }
+        #playerSearchContainer {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        #playerSearchInput {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 70%;
+            margin-right: 10px;
+        }
+        #searchResults {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px; /* Adjust for scrollbar */
+        }
+        .searchResult {
+            padding: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .searchResult:hover {
+            background-color: #f0f0f0;
+        }
+        #turnIndicator {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-top: 30px;
+        }
+        #submitTeams {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        #submitTeams:hover {
+            background-color: #45a049;
+        }
+        .resultContainer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Basketball Player Draft</h1>
+    <div id="turnIndicator">Player A's Turn</div>
+    <div id="projectedFantasyPoints"></div>
+    <div id="playerSearchContainer">
+        <input type="text" id="playerSearchInput" placeholder="Enter player name">
+        <div id="searchResults"></div>
+    </div>
+    <div class="container">
+        <div class="side sideA">
+            <h2>Team A</h2>
+            <div class="slots">
+                <div class="slot" id="pg1Slot">Point Guard 1</div>
+                <div class="slot" id="pf1Slot">Power Forward 1</div>
+                <div class="slot" id="pf2Slot">Power Forward 2</div>
+                <div class="slot" id="cSlot">Center</div>
+                <div class="slot" id="sf1Slot">Small Forward 1</div>
+                <div class="slot" id="sf2Slot">Small Forward 2</div>
+                <div class="slot" id="sgSlot">Shooting Guard</div>
+                <div class="slot" id="benchASlot1">Bench</div>
+                <div class="slot" id="benchASlot2">Bench</div>
+                <div class="slot" id="benchASlot3">Bench</div>
+                <div class="slot" id="benchASlot4">Bench</div>
+                <div class="slot" id="benchASlot5">Bench</div>
+                <div class="slot" id="benchASlot6">Bench</div>
+            </div>
+        </div>
+        <div class="side sideB">
+            <h2>Team B</h2>
+            <div class="slots">
+                <div class="slot" id="pg2Slot">Point Guard 1</div>
+                <div class="slot" id="pf3Slot">Power Forward 1</div>
+                <div class="slot" id="pf4Slot">Power Forward 2</div>
+                <div class="slot" id="c2Slot">Center</div>
+                <div class="slot" id="sf3Slot">Small Forward 1</div>
+                <div class="slot" id="sf4Slot">Small Forward 2</div>
+                <div class="slot" id="sg2Slot">Shooting Guard</div>
+                <div class="slot" id="benchBSlot1">Bench</div>
+                <div class="slot" id="benchBSlot2">Bench</div>
+                <div class="slot" id="benchBSlot3">Bench</div>
+                <div class="slot" id="benchBSlot4">Bench</div>
+                <div class="slot" id="benchBSlot5">Bench</div>
+                <div class="slot" id="benchBSlot6">Bench</div>
+            </div>
+        </div>
+    </div>
+    <button id="submitTeams">Submit Teams</button>
+
+    
