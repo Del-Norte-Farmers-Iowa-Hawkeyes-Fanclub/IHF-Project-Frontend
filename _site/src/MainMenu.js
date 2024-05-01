@@ -133,7 +133,7 @@ class MainMenu extends Phaser.Scene {
 
     clickShop() {
         EPT.Sfx.play('click');
-        window.top.location.href = 'http://localhost:4000/shop.html';
+        window.top.location.href = 'localhost:4000/shop.html';
     }
 
     clickStart() {

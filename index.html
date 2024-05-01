@@ -76,10 +76,10 @@
             if (response.ok) {
                 // Handle successful login
                 console.log('Login successful');
-                localStorage.setItem('email', email);
+                localStorage.setItem('Email', email);
                 console.log(email);
-                window.location.href = 'https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/game';
-                window.top.location.href = 'https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/game.html';
+                window.location.href = 'https://localhost:4000/game';
+                window.top.location.href = 'http://localhost:4000/game.html';
             } else {
                 // Handle login error
                 console.log('Login failed');
