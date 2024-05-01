@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,6 +101,9 @@
         .products {
             padding-bottom: 100px; /* Added more padding to lift content above the fixed footer */
         }
+        .crop {
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -123,6 +125,10 @@
             <input type="number" id="corn-amount" name="corn-amount" min="1" value="1">
             <button type="submit" class="button" onclick="sellCrop()">Convert to Dollars</button>
         </div>
+        <div class="crop">
+            <label class="crop-amount" for="crop-amount">You have: </label>
+            <br><label for="money">$ </label>
+        </div>
         <div class="betting-button">
             <a href="https://csa-trimester-2.github.io/nba-analysis-final/" class="button">NBA Fantasy Betting</a>
         </div>
@@ -141,7 +147,7 @@
             <div class="product" id = "cornProduct">
                 <h2>Corn 🌾</h2>
                 <!-- <img src="placeholder-image.png" alt="Product 3"> -->
-                <p>Price: $25</p>
+                <p id="ppc">Price: $25</p>
             </div>
             <!-- Additional products can be added in the same manner -->
         </div>
@@ -151,17 +157,21 @@
         <p>Email | Facebook | Twitter</p>
     </div>
 
+
     <!-- <div class="shop-container">
         <h1>SHOP</h1>
+
 
         <div id="return">
             <button id="home" onclick="myFunction()">Return to Home</button>
         </div>
 
+
         <div id="cornSell">
             <button id="cornSellButton" onclick="sellCorn()">Sell Your Corn</button>
         </div>
     </div>
+
 
      -->
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -169,12 +179,14 @@
         var pricePerCorn = 0;
         var cornQuant = localStorage.getItem('cornStorage');
         const mailE = localStorage.getItem('email');
+        getCash(mailE);
+        document.querySelector("label[for='crop-amount']").textContent = "You have: " + cornQuant + " ears of corn";
         function myFunction(){
             document.getElementById("home");
              window.location.href = '/game.html';
              console.log(pricePerCorn + " ppc");
         }
-        
+       
         function updateCash(email, cash) {
             fetch('http://localhost:6942/api/person/cashUpdate', {
                 method: 'POST',
@@ -198,9 +210,39 @@
             });
         }
 
+
+        function getCash(email) {
+            fetch('http://localhost:6942/api/person/getCash', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // Parse the response as JSON
+            })
+            .then(data => {
+                console.log(JSON.stringify(data));
+                document.querySelector("label[for='money']").textContent = "You have $" + JSON.stringify(data);
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        }
+       
+       
+
+
         function setCorn() {
             document.querySelector("label[for='corn-amount']").textContent = "Corn Cobs to Sell:";
         }
+
 
         function sellCrop() {
             var choice = document.getElementById("crop").value;
@@ -208,6 +250,7 @@
                 sellCorn();
             }
         }
+
 
         function calculateCornPrice(callback) {
             // getting corn futures price
@@ -222,6 +265,7 @@
                 console.log(result.price);
                 pricePerCorn = Math.round(result.price);
                 console.log(pricePerCorn);
+                document.getElementById("ppc").innerHTML = "Price: $" + pricePerCorn;
                 if(callback){
                     callback(pricePerCorn);
                 }
@@ -229,9 +273,9 @@
             error: function ajaxError(jqXHR) {
                 console.error('Error: ', jqXHR.responseText);
             }
-            
+           
         });
-        
+       
         }
         function sellCorn(){
               console.log("corn: " + cornQuant);
@@ -246,6 +290,8 @@
                 localStorage.setItem('cornStorage', cornQuant-cornSellAmount);
                 console.log(localStorage.getItem('cornStorage'));
                 cornQuant = localStorage.getItem('cornStorage');
+                document.querySelector("label[for='crop-amount']").textContent = "You have: " + cornQuant + " ears of corn";
+                getCash(mailE);
             }
           }
     </script>
