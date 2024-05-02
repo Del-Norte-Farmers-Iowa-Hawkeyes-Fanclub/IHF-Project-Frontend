@@ -316,6 +316,9 @@ nav ul li a:hover {
     <h1 style="margin-top: 100px; text-align: center;">
         Stats for the User & Betting
     </h1>
+    
+    <button onclick="getGames()">Get</button>
+    
 
     <ul class="flex-container">
         <li class="stats-container">
@@ -524,15 +527,58 @@ nav ul li a:hover {
                 displayDiv.innerText = 'Failed to compare stats. Please try again.';
             }
         }
-
-        async function placeBet(gameName, betAmount) {
+        async function getGames() {
+            const url = 'https://api.the-odds-api.com/v4/sports/basketball_nba/odds?bookmakers=draftkings&markets=h2h&oddsFormat=american&apiKey=192b45e0a31758ac8b513084d90192ad';
+        
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log(data);
+                displayGames(parseData(data));
+        
+            } catch (error) {
+                console.error('Error fetching NBA stats:', error);
+            }
+        }
+        function parseData(data) {
+            const formattedData = data.map(game => {
+                const team1 = game.home_team;
+                const team2 = game.away_team;
+                const oddsTeam1 = game.bookmakers[0].markets[0].outcomes[0].price;
+                const oddsTeam2 = game.bookmakers[0].markets[0].outcomes[1].price;
+                const date = game.commence_time;
+                return [`${team1} vs ${team2}`, oddsTeam1, oddsTeam2, date];
+            });
+            return formattedData;
+        }
+        
+        function displayGames(formattedData) {
+            const bettingContainer = document.querySelector('.betting-container');
+            //bettingContainer.innerHTML = '';
+            formattedData.forEach(game => {
+                const gameDiv = document.createElement('div');
+                gameDiv.className = 'game';
+                const teams = game[0].split(" vs ");
+                gameDiv.innerHTML = `
+                    <h2>NBA Game Betting</h2>
+                    <h3>${teams[0]} vs ${teams[1]}</h3>
+                    <input type="number" class="bet-input" placeholder="Bet Amount">
+                    <div class="odds-buttons">
+                        <button class="teamButton" onclick="placeBet('${game[0]}', this.parentElement.previousElementSibling.value, '${teams[0]}','${game[1]}','${game[3]}')" >${teams[0]} (${game[1]})</button>
+                        <button class="teamButton" onclick="placeBet('${game[0]}', this.parentElement.previousElementSibling.value, '${teams[1]}','${game[2]}','${game[3]}')" >${teams[1]} (${game[2]})</button>
+                    </div>
+                `;
+                bettingContainer.appendChild(gameDiv);
+            });
+        }
+        async function placeBet(gameName, betAmount,team,odd,date) {
             betAmount = parseFloat(betAmount);
             if (isNaN(betAmount) || betAmount <= 0) {
                 alert('Invalid bet amount');
                 return;
             }
 
-            const confirmBet = confirm(`Place a $${betAmount.toFixed(2)} bet on ${gameName}?`);
+            const confirmBet = confirm(`Place a $${betAmount.toFixed(2)} bet on ${team} winning in ${gameName}?`);
             if (confirmBet) {
                 try {
                     const response = await fetch(`${apiUrl}/getCash`, {
@@ -553,8 +599,15 @@ nav ul li a:hover {
                     }
 
                     console.log(userCash)
+                    console.log("Game Name:", gameName);
+                    console.log("Team Picked:", team);
+                    console.log("Odd:", odd);
+                    console.log("Date:", date.substring(0,10));
+                    console.log("Bet Amount:", betAmount);
+                    console.log("Old Cash:", userCash);
 
                     var newCash = userCash - betAmount;
+                    console.log("Remaining Cash:", newCash)
                     
 
 
