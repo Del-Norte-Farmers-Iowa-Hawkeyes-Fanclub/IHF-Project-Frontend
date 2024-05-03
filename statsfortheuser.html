@@ -254,7 +254,7 @@ layout: header
         <li class="betting-container">
             <h1>Sports Betting</h1>
             <div class="cash-display">Cash Remaining: <span id="cashAmount">$0</span></div>
-
+            <div class="betting-container-small">
             <!-- NBA Betting -->
             <div class="game">
                 <h2>NBA Game Betting</h2>
@@ -294,6 +294,7 @@ layout: header
                 <button class="bet-button"
                     onclick="placeBet('Kentucky vs. Kansas', document.getElementById('betAmountNCAA2').value)">Bet</button>
             </div>
+        </div>
         </li>
     </ul>
     <script>
@@ -461,8 +462,8 @@ layout: header
         }
         
         function displayGames(formattedData) {
-            const bettingContainer = document.querySelector('.betting-container');
-            //bettingContainer.innerHTML = '';
+            const bettingContainer = document.querySelector('.betting-container-small');
+            bettingContainer.innerHTML = '';
             formattedData.forEach(game => {
                 const gameDiv = document.createElement('div');
                 gameDiv.className = 'game';
