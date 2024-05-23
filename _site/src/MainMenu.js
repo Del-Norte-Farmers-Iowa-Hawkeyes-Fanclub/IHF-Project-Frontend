@@ -70,7 +70,7 @@ class MainMenu extends Phaser.Scene {
                 email: email, 
             }
     
-            const response = await fetch("http://localhost:6666/api/person/getEco", {
+            const response = await fetch("http://localhost:8012/api/person/getEco", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

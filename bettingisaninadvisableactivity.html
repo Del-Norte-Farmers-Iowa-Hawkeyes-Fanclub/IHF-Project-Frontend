@@ -74,7 +74,7 @@
             }
             try {
                 
-                const response = await fetch('http://localhost:6666/api/person/getCash', {
+                const response = await fetch('http://localhost:8012/api/person/getCash', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: userEmail })

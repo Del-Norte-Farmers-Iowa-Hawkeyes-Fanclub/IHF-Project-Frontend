@@ -185,7 +185,7 @@
         var playerName = document.getElementById("searchbar").value;
 
         // Assuming your backend is running on localhost:8062
-        fetch(`http://localhost:6666/api/basketball/players/${playerName}`)
+        fetch(`http://localhost:8012/api/basketball/players/${playerName}`)
             .then(response => response.json())
             .then(data => {
                 displayPlayerInfo(data);

@@ -126,7 +126,7 @@
             var playerId = document.getElementById("playerId").value;
 
             // Assuming your backend is running on localhost:8062
-            fetch(`http://localhost:6666/api/nba/players/${playerId}`)
+            fetch(`http://localhost:8012/api/nba/players/${playerId}`)
                 .then(response => response.json())
                 .then(data => {
                     displayPlayerInfo(data);

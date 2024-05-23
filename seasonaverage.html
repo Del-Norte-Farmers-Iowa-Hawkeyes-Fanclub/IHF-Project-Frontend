@@ -27,7 +27,7 @@
 <script>
     function searchPlayer() {
         const playerId = document.getElementById("playerIdInput").value;
-        const apiUrl = `http://localhost:6666/api/player/${playerId}`;
+        const apiUrl = `http://localhost:8012/api/player/${playerId}`;
 
         fetch(apiUrl)
             .then(response => response.json())
