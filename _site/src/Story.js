@@ -133,7 +133,7 @@ class Story extends Phaser.Scene {
                 eco: eco
             }
     
-            const response = await fetch("https://ihf.stu.nighthawkcodingsociety.com/api/person/ecoUpdate", {
+            const response = await fetch("http://localhost:6666/api/person/ecoUpdate", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

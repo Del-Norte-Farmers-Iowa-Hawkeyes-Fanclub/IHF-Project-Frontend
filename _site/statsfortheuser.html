@@ -346,7 +346,7 @@ nav ul li a:hover {
         <li class="betting-container">
             <h1>Sports Betting</h1>
             <div class="cash-display">Cash Remaining: <span id="cashAmount">$0</span></div>
-
+            <div class="betting-container-small">
             <!-- NBA Betting -->
             <div class="game">
                 <h2>NBA Game Betting</h2>
@@ -386,10 +386,11 @@ nav ul li a:hover {
                 <button class="bet-button"
                     onclick="placeBet('Kentucky vs. Kansas', document.getElementById('betAmountNCAA2').value)">Bet</button>
             </div>
+        </div>
         </li>
     </ul>
     <script>
-        const apiUrl = 'https://ihf.stu.nighthawkcodingsociety.com/api/person';
+        const apiUrl = 'http://localhost:6666/api/person';
         const userEmail = localStorage.getItem('Email');
         document.getElementById('username').value = userEmail || 'No username found';
 
@@ -553,8 +554,8 @@ nav ul li a:hover {
         }
         
         function displayGames(formattedData) {
-            const bettingContainer = document.querySelector('.betting-container');
-            //bettingContainer.innerHTML = '';
+            const bettingContainer = document.querySelector('.betting-container-small');
+            bettingContainer.innerHTML = '';
             formattedData.forEach(game => {
                 const gameDiv = document.createElement('div');
                 gameDiv.className = 'game';
