@@ -148,6 +148,7 @@
                 <h2>Corn 🌾</h2>
                 <!-- <img src="placeholder-image.png" alt="Product 3"> -->
                 <p id="ppc">Price: $25</p>
+                <button onclick="buyCorn()">Buy more corn</button>
             </div>
             <!-- Additional products can be added in the same manner -->
         </div>
@@ -180,6 +181,7 @@
         var cornQuant = localStorage.getItem('cornStorage');
         const mailE = localStorage.getItem('Email');
         getCash(mailE);
+        calculateCornPrice();
         document.querySelector("label[for='crop-amount']").textContent = "You have: " + cornQuant + " ears of corn";
         function myFunction(){
             document.getElementById("home");
@@ -248,6 +250,19 @@
             var choice = document.getElementById("crop").value;
             if (choice=="corn") {
                 sellCorn();
+            }
+        }
+
+        function buyCorn() {
+            var cash = document.querySelector("label[for='money']").textContent.substring(10);
+            console.log(cash);
+            if (cash>=pricePerCorn) {
+                updateCash(mailE, -pricePerCorn);
+                localStorage.setItem('cornStorage', parseInt(cornQuant)+1);
+                cornQuant = localStorage.getItem('cornStorage');
+                document.querySelector("label[for='crop-amount']").textContent = "You have: " + cornQuant + " ears of corn";
+                console.log(cornQuant);
+                getCash(mailE);
             }
         }
 
