@@ -55,7 +55,13 @@ create() {
   
     // Constrain the camera so that it isn't allowed to move outside the width/height of tilemap
     camera.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-  
+
+  }
+
+  clickContinue() {
+    // Play click sound and fade out scene
+    EPT.Sfx.play('click');
+    EPT.fadeOutScene('MainMenu', this);
   }
   
   

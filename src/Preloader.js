@@ -19,7 +19,7 @@ class Preloader extends Phaser.Scene {
 		var resources = {
 			'image': [
 				[`titleAuthor`, `img/titleAuthor.png`],
-				['title', 'img/title.png']
+				['title', 'img/title.png'],
 			],
 			'spritesheet': [
 				['button-start', 'img/button-start.png', {frameWidth:180,frameHeight:180}],
