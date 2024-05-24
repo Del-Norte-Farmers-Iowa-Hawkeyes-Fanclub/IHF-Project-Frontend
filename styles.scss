@@ -1,0 +1,139 @@
+$font-stack: Arial, sans-serif;
+$primary-color: #007bff;
+$primary-hover-color: #0056b3;
+$secondary-color: #f4f4f4;
+$border-color: #ddd;
+$background-color: #f4f4f4;
+$container-background: #fff;
+$shadow-color: rgba(0, 0, 0, 0.1);
+$highlight-color: #ffeb3b;
+
+// Dark theme variables
+$dark-primary-color: #1e90ff;
+$dark-primary-hover-color: #104e8b;
+$dark-secondary-color: #2f2f2f;
+$dark-border-color: #444;
+$dark-background-color: #121212;
+$dark-container-background: #1e1e1e;
+$dark-shadow-color: rgba(0, 0, 0, 0.3);
+$dark-text-color: #f4f4f4;
+
+@mixin theme($primary-color, $primary-hover-color, $secondary-color, $border-color, $background-color, $container-background, $shadow-color, $text-color) {
+  body {
+    font-family: $font-stack;
+    background-color: $background-color;
+    color: $text-color;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .container, .leaderboard {
+    background: $container-background;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px $shadow-color;
+    max-width: 600px;
+    width: 100%;
+  }
+
+  .container {
+    max-width: 600px;
+  }
+
+  .leaderboard {
+    max-width: 300px;
+  }
+
+  h2 {
+    color: $primary-color;
+    text-align: center;
+  }
+
+  .question {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: $primary-color;
+    text-shadow: 1px 1px 2px $shadow-color;
+  }
+
+  .options button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: $primary-color;
+    color: $text-color;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background: $primary-hover-color;
+    }
+  }
+
+  .money-counter, .end-game, .leaderboard {
+    margin-top: 20px;
+    font-size: 1.2em;
+  }
+
+  .end-game {
+    display: none;
+  }
+
+  .leaderboard ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin-bottom: 10px;
+      padding: 10px;
+      background: $secondary-color;
+      border: 1px solid $border-color;
+      border-radius: 5px;
+    }
+  }
+
+  input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid $border-color;
+    border-radius: 5px;
+    font-size: 1em;
+  }
+
+  button {
+    display: inline-block;
+    background-color: $primary-color;
+    color: $text-color;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: $primary-hover-color;
+    }
+  }
+}
+
+// Light theme
+.light-theme {
+  @include theme($primary-color, $primary-hover-color, $secondary-color, $border-color, $background-color, $container-background, $shadow-color, #333);
+}
+
+// Dark theme
+.dark-theme {
+  @include theme($dark-primary-color, $dark-primary-hover-color, $dark-secondary-color, $dark-border-color, $dark-background-color, $dark-container-background, $dark-shadow-color, $dark-text-color);
+}

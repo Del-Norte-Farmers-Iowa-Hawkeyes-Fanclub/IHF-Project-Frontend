@@ -1,68 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BitLife Simulator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            max-width: 600px;
-            width: 100%;
-        }
-        .question {
-            font-size: 1.2em;
-            margin-bottom: 20px;
-        }
-        .options button {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        .options button:hover {
-            background: #0056b3;
-        }
-        .money-counter {
-            margin-top: 20px;
-            font-size: 1.2em;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="light-theme">
     <div class="container">
+        <h2>BitLife Simulator</h2>
         <div class="question" id="question">Loading...</div>
         <div class="options">
             <button id="option1">Option 1</button>
             <button id="option2">Option 2</button>
         </div>
         <div class="money-counter" id="moneyCounter">Money: $0</div>
+        <div class="end-game" id="endGame">
+            <input type="text" id="playerName" placeholder="Enter your name">
+            <button onclick="submitScore()">Submit Score</button>
+        </div>
     </div>
+
+    <div class="leaderboard" id="leaderboard">
+        <h2>Leaderboard</h2>
+        <ul id="leaderboardList"></ul>
+    </div>
+
+    <button id="themeSwitcher" onclick="toggleTheme()">Switch to Dark Mode</button>
 
     <script>
         let currentEventId = 252;  // Initial ID set to 252
         let currentMoney = 0;
+        let scoreSubmitted = false;
+        let isDarkMode = false;
 
-        document.addEventListener('DOMContentLoaded', fetchEvent);
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchEvent();
+            fetchLeaderboard();
+        });
 
         function fetchEvent() {
             console.log(`Fetching event with ID: ${currentEventId}`);
@@ -99,16 +72,16 @@
             console.log('Choosing option:', option, 'for event:', event);
             if (option === 1) {
                 currentMoney += event.moneyOption1 || 0;
-                currentEventId = currentEventId + 1;
+                currentEventId += 1;
             } else {
                 currentMoney += event.moneyOption2 || 0;
-                currentEventId = currentEventId + 1;
+                currentEventId += 1;
             }
             console.log(`Next event ID: ${currentEventId}, Current money: ${currentMoney}`);
             document.getElementById('moneyCounter').textContent = `Money: $${currentMoney}`;
 
             // Check if the next event ID is valid (assuming IDs are sequential and the last event ID is known)
-            if (currentEventId === 302 || currentEventId == null) {
+            if (currentEventId === 0 || currentEventId == null) {
                 endGame();
             } else {
                 fetchEvent();
@@ -119,7 +92,61 @@
             document.getElementById('question').textContent = 'You have completed your life and it is over. You ended with $' + currentMoney;
             document.getElementById('option1').style.display = 'none';
             document.getElementById('option2').style.display = 'none';
+            document.getElementById('endGame').style.display = 'block';
+            fetchLeaderboard();
+        }
+
+        function submitScore() {
+            const playerName = document.getElementById('playerName').value;
+            if (scoreSubmitted) {
+                alert('Score already submitted.');
+                return;
+            }
+            fetch('http://localhost:8012/api/bitlife/scores', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ playerName: playerName, score: currentMoney })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Score submitted:', data);
+                    scoreSubmitted = true;
+                    fetchLeaderboard();
+                })
+                .catch(error => console.error('Error submitting score:', error));
+        }
+
+        function fetchLeaderboard() {
+            fetch('http://localhost:8012/api/bitlife/scores')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Leaderboard data:', data);
+                    const leaderboardList = document.getElementById('leaderboardList');
+                    leaderboardList.innerHTML = '';
+                    data.forEach(score => {
+                        const li = document.createElement('li');
+                        li.textContent = `${score.playerName}: $${score.score}`;
+                        leaderboardList.appendChild(li);
+                    });
+                })
+                .catch(error => console.error('Error fetching leaderboard:', error));
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeSwitcher = document.getElementById('themeSwitcher');
+            if (isDarkMode) {
+                body.classList.remove('dark-theme');
+                body.classList.add('light-theme');
+                themeSwitcher.textContent = 'Switch to Dark Mode';
+            } else {
+                body.classList.remove('light-theme');
+                body.classList.add('dark-theme');
+                themeSwitcher.textContent = 'Switch to Light Mode';
+            }
+            isDarkMode = !isDarkMode;
         }
     </script>
 </body>
-</html>
