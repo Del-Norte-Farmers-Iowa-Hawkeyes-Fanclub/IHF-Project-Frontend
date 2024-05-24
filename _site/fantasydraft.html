@@ -265,6 +265,7 @@
 
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
    <script>
+       const apiKey = "4517a956-607b-4c63-ac89-1cd44e7dcaad"
        $(document).ready(function() {
            let currentSlot;
            let currentPlayer = 'A';
@@ -326,9 +327,36 @@
                    return;
                }
 
+               $.ajax({
+                beforeSend: function(request) {
+                    request.setRequestHeader("Authorization", '4517a956-607b-4c63-ac89-1cd44e7dcaad');
+                },
+                dataType: "json",
+                url: `https://api.balldontlie.io/v1/players?first_name=${firstName}&last_name=${lastName}`,
+                success: function(data) {
+                    if (data && data.data.length > 0) {
+                        const player = data.data[0];
 
+
+                        // Now that we have the player's ID, we can store it alongside the player's name
+                        currentSlot.text(playerName);
+                        currentSlot.data('player-id', player.id); // Store the player's ID in the slot's data
+                        currentSlot.removeClass('selectedSlot').addClass('playerSelected');
+                        $("#playerSearchContainer").hide();
+                        $("#playerSearchInput").val(''); // Clear the search input
+                        $("#searchResults").empty(); // Clear previous search results
+                        selectedPlayers.push(playerName); // Add player to selectedPlayers list
+
+
+                        toggleTurn(); // Switch the turn to the other player after successful selection
+                    } else {
+                        alert("Player not found.");
+                    }
+                }
+            });
+            
                // Fetch the player ID from the API
-               $.getJSON(`https://www.balldontlie.io/api/v1/players?search=${firstName}%20${lastName}`, function(data) {
+              /* $.getJSON(`https://api.balldontlie.io/v1/players?search=${firstName}%20${lastName}`, function(data) {
                        if (data && data.data.length > 0) {
                            const player = data.data[0];
 
@@ -349,7 +377,7 @@
                        }
                    }).fail(function() {
                        alert("Error fetching player data.");
-                   });
+                   });*/
                $("#submitTeams").click(sendToBackend);
            });
        });
@@ -358,15 +386,31 @@
 
 
        function searchPlayer(query) {
-           $.getJSON(`https://www.balldontlie.io/api/v1/players?search=${query}`, function(data) {
+        $.ajax({
+            beforeSend: function(request) {
+                request.setRequestHeader("Authorization", '4517a956-607b-4c63-ac89-1cd44e7dcaad');
+            },
+            dataType: "json",
+            url: `https://api.balldontlie.io/v1/players?search=${query}`,
+            success: function(data) {
+                const searchResultsContainer = $("#searchResults");
+                searchResultsContainer.empty(); // Clear previous search results
+                data.data.forEach(player => {
+                    const playerName = `${player.first_name} ${player.last_name}`;
+                    const searchResult = $("<div>").addClass("searchResult").text(playerName);
+                    searchResultsContainer.append(searchResult);
+                });
+            }
+        });
+           /* $.getJSON(`https://api.balldontlie.io/v1/players?search=${query}`, function(data) {
                const searchResultsContainer = $("#searchResults");
                searchResultsContainer.empty(); // Clear previous search results
                data.data.forEach(player => {
                    const playerName = `${player.first_name} ${player.last_name}`;
                    const searchResult = $("<div>").addClass("searchResult").text(playerName);
                    searchResultsContainer.append(searchResult);
-               });
-           });
+               }); 
+           }); */
        }
 
 
@@ -374,8 +418,29 @@
            const currentYear = new Date().getFullYear();
            const seasonYear = (new Date().getMonth() >= 9) ? currentYear : currentYear - 1; // NBA season starts in October
 
+           $.ajax({
+            beforeSend: function(request) {
+                request.setRequestHeader("Authorization", '4517a956-607b-4c63-ac89-1cd44e7dcaad');
+            },
+            dataType: "json",
+            url: `https://api.balldontlie.io/v1/stats?seasons[]=${seasonYear}&player_ids[]=${playerId}&per_page=1`,
+            success: function(gamesData) {
+                if (gamesData.data && gamesData.data.length > 0) {
+                    const game = gamesData.data[0]; // Take the most recent game
+                    const stats = {
+                        points: game.pts ?? 0,
+                        rebounds: game.reb ?? 0,
+                        assists: game.ast ?? 0
+                    };
+                    return stats;
+                } else {
+                    console.log("Game stats not available for this player:", playerId);
+                    return { points: 0, rebounds: 0, assists: 0 }; // Return default stats if not available
+                }
+            }
+        });
 
-           return $.getJSON(`https://www.balldontlie.io/api/v1/stats?seasons[]=${seasonYear}&player_ids[]=${playerId}&per_page=1`)
+           /* return $.getJSON(`https://www.balldontlie.io/api/v1/stats?seasons[]=${seasonYear}&player_ids[]=${playerId}&per_page=1`)
                .then(gamesData => {
                    if (gamesData.data && gamesData.data.length > 0) {
                        const game = gamesData.data[0]; // Take the most recent game
@@ -392,7 +457,7 @@
                }).fail(() => {
                    console.error("Error fetching game stats for player ID:", playerId);
                    return { points: 0, rebounds: 0, assists: 0 }; // Return default stats on failure
-               });
+               }); */
        }
 
 
