@@ -193,7 +193,7 @@ nav ul li a:hover {
 
     <script>
         async function fetchPlayerStats(playerId, season) {
-            const response = await fetch(`http://localhost:8062/games/${playerId}/${season}`);
+            const response = await fetch(`http://localhost:8012/games/${playerId}/${season}`);
             const data = await response.json();
             return data.data;
         }

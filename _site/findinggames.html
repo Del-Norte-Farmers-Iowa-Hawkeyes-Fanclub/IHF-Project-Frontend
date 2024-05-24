@@ -24,7 +24,7 @@
             const year = document.getElementById("year").value;
 
             // Replace 'your-backend-url' with the actual backend URL
-            const backendURL = `http://localhost:8062/nba/stats/${year}/${playerName}`;
+            const backendURL = `http://localhost:8012/nba/stats/${year}/${playerName}`;
 
             fetch(backendURL)
                 .then(response => response.json())
