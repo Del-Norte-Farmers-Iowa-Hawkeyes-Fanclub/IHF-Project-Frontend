@@ -125,8 +125,6 @@
            margin-top: 20px;
            text-align: center;
        }
-
-
        .result {
            margin-bottom: 10px;
            font-size: 18px;
@@ -137,26 +135,18 @@
            width: 50%;
            padding: 10px;
        }
-
-
        #comments {
            margin-bottom: 20px;
        }
-
-
        .comment {
            background-color: #f2f2f2;
            padding: 10px;
            margin-bottom: 10px;
        }
-
-
        input, textarea {
            width: 100%;
            margin-bottom: 10px;
        }
-
-
        button {
            width: 100%;
            padding: 10px;
@@ -164,31 +154,31 @@
            color: white;
            cursor: pointer;
        }
-       .exitButton{
-        position:absolute;
-        top:0;
-        right:0;
-        width:50px !important;
-        background-color:red !important;
+       .exitButton {
+           position: absolute;
+           top: 0;
+           right: 0;
+           width: 50px !important;
+           background-color: red !important;
        }
-       .resetButton{
-        position:absolute;
-        top:0;
-        right:50px;
-        width:50px !important;
-        background-color:rgb(115, 0, 255) !important;
+       .resetButton {
+           position: absolute;
+           top: 0;
+           right: 50px;
+           width: 50px !important;
+           background-color: rgb(115, 0, 255) !important;
        }
        #drawSpace {
-        position: fixed;
-        bottom: 10%;
-        left: 24.5%;
-        z-index: 9999;  
-        background-color: #000;
-        border: 10px solid #0000FF;
-        height:800px;
-        width: 50%;
-        border-radius: 10px;
-    }
+           position: fixed;
+           bottom: 10%;
+           left: 24.5%;
+           z-index: 9999;
+           background-color: #000;
+           border: 10px solid #0000FF;
+           height: 800px;
+           width: 50%;
+           border-radius: 10px;
+       }
    </style>
 </head>
 <body>
@@ -219,7 +209,14 @@
            </div>
        </div>
        <div class="side sideB">
-           <h2>Team B</h2>
+           <h2>CPU Team</h2>
+           <div>
+               <label for="cpuDraftChoice">CPU Draft From:</label>
+               <select id="cpuDraftChoice">
+                   <option value="current">Current Players</option>
+                   <option value="allTime">All Time Players</option>
+               </select>
+           </div>
            <div class="slots">
                <div class="slot" id="pg2Slot">Point Guard 1</div>
                <div class="slot" id="pf3Slot">Power Forward 1</div>
@@ -238,8 +235,6 @@
        </div>
    </div>
    <button id="submitTeams">Submit Teams</button>
-
-
    <div id="comment-section">
        <h2>Comments</h2>
        <input type="text" id="gameNameInput" placeholder="Enter game name to view comments">
@@ -250,31 +245,25 @@
        <textarea id="text" placeholder="Your comment"></textarea>
        <button onclick="addDrawing()" id="drawButton">Add Drawing</button>
        <button onclick="sent()">Post Comment</button>
-
-
    </div>
    <div id="drawSpace">
-    
-    <button class="exitButton" id="Exit" onclick="exitDrawing()">Exit</button>
-    <button class="resetButton" id="Reset" onclick="reset()">Reset</button>
-    <br>
-    <canvas id="Board" left="10%" width="700px" height="700px" style="border:3px solid #548BC2;" onmousemove="coordinate(event)" onmousedown="mousedown()" onmouseup="mouseup()"></canvas>
-        <button id="saveButton" onclick="saveDrawing()">Save</button>
-    </div>
-
+       <button class="exitButton" id="Exit" onclick="exitDrawing()">Exit</button>
+       <button class="resetButton" id="Reset" onclick="reset()">Reset</button>
+       <br>
+       <canvas id="Board" left="10%" width="700px" height="700px" style="border:3px solid #548BC2;" onmousemove="coordinate(event)" onmousedown="mousedown()" onmouseup="mouseup()"></canvas>
+       <button id="saveButton" onclick="saveDrawing()">Save</button>
+   </div>
 
    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
    <script>
-       const apiKey = "4517a956-607b-4c63-ac89-1cd44e7dcaad"
+       const apiKey = "4517a956-607b-4c63-ac89-1cd44e7dcaad";
+       let currentSlot;
+       let currentPlayer = 'A';
+       let selectedPlayers = [];  // Array to keep track of selected players
+
        $(document).ready(function() {
-           let currentSlot;
-           let currentPlayer = 'A';
-           let selectedPlayers = [];  // Array to keep track of selected players
-
-
            $(".slot").click(function() {
-               if ((currentPlayer === 'A' && $(this).closest('.side').hasClass('sideA')) ||
-                   (currentPlayer === 'B' && $(this).closest('.side').hasClass('sideB'))) {
+               if ((currentPlayer === 'A' && $(this).closest('.side').hasClass('sideA'))) {
                    if(currentSlot) {
                        currentSlot.removeClass('selectedSlot');
                    }
@@ -286,7 +275,6 @@
                }
            });
 
-
            $("#playerSearchInput").on('input', function() {
                const searchQuery = $(this).val();
                if(searchQuery.length >= 3) { // Only search if the query is 3 or more characters
@@ -296,24 +284,9 @@
                }
            });
 
-
            $("#submitTeams").click(function() {
-               let teamData = prepareTeamData(); // Prepare the data when the button is clicked
-               sendTeamData(teamData); // Send the data to the backend
+               sendTeamData();
            });
-
-
-           function toggleTurn() {
-               if(currentPlayer === 'B') {
-                   currentPlayer = 'A';
-                   $("#turnIndicator").text("Player A's Turn"); // Update the turn indicator on the page
-               } else {
-                   currentPlayer = 'B';
-                   $("#turnIndicator").text("Player B's Turn"); // Update the turn indicator on the page
-               }
-               console.log("Turn toggled, now it's Player " + currentPlayer + "'s turn"); // Log for debugging
-           }
-
 
            $("#searchResults").on('click', '.searchResult', function() {
                const playerName = $(this).text();
@@ -321,45 +294,20 @@
                const firstName = names[0];
                const lastName = names[1] || ''; // Handle potential single-name scenarios
 
-
                if(selectedPlayers.includes(playerName)) {
                    alert("This player has already been selected!");
                    return;
                }
 
                $.ajax({
-                beforeSend: function(request) {
-                    request.setRequestHeader("Authorization", '4517a956-607b-4c63-ac89-1cd44e7dcaad');
-                },
-                dataType: "json",
-                url: `https://api.balldontlie.io/v1/players?first_name=${firstName}&last_name=${lastName}`,
-                success: function(data) {
-                    if (data && data.data.length > 0) {
-                        const player = data.data[0];
-
-
-                        // Now that we have the player's ID, we can store it alongside the player's name
-                        currentSlot.text(playerName);
-                        currentSlot.data('player-id', player.id); // Store the player's ID in the slot's data
-                        currentSlot.removeClass('selectedSlot').addClass('playerSelected');
-                        $("#playerSearchContainer").hide();
-                        $("#playerSearchInput").val(''); // Clear the search input
-                        $("#searchResults").empty(); // Clear previous search results
-                        selectedPlayers.push(playerName); // Add player to selectedPlayers list
-
-
-                        toggleTurn(); // Switch the turn to the other player after successful selection
-                    } else {
-                        alert("Player not found.");
-                    }
-                }
-            });
-            
-               // Fetch the player ID from the API
-              /* $.getJSON(`https://api.balldontlie.io/v1/players?search=${firstName}%20${lastName}`, function(data) {
+                   beforeSend: function(request) {
+                       request.setRequestHeader("Authorization", '4517a956-607b-4c63-ac89-1cd44e7dcaad');
+                   },
+                   dataType: "json",
+                   url: `https://api.balldontlie.io/v1/players?first_name=${firstName}&last_name=${lastName}`,
+                   success: function(data) {
                        if (data && data.data.length > 0) {
                            const player = data.data[0];
-
 
                            // Now that we have the player's ID, we can store it alongside the player's name
                            currentSlot.text(playerName);
@@ -370,103 +318,81 @@
                            $("#searchResults").empty(); // Clear previous search results
                            selectedPlayers.push(playerName); // Add player to selectedPlayers list
 
-
                            toggleTurn(); // Switch the turn to the other player after successful selection
                        } else {
                            alert("Player not found.");
                        }
-                   }).fail(function() {
-                       alert("Error fetching player data.");
-                   });*/
-               $("#submitTeams").click(sendToBackend);
+                   }
+               });
            });
        });
 
-
-
-
-       function searchPlayer(query) {
-        $.ajax({
-            beforeSend: function(request) {
-                request.setRequestHeader("Authorization", '4517a956-607b-4c63-ac89-1cd44e7dcaad');
-            },
-            dataType: "json",
-            url: `https://api.balldontlie.io/v1/players?search=${query}`,
-            success: function(data) {
-                const searchResultsContainer = $("#searchResults");
-                searchResultsContainer.empty(); // Clear previous search results
-                data.data.forEach(player => {
-                    const playerName = `${player.first_name} ${player.last_name}`;
-                    const searchResult = $("<div>").addClass("searchResult").text(playerName);
-                    searchResultsContainer.append(searchResult);
-                });
-            }
-        });
-           /* $.getJSON(`https://api.balldontlie.io/v1/players?search=${query}`, function(data) {
-               const searchResultsContainer = $("#searchResults");
-               searchResultsContainer.empty(); // Clear previous search results
-               data.data.forEach(player => {
-                   const playerName = `${player.first_name} ${player.last_name}`;
-                   const searchResult = $("<div>").addClass("searchResult").text(playerName);
-                   searchResultsContainer.append(searchResult);
-               }); 
-           }); */
+       function toggleTurn() {
+           if(currentPlayer === 'A') {
+               currentPlayer = 'CPU';
+               $("#turnIndicator").text("CPU's Turn"); // Update the turn indicator on the page
+               setTimeout(() => {
+                   cpuPick(currentSlot.attr('id')); // Pass the slot ID to the CPU pick function
+               }, 1000); // Simulate a delay for CPU pick
+           } else {
+               currentPlayer = 'A';
+               $("#turnIndicator").text("Player A's Turn"); // Update the turn indicator on the page
+               $("#playerSearchContainer").hide();
+           }
+           console.log("Turn toggled, now it's Player " + currentPlayer + "'s turn"); // Log for debugging
        }
 
+       function searchPlayer(query) {
+           $.ajax({
+               beforeSend: function(request) {
+                   request.setRequestHeader("Authorization", '4517a956-607b-4c63-ac89-1cd44e7dcaad');
+               },
+               dataType: "json",
+               url: `https://api.balldontlie.io/v1/players?search=${query}`,
+               success: function(data) {
+                   const searchResultsContainer = $("#searchResults");
+                   searchResultsContainer.empty(); // Clear previous search results
+                   data.data.forEach(player => {
+                       const playerName = `${player.first_name} ${player.last_name}`;
+                       const searchResult = $("<div>").addClass("searchResult").text(playerName);
+                       searchResultsContainer.append(searchResult);
+                   });
+               }
+           });
+       }
 
        function fetchGameStats(playerId) {
            const currentYear = new Date().getFullYear();
            const seasonYear = (new Date().getMonth() >= 9) ? currentYear : currentYear - 1; // NBA season starts in October
 
-           $.ajax({
-            beforeSend: function(request) {
-                request.setRequestHeader("Authorization", '4517a956-607b-4c63-ac89-1cd44e7dcaad');
-            },
-            dataType: "json",
-            url: `https://api.balldontlie.io/v1/stats?seasons[]=${seasonYear}&player_ids[]=${playerId}&per_page=1`,
-            success: function(gamesData) {
-                if (gamesData.data && gamesData.data.length > 0) {
-                    const game = gamesData.data[0]; // Take the most recent game
-                    const stats = {
-                        points: game.pts ?? 0,
-                        rebounds: game.reb ?? 0,
-                        assists: game.ast ?? 0
-                    };
-                    return stats;
-                } else {
-                    console.log("Game stats not available for this player:", playerId);
-                    return { points: 0, rebounds: 0, assists: 0 }; // Return default stats if not available
-                }
-            }
-        });
-
-           /* return $.getJSON(`https://www.balldontlie.io/api/v1/stats?seasons[]=${seasonYear}&player_ids[]=${playerId}&per_page=1`)
-               .then(gamesData => {
-                   if (gamesData.data && gamesData.data.length > 0) {
-                       const game = gamesData.data[0]; // Take the most recent game
-                       const stats = {
-                           points: game.pts ?? 0,
-                           rebounds: game.reb ?? 0,
-                           assists: game.ast ?? 0
-                       };
-                       return stats;
-                   } else {
-                       console.log("Game stats not available for this player:", playerId);
-                       return { points: 0, rebounds: 0, assists: 0 }; // Return default stats if not available
-                   }
-               }).fail(() => {
-                   console.error("Error fetching game stats for player ID:", playerId);
-                   return { points: 0, rebounds: 0, assists: 0 }; // Return default stats on failure
-               }); */
+           return $.ajax({
+               beforeSend: function(request) {
+                   request.setRequestHeader("Authorization", '4517a956-607b-4c63-ac89-1cd44e7dcaad');
+               },
+               dataType: "json",
+               url: `https://api.balldontlie.io/v1/stats?seasons[]=${seasonYear}&player_ids[]=${playerId}&per_page=1`,
+           }).then(gamesData => {
+               if (gamesData.data && gamesData.data.length > 0) {
+                   const game = gamesData.data[0]; // Take the most recent game
+                   const stats = {
+                       points: game.pts ?? 0,
+                       rebounds: game.reb ?? 0,
+                       assists: game.ast ?? 0
+                   };
+                   return stats;
+               } else {
+                   console.log("Game stats not available for this player:", playerId);
+                   return { points: 0, rebounds: 0, assists: 0 }; // Return default stats if not available
+               }
+           }).catch(error => {
+               console.error("Error fetching game stats for player ID:", playerId);
+               return { points: 0, rebounds: 0, assists: 0 }; // Return default stats on failure
+           });
        }
-
-
-
 
        async function prepareTeamData() {
            let teamA = [];
            let teamB = [];
-
 
            // Process Team A
            const teamASlots = $('.sideA .slot.playerSelected');
@@ -478,8 +404,7 @@
                teamA.push({ name: playerName, stats: playerStats });
            }
 
-
-           // Process Team B
+           // Process CPU Team
            const teamBSlots = $('.sideB .slot.playerSelected');
            for (let i = 0; i < teamBSlots.length; i++) {
                let slot = teamBSlots[i];
@@ -489,62 +414,54 @@
                teamB.push({ name: playerName, stats: playerStats });
            }
 
-
            let teamData = {
                teamA: teamA,
                teamB: teamB
            };
 
-
            return teamData;
        }
 
-
        async function sendTeamData() {
-        let dataToSend = await prepareTeamData();
-        let jsonString = JSON.stringify(dataToSend);
-        console.log("Sending JSON payload to backend:", jsonString);
-    
-        fetch("http://localhost:8012/api/simulateup", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: jsonString
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json(); // Parse response body as JSON
-        })
-        .then(data => {
-            console.log("Successfully sent team data to backend", data);
-            // Handle the response data
-            // Access projected fantasy points for each team from 'data' object
-            const projectedFantasyPointsTeamA = data.projectedFantasyPointsTeamA;
-            const projectedFantasyPointsTeamB = data.projectedFantasyPointsTeamB;
-    
-            // Update the HTML to display the projected fantasy scores
-            $("#projectedFantasyPoints").empty(); // Clear previous content
-            const resultContainer = $("<div>").addClass("resultContainer");
-    
-            const teamAResult = $("<div>").addClass("result").text("Team A Projected Fantasy Score: " + projectedFantasyPointsTeamA);
-            const teamBResult = $("<div>").addClass("result").text("Team B Projected Fantasy Score: " + projectedFantasyPointsTeamB);
-    
-            resultContainer.append(teamAResult, teamBResult);
-            $("#projectedFantasyPoints").append(resultContainer);
-        })
-        .catch((error) => {
-            console.error("Error sending team data to backend", error);
-            // Handle the error
-        });
-    }
-
-
-
-
-
+           let dataToSend = await prepareTeamData();
+           let jsonString = JSON.stringify(dataToSend);
+           console.log("Sending JSON payload to backend:", jsonString);
+       
+           fetch("http://localhost:8012/api/simulateup", {
+               method: "POST",
+               headers: {
+                   "Content-Type": "application/json",
+               },
+               body: jsonString
+           })
+           .then(response => {
+               if (!response.ok) {
+                   throw new Error('Network response was not ok');
+               }
+               return response.json(); // Parse response body as JSON
+           })
+           .then(data => {
+               console.log("Successfully sent team data to backend", data);
+               // Handle the response data
+               // Access projected fantasy points for each team from 'data' object
+               const projectedFantasyPointsTeamA = data.projectedFantasyPointsTeamA;
+               const projectedFantasyPointsTeamB = data.projectedFantasyPointsTeamB;
+       
+               // Update the HTML to display the projected fantasy scores
+               $("#projectedFantasyPoints").empty(); // Clear previous content
+               const resultContainer = $("<div>").addClass("resultContainer");
+       
+               const teamAResult = $("<div>").addClass("result").text("Team A Projected Fantasy Score: " + projectedFantasyPointsTeamA);
+               const teamBResult = $("<div>").addClass("result").text("CPU Projected Fantasy Score: " + projectedFantasyPointsTeamB);
+       
+               resultContainer.append(teamAResult, teamBResult);
+               $("#projectedFantasyPoints").append(resultContainer);
+           })
+           .catch((error) => {
+               console.error("Error sending team data to backend", error);
+               // Handle the error
+           });
+       }
 
        function fetchComments() {
            const gameName = document.getElementById('gameNameInput').value;
@@ -563,13 +480,12 @@
                .catch(error => console.error('Error fetching comments:', error));
        }
 
-//bingus here
        var b = document.getElementById("Board");
-    var board = b.getContext("2d");
-    var down
-    var size = 3
-        let drawSpace = document.getElementById("drawSpace");
-        drawSpace.setAttribute("hidden", "hidden");
+       var board = b.getContext("2d");
+       var down;
+       var size = 3;
+       let drawSpace = document.getElementById("drawSpace");
+       drawSpace.setAttribute("hidden", "hidden");
        function addDrawing(){
             let ishidden = drawSpace.getAttribute("hidden");
             if (ishidden) {
@@ -579,61 +495,43 @@
              }
        }
        function exitDrawing(){
-        drawSpace.setAttribute("hidden", "hidden");
+            drawSpace.setAttribute("hidden", "hidden");
        }
        function reset(){
-        board.clearRect(0, 0, b.width, b.height)
-    }
+            board.clearRect(0, 0, b.width, b.height);
+       }
        function mousedown(){
-            down = 1
-        }
-        function mouseup(){
-            down = 0
-        }
-        function coordinate(event){
+            down = 1;
+       }
+       function mouseup(){
+            down = 0;
+       }
+       function coordinate(event){
             let rect = Board.getBoundingClientRect();
             var x=event.clientX - rect.left;
             var y=event.clientY - rect.top;
-            //console.log(x,"-",y)
             if(down){
-                board.fillStyle = "#FFFFFF"
-                board.fillRect(x,y,size,size)
+                board.fillStyle = "#FFFFFF";
+                board.fillRect(x,y,size,size);
             }
-        }
+       }
 
-        function saveDrawing(){
-                //b.toBlob((blob) => window.open(URL.createObjectURL(blob), '_blank'));
-                const dataURL = b.toDataURL('image/jpeg', 0.5);
-                console.log(dataURL);
-                // Logs data:image/jpeg;base64,wL2dvYWwgbW9yZ...
-                reset();
-                exitDrawing()
-                const drawingStuff = `<img src="${dataURL}" style="background-color: white; width: 500px;"/>`
-                console.log(drawingStuff)
-                postComment(drawingStuff)
-                //const commentsDiv = document.getElementById('comments');
-                //   commentsDiv.innerHTML = '';
-                //const commentDiv = document.createElement('div');
-                //       commentDiv.classList.add('comment');
-                //       commentDiv.innerHTML = drawingStuff;
-                //       commentsDiv.appendChild(commentDiv);
-                
-                // Convert to Base64 string
-        }
+       function saveDrawing(){
+            const dataURL = b.toDataURL('image/jpeg', 0.5);
+            console.log(dataURL);
+            reset();
+            exitDrawing();
+            const drawingStuff = `<img src="${dataURL}" style="background-color: white; width: 500px;"/>`;
+            console.log(drawingStuff);
+            postComment(drawingStuff);
+       }
 
        function postComment(input) {
            const userName = document.getElementById('userName').value;
            const gameName = document.getElementById('gameNameInput').value; // Use the same game name for posting
-           //if(input){
-           //     const text = input;
-           //}else{
-           //     const text = document.getElementById('text').value;
-           //}
-           const text = String(input)
-
+           const text = String(input);
 
            const comment = { userName, gameName, text, timestamp: new Date().toISOString() };
-
 
            fetch('http://localhost:8012/api/comments/', {
                method: 'POST',
@@ -652,12 +550,50 @@
            });
        }
 
+       async function cpuPick(slotId) {
+           const slotMapping = {
+               pg1Slot: "pg2Slot",
+               pf1Slot: "pf3Slot",
+               pf2Slot: "pf4Slot",
+               cSlot: "c2Slot",
+               sf1Slot: "sf3Slot",
+               sf2Slot: "sf4Slot",
+               sgSlot: "sg2Slot",
+               benchASlot1: "benchBSlot1",
+               benchASlot2: "benchBSlot2",
+               benchASlot3: "benchBSlot3",
+               benchASlot4: "benchBSlot4",
+               benchASlot5: "benchBSlot5",
+               benchASlot6: "benchBSlot6"
+           };
 
+           const cpuSlotId = slotMapping[slotId];
+           const cpuSlot = $("#" + cpuSlotId);
+           const listChoice = $("#cpuDraftChoice").val();
 
+           if (cpuSlot.hasClass('playerSelected')) {
+               console.error("Slot already selected by CPU.");
+               return;
+           }
+
+           const response = await fetch("http://localhost:8012/api/player-vs-computer", {
+               method: "POST",
+               headers: {
+                   "Content-Type": "application/json",
+               },
+               body: JSON.stringify({ player: "", list: listChoice }) // Use the selected list (current or all time)
+           });
+
+           const data = await response.json();
+           const cpuPlayerName = data.computerChoice;
+
+           cpuSlot.text(cpuPlayerName);
+           cpuSlot.removeClass('selectedSlot').addClass('playerSelected');
+           selectedPlayers.push(cpuPlayerName);
+
+           toggleTurn(); // Switch the turn to Team A after CPU selection
+       }
 
    </script>
 </body>
 </html>
-
-
-

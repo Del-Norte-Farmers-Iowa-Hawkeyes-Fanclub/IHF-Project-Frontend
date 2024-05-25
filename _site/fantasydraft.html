@@ -501,49 +501,45 @@
 
 
        async function sendTeamData() {
-           let dataToSend = await prepareTeamData();
-           let jsonString = JSON.stringify(dataToSend);
-           console.log("Sending JSON payload to backend:", jsonString);
-
-
-           fetch("http://localhost:8012/api/simulate", {
-               method: "POST",
-               headers: {
-                   "Content-Type": "application/json",
-               },
-               body: jsonString
-           })
-           .then(response => {
-               if (!response.ok) {
-                   throw new Error('Network response was not ok');
-               }
-               return response.json(); // Parse response body as JSON
-           })
-           .then(data => {
-               console.log("Successfully sent team data to backend", data);
-               // Handle the response data
-               // Access projected fantasy points for each team from 'data' object
-               const projectedFantasyPointsTeamA = data.projectedFantasyPointsTeamA;
-               const projectedFantasyPointsTeamB = data.projectedFantasyPointsTeamB;
-
-
-               // Update the HTML to display the projected fantasy scores
-               $("#projectedFantasyPoints").empty(); // Clear previous content
-               const resultContainer = $("<div>").addClass("resultContainer");
-
-
-               const teamAResult = $("<div>").addClass("result").text("Team A Projected Fantasy Score: " + projectedFantasyPointsTeamA);
-               const teamBResult = $("<div>").addClass("result").text("Team B Projected Fantasy Score: " + projectedFantasyPointsTeamB);
-
-
-               resultContainer.append(teamAResult, teamBResult);
-               $("#projectedFantasyPoints").append(resultContainer);
-           })
-           .catch((error) => {
-               console.error("Error sending team data to backend", error);
-               // Handle the error
-           });
-       }
+        let dataToSend = await prepareTeamData();
+        let jsonString = JSON.stringify(dataToSend);
+        console.log("Sending JSON payload to backend:", jsonString);
+    
+        fetch("http://localhost:8012/api/simulateup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: jsonString
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); // Parse response body as JSON
+        })
+        .then(data => {
+            console.log("Successfully sent team data to backend", data);
+            // Handle the response data
+            // Access projected fantasy points for each team from 'data' object
+            const projectedFantasyPointsTeamA = data.projectedFantasyPointsTeamA;
+            const projectedFantasyPointsTeamB = data.projectedFantasyPointsTeamB;
+    
+            // Update the HTML to display the projected fantasy scores
+            $("#projectedFantasyPoints").empty(); // Clear previous content
+            const resultContainer = $("<div>").addClass("resultContainer");
+    
+            const teamAResult = $("<div>").addClass("result").text("Team A Projected Fantasy Score: " + projectedFantasyPointsTeamA);
+            const teamBResult = $("<div>").addClass("result").text("Team B Projected Fantasy Score: " + projectedFantasyPointsTeamB);
+    
+            resultContainer.append(teamAResult, teamBResult);
+            $("#projectedFantasyPoints").append(resultContainer);
+        })
+        .catch((error) => {
+            console.error("Error sending team data to backend", error);
+            // Handle the error
+        });
+    }
 
 
 
