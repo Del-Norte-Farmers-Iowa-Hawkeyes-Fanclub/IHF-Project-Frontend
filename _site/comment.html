@@ -53,7 +53,7 @@
     <script>
         function fetchComments() {
             const gameName = document.getElementById('gameNameInput').value;
-            fetch(`http://localhost:8012/api/comments/${encodeURIComponent(gameName)}`)
+            fetch(`http://localhost:6942/api/comments/${encodeURIComponent(gameName)}`)
                 .then(response => response.json())
                 .then(data => {
                     const commentsDiv = document.getElementById('comments');
@@ -75,7 +75,7 @@
 
             const comment = { userName, gameName, text, timestamp: new Date().toISOString() };
 
-            fetch('http://localhost:8012/api/comments/', {
+            fetch('http://localhost:6942/api/comments/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

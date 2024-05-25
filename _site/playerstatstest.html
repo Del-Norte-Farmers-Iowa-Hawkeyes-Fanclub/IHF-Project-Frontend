@@ -134,7 +134,7 @@ nav ul li a:hover {
 
     <script>
         function fetchNBAPlayers() {
-            fetch('http://localhost:8012/api/nba/playersall')
+            fetch('http://localhost:6942/api/nba/playersall')
                 .then(response => response.json())
                 .then(data => {
                     displayPlayers(data);
