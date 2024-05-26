@@ -152,12 +152,16 @@
 
         function updateAgeImage(eventId) {
             const ageImage = document.getElementById('ageImage');
-            if (eventId < 100) {
-                ageImage.src = 'img/baby.png';
-            } else if (eventId < 200) {
+            if (eventId < 257) {
+                ageImage.src = 'img/baby (1).png';
+            } else if (eventId < 280) {
                 ageImage.src = 'img/man.png';
-            } else {
+            } 
+            else if (eventId < 301) {
                 ageImage.src = 'img/old-man.png';
+            } 
+            else {
+                ageImage.src = 'img/grave.png';
             }
         }
 
