@@ -1,0 +1,159 @@
+.light-theme body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  height: 100vh;
+  margin: 0;
+  padding: 20px; }
+.light-theme .container, .light-theme .leaderboard {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%; }
+.light-theme .container {
+  max-width: 600px; }
+.light-theme .leaderboard {
+  max-width: 300px; }
+.light-theme h2 {
+  color: #007bff;
+  text-align: center; }
+.light-theme .question {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  color: #007bff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); }
+.light-theme .options button {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #007bff;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s; }
+  .light-theme .options button:hover {
+    background: #0056b3; }
+.light-theme .money-counter, .light-theme .end-game, .light-theme .leaderboard {
+  margin-top: 20px;
+  font-size: 1.2em; }
+.light-theme .end-game {
+  display: none; }
+.light-theme .leaderboard ul {
+  list-style: none;
+  padding: 0; }
+  .light-theme .leaderboard ul li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 5px; }
+.light-theme input[type="text"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em; }
+.light-theme button {
+  display: inline-block;
+  background-color: #007bff;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s; }
+  .light-theme button:hover {
+    background-color: #0056b3; }
+
+.dark-theme body {
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: #f4f4f4;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  height: 100vh;
+  margin: 0;
+  padding: 20px; }
+.dark-theme .container, .dark-theme .leaderboard {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%; }
+.dark-theme .container {
+  max-width: 600px; }
+.dark-theme .leaderboard {
+  max-width: 300px; }
+.dark-theme h2 {
+  color: #1e90ff;
+  text-align: center; }
+.dark-theme .question {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  color: #1e90ff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); }
+.dark-theme .options button {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #1e90ff;
+  color: #f4f4f4;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s; }
+  .dark-theme .options button:hover {
+    background: #104e8b; }
+.dark-theme .money-counter, .dark-theme .end-game, .dark-theme .leaderboard {
+  margin-top: 20px;
+  font-size: 1.2em; }
+.dark-theme .end-game {
+  display: none; }
+.dark-theme .leaderboard ul {
+  list-style: none;
+  padding: 0; }
+  .dark-theme .leaderboard ul li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #2f2f2f;
+    border: 1px solid #444;
+    border-radius: 5px; }
+.dark-theme input[type="text"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  font-size: 1em; }
+.dark-theme button {
+  display: inline-block;
+  background-color: #1e90ff;
+  color: #f4f4f4;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s; }
+  .dark-theme button:hover {
+    background-color: #104e8b; }
+
+/*# sourceMappingURL=styles.css.map */
