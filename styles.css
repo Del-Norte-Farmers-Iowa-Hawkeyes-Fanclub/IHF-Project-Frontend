@@ -36,7 +36,7 @@ body, .centered-container {
 /* Container styles */
 .light-theme .container,
 .dark-theme .container {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.8);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -47,7 +47,7 @@ body, .centered-container {
 
 .light-theme .leaderboard,
 .dark-theme .leaderboard {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.8);
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -95,4 +95,20 @@ body, .centered-container {
   display: none;
 }
 
-.light-theme .leaderboard ul, .dark-theme
+.light-theme .leaderboard ul, .dark-theme .leaderboard ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Background for the body */
+body.light-theme {
+  background: url('img/farmland.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #3E2723; /* Dark brown text */
+}
+
+body.dark-theme {
+  background: url('img/farmland.png') no-repeat center center fixed;
+  background-size: cover;
+  color: #FFEB3B; /* Yellow text */
+}
