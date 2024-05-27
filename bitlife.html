@@ -41,9 +41,15 @@
             </div>
         </div>
 
-        <div class="leaderboard" id="leaderboard">
-            <h2>Leaderboard</h2>
-            <ul id="leaderboardList"></ul>
+        <div class="leaderboards">
+            <div class="leaderboard" id="basketballLeaderboard">
+                <h2>Basketball Leaderboard</h2>
+                <ul id="basketballLeaderboardList"></ul>
+            </div>
+            <div class="leaderboard" id="farmerLeaderboard">
+                <h2>Farmer Leaderboard</h2>
+                <ul id="farmerLeaderboardList"></ul>
+            </div>
         </div>
 
         <button id="themeSwitcher" onclick="toggleTheme()">Switch to Dark Mode</button>
@@ -66,7 +72,10 @@
             fetchEvent();
         }
 
-        document.addEventListener('DOMContentLoaded', fetchLeaderboard);
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchLeaderboard('basketball');
+            fetchLeaderboard('farmer');
+        });
 
         function fetchEvent() {
             console.log(`Fetching event with ID: ${currentEventId}`);
@@ -108,12 +117,12 @@
                 currentMoney += event.moneyOption1 || 0;
                 currentHealth += event.healthOption1 || 0;
                 currentEducation += event.educationOption1 || 0;
-                currentEventId +=1 ;
+                currentEventId +=1;
             } else {
                 currentMoney += event.moneyOption2 || 0;
                 currentHealth += event.healthOption2 || 0;
                 currentEducation += event.educationOption2 || 0;
-                currentEventId +=1 ;
+                currentEventId +=1;
             }
             console.log(`Next event ID: ${currentEventId}, Current money: ${currentMoney}, Current health: ${currentHealth}, Current education: ${currentEducation}`);
             document.getElementById('moneyProgress').value = currentMoney;
@@ -135,37 +144,40 @@
             document.getElementById('option1').style.display = 'none';
             document.getElementById('option2').style.display = 'none';
             document.getElementById('endGame').style.display = 'block';
-            fetchLeaderboard();
+            fetchLeaderboard(chosenPath);
         }
 
         function submitScore() {
             const playerName = document.getElementById('playerName').value;
+            const scoreType = chosenPath;  // 'basketball' or 'farmer'
+
             if (scoreSubmitted) {
                 alert('Score already submitted.');
                 return;
             }
+
             fetch('http://localhost:8012/api/bitlife/scores', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ playerName: playerName, score: currentMoney })
+                body: JSON.stringify({ playerName: playerName, score: currentMoney, type: scoreType })
             })
                 .then(response => response.json())
                 .then(data => {
                     console.log('Score submitted:', data);
                     scoreSubmitted = true;
-                    fetchLeaderboard();
+                    fetchLeaderboard(scoreType);
                 })
                 .catch(error => console.error('Error submitting score:', error));
         }
 
-        function fetchLeaderboard() {
-            fetch('http://localhost:8012/api/bitlife/scores')
+        function fetchLeaderboard(type) {
+            fetch(`http://localhost:8012/api/bitlife/scores/${type}`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log('Leaderboard data:', data);
-                    const leaderboardList = document.getElementById('leaderboardList');
+                    console.log(`${type} leaderboard data:`, data);
+                    const leaderboardList = document.getElementById(`${type}LeaderboardList`);
                     leaderboardList.innerHTML = '';
                     data.forEach(score => {
                         const li = document.createElement('li');
@@ -173,11 +185,10 @@
                         leaderboardList.appendChild(li);
                     });
                 })
-                .catch(error => console.error('Error fetching leaderboard:', error));
+                .catch(error => console.error(`Error fetching ${type} leaderboard:`, error));
         }
 
         function toggleTheme() {
-            const body = document.body;
             const mainContainer = document.querySelector('.main-container');
             const themeSwitcher = document.getElementById('themeSwitcher');
             if (isDarkMode) {
