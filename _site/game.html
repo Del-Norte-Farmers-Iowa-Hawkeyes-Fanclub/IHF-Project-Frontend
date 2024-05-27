@@ -28,6 +28,7 @@
 	<script src="src/Game.js"></script>
 	<script>
 		// Check for email in local storage and redirect if not found
+		// protection routes enabled
 		document.addEventListener('DOMContentLoaded', function() {
 				if (!localStorage.getItem('Email')) {
 						window.location.href = 'http://localhost:4000/home.html';
