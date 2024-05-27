@@ -26,21 +26,21 @@ $dark-text-color: #f4f4f4;
     align-items: center;
     height: 100vh;
     margin: 0;
+    background-color: $background-color;
+    color: $text-color;
   }
 
   .main-container {
-    background-color: $background-color;
-    color: $text-color;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    padding: 20px;
+    flex-direction: row;
     width: 100%;
     height: 100%;
+    padding: 20px;
   }
 
-  .container, .leaderboard {
+  .container {
     background: $container-background;
     padding: 20px;
     border-radius: 10px;
@@ -48,6 +48,43 @@ $dark-text-color: #f4f4f4;
     max-width: 600px;
     width: 100%;
     margin: 10px;
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  .leaderboards {
+    display: flex;
+    flex-direction: column;
+    margin: 0 20px;
+    animation: slideIn 1s ease-in-out;
+
+    .leaderboard {
+      background: $container-background;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px $shadow-color;
+      max-width: 300px;
+      width: 100%;
+      margin-bottom: 20px;
+
+      h2 {
+        color: $primary-color;
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+
+        li {
+          margin-bottom: 10px;
+          padding: 10px;
+          background: $secondary-color;
+          border: 1px solid $border-color;
+          border-radius: 5px;
+        }
+      }
+    }
   }
 
   h2 {
@@ -73,10 +110,11 @@ $dark-text-color: #f4f4f4;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
 
     &:hover {
       background: $primary-hover-color;
+      transform: scale(1.05);
     }
   }
 
@@ -122,45 +160,50 @@ $dark-text-color: #f4f4f4;
   .end-game {
     display: none;
     margin-top: 20px;
-  }
 
-  .leaderboard ul {
-    list-style: none;
-    padding: 0;
-
-    li {
-      margin-bottom: 10px;
+    input[type="text"] {
+      width: calc(100% - 22px);
       padding: 10px;
-      background: $secondary-color;
+      margin-bottom: 10px;
       border: 1px solid $border-color;
       border-radius: 5px;
+      font-size: 1em;
+    }
+
+    button {
+      display: inline-block;
+      background-color: $primary-color;
+      color: $text-color;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 0.3s;
+
+      &:hover {
+        background-color: $primary-hover-color;
+      }
     }
   }
 
-  input[type="text"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid $border-color;
-    border-radius: 5px;
-    font-size: 1em;
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
-  button {
-    display: inline-block;
-    background-color: $primary-color;
-    color: $text-color;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s;
-
-    &:hover {
-      background-color: $primary-hover-color;
+  @keyframes slideIn {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
     }
   }
 }
