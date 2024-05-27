@@ -1,114 +1,213 @@
-/* Apply to the body or the container that holds everything */
-body, .centered-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
-  flex-direction: column;
-}
-
-/* Image container styles */
-.image-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.age-image {
-  width: 100px; /* Adjust size as needed */
-  height: auto;
-  margin: 0 10px; /* Spacing between images */
-}
-
-/* Theme-specific styles */
-.light-theme body, .dark-theme body {
+.light-theme body {
   font-family: Arial, sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  margin: 0;
-  padding: 0;
+  margin: 0; }
+.light-theme .main-container {
+  background-color: #f4f4f4;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   flex-direction: column;
-}
-
-/* Container styles */
-.light-theme .container,
-.dark-theme .container {
-  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  width: 100%;
+  height: 100%; }
+.light-theme .container, .light-theme .leaderboard {
+  background: #fff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   max-width: 600px;
   width: 100%;
-  margin-bottom: 20px; /* Add some space between the two main sections */
-}
-
-.light-theme .leaderboard,
-.dark-theme .leaderboard {
-  background: rgba(255, 255, 255, 0.8);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 300px;
-  width: 100%;
-}
-
-/* Header styles */
-.light-theme h2, .dark-theme h2 {
-  text-align: center;
-}
-
-/* Question styles */
-.light-theme .question, .dark-theme .question {
+  margin: 10px; }
+.light-theme h2 {
+  color: #007bff;
+  text-align: center; }
+.light-theme .question {
   font-size: 1.2em;
   margin-bottom: 20px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-/* Button styles */
-.light-theme .options button, .dark-theme .options button {
+  color: #007bff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); }
+.light-theme .options button {
   display: block;
   width: 100%;
   margin-bottom: 10px;
   padding: 10px;
+  background: #007bff;
+  color: #333;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   font-size: 1em;
-  transition: background-color 0.3s;
-}
-
-.light-theme .options button:hover, .dark-theme .options button:hover {
-  background: #0056b3;
-}
-
-/* Additional styles */
-.light-theme .money-counter, .light-theme .end-game, .light-theme .leaderboard,
-.dark-theme .money-counter, .dark-theme .end-game, .dark-theme .leaderboard {
-  margin-top: 20px;
-  font-size: 1.2em;
-}
-
-.light-theme .end-game, .dark-theme .end-game {
+  transition: background-color 0.3s; }
+  .light-theme .options button:hover {
+    background: #0056b3; }
+.light-theme .trackers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px; }
+  .light-theme .trackers .progress-container {
+    margin-bottom: 10px;
+    width: 100%; }
+    .light-theme .trackers .progress-container label {
+      display: block;
+      margin-bottom: 5px; }
+    .light-theme .trackers .progress-container progress {
+      width: 100%;
+      height: 20px;
+      -webkit-appearance: none;
+      appearance: none; }
+      .light-theme .trackers .progress-container progress::-webkit-progress-bar {
+        background-color: #f4f4f4;
+        border-radius: 10px; }
+      .light-theme .trackers .progress-container progress::-webkit-progress-value {
+        background-color: #007bff;
+        border-radius: 10px; }
+      .light-theme .trackers .progress-container progress::-moz-progress-bar {
+        background-color: #007bff;
+        border-radius: 10px; }
+.light-theme .end-game {
   display: none;
-}
-
-.light-theme .leaderboard ul, .dark-theme .leaderboard ul {
+  margin-top: 20px; }
+.light-theme .leaderboard ul {
   list-style: none;
-  padding: 0;
-}
+  padding: 0; }
+  .light-theme .leaderboard ul li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 5px; }
+.light-theme input[type="text"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1em; }
+.light-theme button {
+  display: inline-block;
+  background-color: #007bff;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s; }
+  .light-theme button:hover {
+    background-color: #0056b3; }
 
-/* Background for the body */
-body.light-theme {
-  background: url('img/farmland.png') no-repeat center center fixed;
-  background-size: cover;
-  color: #3E2723; /* Dark brown text */
-}
+.dark-theme body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0; }
+.dark-theme .main-container {
+  background-color: #121212;
+  color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  width: 100%;
+  height: 100%; }
+.dark-theme .container, .dark-theme .leaderboard {
+  background: #1e1e1e;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  width: 100%;
+  margin: 10px; }
+.dark-theme h2 {
+  color: #1e90ff;
+  text-align: center; }
+.dark-theme .question {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  color: #1e90ff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); }
+.dark-theme .options button {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #1e90ff;
+  color: #f4f4f4;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s; }
+  .dark-theme .options button:hover {
+    background: #104e8b; }
+.dark-theme .trackers {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px; }
+  .dark-theme .trackers .progress-container {
+    margin-bottom: 10px;
+    width: 100%; }
+    .dark-theme .trackers .progress-container label {
+      display: block;
+      margin-bottom: 5px; }
+    .dark-theme .trackers .progress-container progress {
+      width: 100%;
+      height: 20px;
+      -webkit-appearance: none;
+      appearance: none; }
+      .dark-theme .trackers .progress-container progress::-webkit-progress-bar {
+        background-color: #2f2f2f;
+        border-radius: 10px; }
+      .dark-theme .trackers .progress-container progress::-webkit-progress-value {
+        background-color: #1e90ff;
+        border-radius: 10px; }
+      .dark-theme .trackers .progress-container progress::-moz-progress-bar {
+        background-color: #1e90ff;
+        border-radius: 10px; }
+.dark-theme .end-game {
+  display: none;
+  margin-top: 20px; }
+.dark-theme .leaderboard ul {
+  list-style: none;
+  padding: 0; }
+  .dark-theme .leaderboard ul li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #2f2f2f;
+    border: 1px solid #444;
+    border-radius: 5px; }
+.dark-theme input[type="text"] {
+  width: calc(100% - 22px);
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  font-size: 1em; }
+.dark-theme button {
+  display: inline-block;
+  background-color: #1e90ff;
+  color: #f4f4f4;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s; }
+  .dark-theme button:hover {
+    background-color: #104e8b; }
 
-body.dark-theme {
-  background: url('img/farmland.png') no-repeat center center fixed;
-  background-size: cover;
-  color: #FFEB3B; /* Yellow text */
-}
+/*# sourceMappingURL=styles.css.map */

@@ -21,14 +21,23 @@ $dark-text-color: #f4f4f4;
 @mixin theme($primary-color, $primary-hover-color, $secondary-color, $border-color, $background-color, $container-background, $shadow-color, $text-color) {
   body {
     font-family: $font-stack;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .main-container {
     background-color: $background-color;
     color: $text-color;
     display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    height: 100vh;
-    margin: 0;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     padding: 20px;
+    width: 100%;
+    height: 100%;
   }
 
   .container, .leaderboard {
@@ -38,14 +47,7 @@ $dark-text-color: #f4f4f4;
     box-shadow: 0 0 10px $shadow-color;
     max-width: 600px;
     width: 100%;
-  }
-
-  .container {
-    max-width: 600px;
-  }
-
-  .leaderboard {
-    max-width: 300px;
+    margin: 10px;
   }
 
   h2 {
@@ -78,13 +80,48 @@ $dark-text-color: #f4f4f4;
     }
   }
 
-  .money-counter, .end-game, .leaderboard {
+  .trackers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 20px;
-    font-size: 1.2em;
+
+    .progress-container {
+      margin-bottom: 10px;
+      width: 100%;
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      progress {
+        width: 100%;
+        height: 20px;
+        -webkit-appearance: none;
+        appearance: none;
+
+        &::-webkit-progress-bar {
+          background-color: $secondary-color;
+          border-radius: 10px;
+        }
+
+        &::-webkit-progress-value {
+          background-color: $primary-color;
+          border-radius: 10px;
+        }
+
+        &::-moz-progress-bar {
+          background-color: $primary-color;
+          border-radius: 10px;
+        }
+      }
+    }
   }
 
   .end-game {
     display: none;
+    margin-top: 20px;
   }
 
   .leaderboard ul {
