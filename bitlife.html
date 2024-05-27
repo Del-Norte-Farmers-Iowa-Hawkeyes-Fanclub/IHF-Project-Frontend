@@ -13,9 +13,9 @@
                 <h2>Basketball Leaderboard</h2>
                 <ul id="basketballLeaderboardList"></ul>
             </div>
-            <div class="leaderboard" id="farmerLeaderboard">
+            <div class="leaderboard" id="farmingLeaderboard">
                 <h2>Farmer Leaderboard</h2>
-                <ul id="farmerLeaderboardList"></ul>
+                <ul id="farmingLeaderboardList"></ul>
             </div>
         </div>
 
@@ -75,7 +75,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchLeaderboard('basketball');
-            fetchLeaderboard('farmer');
+            fetchLeaderboard('farming');
         });
 
         function fetchEvent() {
@@ -177,20 +177,43 @@
         }
 
         function fetchLeaderboard(type) {
-            fetch(`http://localhost:8012/api/bitlife/scores/${type}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(`${type} leaderboard data:`, data);
-                    const leaderboardList = document.getElementById(`${type}LeaderboardList`);
-                    leaderboardList.innerHTML = '';
-                    data.forEach(score => {
-                        const li = document.createElement('li');
-                        li.textContent = `${score.playerName}: $${score.score}`;
-                        leaderboardList.appendChild(li);
-                    });
-                })
-                .catch(error => console.error(`Error fetching ${type} leaderboard:`, error));
-        }
+    console.log(`Fetching ${type} leaderboard`);
+    const leaderboardList = document.getElementById(`${type}LeaderboardList`);
+    console.log('Leaderboard list element:', leaderboardList);
+
+    if (!leaderboardList) {
+        console.error(`Element with id '${type}LeaderboardList' not found`);
+        return;
+    }
+
+    fetch(`http://localhost:8012/api/bitlife/scores/${type}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok for ${type} leaderboard`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(`${type} leaderboard data:`, data);
+            leaderboardList.innerHTML = '';
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(score => {
+                    const li = document.createElement('li');
+                    li.textContent = `${score.playerName}: $${score.score}`;
+                    leaderboardList.appendChild(li);
+                });
+            } else {
+                // If the leaderboard is empty, show a placeholder message
+                const li = document.createElement('li');
+                li.textContent = 'No scores yet. Be the first to submit a score!';
+                leaderboardList.appendChild(li);
+            }
+        })
+        .catch(error => console.error(`Error fetching ${type} leaderboard:`, error));
+}
+
+
+
 
         function toggleTheme() {
             const mainContainer = document.querySelector('.main-container');
@@ -209,14 +232,28 @@
 
         function updateAgeImage(eventId) {
             const ageImage = document.getElementById('ageImage');
-            if (eventId < 4) {
-                ageImage.src = 'img/baby (1).png';
-            } else if (eventId < 20) {
-                ageImage.src = 'img/man.png';
-            } else if (eventId < 30) {
-                ageImage.src = 'img/old-man.png';
-            } else {
-                ageImage.src = 'img/grave.png';
+            if (chosenPath === 'basketball') {
+                if (eventId < 10) {
+                    ageImage.src = 'img/baby (1).png';
+                } else if (eventId < 20) {
+                    ageImage.src = 'img/basketball-player.png';
+                } else if (eventId < 30) {
+                    ageImage.src = 'img/old-man.png';
+                } else {
+                    ageImage.src = 'img/grave.png';
+                }
+            } 
+            
+            else if (chosenPath === 'farming') {
+                if (eventId < 10) {
+                    ageImage.src = 'img/baby (1).png';
+                } else if (eventId < 20) {
+                    ageImage.src = 'img/farmer (1).png';
+                } else if (eventId < 30) {
+                    ageImage.src = 'img/old-man.png';
+                } else {
+                    ageImage.src = 'img/grave.png';
+                }
             }
         }
     </script>
