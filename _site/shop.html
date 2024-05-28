@@ -42,10 +42,10 @@
         }
         .container {
             max-width: 1200px;
-            margin: 80px auto 0; /* Increased margin-top to push content down */
+            margin: 80px auto 0;
             padding: 0 20px;
         }
-        .convert-form, .betting-button, .products, .homeButton, .home, .futureDiv {
+        .convert-form, .betting-button, .products, .homeButton, .home, .futureDiv, .trade-score, .graph-gen {
             margin: 20px 0;
             text-align: center;
         }
@@ -58,7 +58,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             display: inline-block;
-            vertical-align: top; /* Ensure tops align */
+            vertical-align: top;
         }
         .product:hover {
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -90,16 +90,16 @@
         .button:hover {
             background-color: #2ecc71;
         }
-        .convert-form label, .convert-form input, .convert-form button {
+        .convert-form label, .convert-form input, .convert-form button, .trade-score label, .trade-score select, .trade-score input, .trade-score button, .graph-gen label, .graph-gen input, .graph-gen button {
             font-size: 16px;
             padding: 10px;
             margin: 5px;
         }
-        .betting-button, .homeButton, .futureDiv {
+        .betting-button, .homeButton, .futureDiv, .trade-score, .graph-gen {
             margin-top: 40px;
         }
         .products {
-            padding-bottom: 100px; /* Added more padding to lift content above the fixed footer */
+            padding-bottom: 100px;
         }
         .crop {
             text-align: center;
@@ -109,7 +109,7 @@
 <body>
     <div class="navbar">
         <h1>Iowa Farmer Basketball Shop</h1>
-        <a href=https://rkmist.github.io/Del-Norte-Association-of-Sustainable-Farmers-Saftey-and-OSHA-Log-Book/>Home</a>
+        <a href="https://rkmist.github.io/Del-Norte-Association-of-Sustainable-Farmers-Saftey-and-OSHA-Log-Book/">Home</a>
         <a href="#" onclick="myFunction()">Back to Game</a>
         <a href="http://localhost:4000/statsfortheuser.html">NBA Fantasy</a>
     </div>
@@ -136,60 +136,50 @@
             <br><button class="button" onclick="buyFutures()">Buy Futures!</button>
             <button class="button" onclick="sellFutures()">Sell your futures!</button>
         </div>
+        <div class="trade-score">
+            <h2>Calculate Trade Score</h2>
+            <label for="numFutures">Number of Futures:</label>
+            <input type="number" id="numFutures">
+            
+            <label for="action">Action:</label>
+            <select id="action">
+                <option value="buy">Buy</option>
+                <option value="sell">Sell</option>
+            </select>
+            
+            <button id="calculateScoreBtn" class="button">Calculate Score</button>
+            
+            <div id="scoreResult"></div>
+        </div>
+        <div class="graph-gen">
+            <h2>Generate Futures Graph</h2>
+            <label for="numHistoricalPoints">Number of Historical Points:</label>
+            <input type="number" id="numHistoricalPoints">
+            
+            <label for="numPredictedPoints">Number of Predicted Points:</label>
+            <input type="number" id="numPredictedPoints">
+            
+            <button id="generateGraphBtn" class="button">Generate Graph</button>
+            
+            <div id="graphResult">
+                <img id="graphImage" src="" alt="Futures Graph">
+            </div>
+        </div>
         <div class="betting-button">
             <a href="http://localhost:4000/statsfortheuser.html" class="button">NBA Fantasy Betting</a>
         </div>
         <div class="products">
-            <!-- <div class="product">
-                <h2>Farmer Sign 🪧</h2>
-                <img src="img/sign.png" alt="Product 1">
-                <p>Price: $20</p>
-            </div>
-            <!-- Added more placeholder products -->
-            <!-- <div class="product">
-                <h2>Farmer Tree 🌾 </h2>
-                <img src="img/tree.gif" alt="Product 2">
-                <p>Price: $30</p>
-            </div> -->
-            <div class="product" id = "cornProduct">
+            <div class="product" id="cornProduct">
                 <h2>Corn 🌾</h2>
-                <!-- <img src="placeholder-image.png" alt="Product 3"> -->
                 <p id="ppc">Price: $25</p>
             </div>
-            <!-- Additional products can be added in the same manner -->
         </div>
     </div>
     <div class="footer">
         Connect with us:
         <p>Email | Facebook | Twitter</p>
     </div>
-
-
-
-
-    <!-- <div class="shop-container">
-        <h1>SHOP</h1>
-
-
-
-
-        <div id="return">
-            <button id="home" onclick="myFunction()">Return to Home</button>
-        </div>
-
-
-
-
-        <div id="cornSell">
-            <button id="cornSellButton" onclick="sellCorn()">Sell Your Corn</button>
-        </div>
-    </div>
-
-
-
-
-     -->
-     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
         var futuresOwned = parseInt(0);
         var pricePerCorn = 4;
@@ -199,6 +189,7 @@
         calculateCornPrice();
         document.querySelector("label[for='crop-amount']").textContent = "You have: " + cornQuant + " ears of corn";
         document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
+        
         function myFunction(){
             document.getElementById("home");
              window.location.href = '/game.html';
@@ -228,9 +219,6 @@
             });
         }
 
-
-
-
         function getCash(email) {
             fetch('http://localhost:6942/api/person/getCash', {
                 method: 'POST',
@@ -245,7 +233,7 @@
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.text(); // Parse the response as JSON
+                return response.text();
             })
             .then(data => {
                 console.log(data);
@@ -255,18 +243,10 @@
                 console.error('There was a problem with the fetch operation:', error);
             });
         }
-       
-       
-
-
-
 
         function setCorn() {
             document.querySelector("label[for='corn-amount']").textContent = "Corn Cobs to Sell:";
         }
-
-
-
 
         function sellCrop() {
             var choice = document.getElementById("crop").value;
@@ -275,59 +255,52 @@
             }
         }
 
-
         function buyFutures() {
             var cash = document.querySelector("label[for='money']").textContent.substring(10);
             var futureBuyAmount = parseInt(document.getElementById("future-amount").value);
             console.log(cash);
-            if (cash>=pricePerCorn*parseInt(futureBuyAmount)) {
-                updateCash(mailE, -pricePerCorn*parseInt(futureBuyAmount));
-                futuresOwned+=futureBuyAmount;
+            if (cash >= pricePerCorn * parseInt(futureBuyAmount)) {
+                updateCash(mailE, -pricePerCorn * parseInt(futureBuyAmount));
+                futuresOwned += futureBuyAmount;
                 document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
                 getCash(mailE);
             }
         }
 
-
-
-
         function calculateCornPrice(callback) {
-            // getting corn futures price
-            var name = 'Corn Futures'
+            var name = 'Corn Futures';
             $.ajax({
-            method: 'GET',
-            url: 'https://api.api-ninjas.com/v1/commodityprice?name=' + name,
-            headers: { 'X-Api-Key': 'SfcAe601qaPJvg1Dmy6kmg==XeVguO0mmdWet9h3'},
-            contentType: 'application/json',
-            success: function(result) {
-                console.log(result);
-                console.log(result.price);
-                pricePerCorn = Math.round(result.price);
-                console.log(pricePerCorn);
-                document.getElementById("ppc").innerHTML = "Price: $" + pricePerCorn;
-                if(callback){
-                    callback(pricePerCorn);
+                method: 'GET',
+                url: 'https://api.api-ninjas.com/v1/commodityprice?name=' + name,
+                headers: { 'X-Api-Key': 'SfcAe601qaPJvg1Dmy6kmg==XeVguO0mmdWet9h3'},
+                contentType: 'application/json',
+                success: function(result) {
+                    console.log(result);
+                    console.log(result.price);
+                    pricePerCorn = Math.round(result.price);
+                    console.log(pricePerCorn);
+                    document.getElementById("ppc").innerHTML = "Price: $" + pricePerCorn;
+                    if(callback){
+                        callback(pricePerCorn);
+                    }
+                },
+                error: function ajaxError(jqXHR) {
+                    console.error('Error: ', jqXHR.responseText);
                 }
-            },
-            error: function ajaxError(jqXHR) {
-                console.error('Error: ', jqXHR.responseText);
-            }
-           
-        });
-       
+            });
         }
 
         function sellCorn(){
             console.log("corn: " + cornQuant);
             var cornSellAmount = document.getElementById("corn-amount").value;
-            if (parseInt(cornQuant)<parseInt(cornSellAmount)) {
+            if (parseInt(cornQuant) < parseInt(cornSellAmount)) {
               console.log("selling failed");
             } else {
               calculateCornPrice(function(pricePerCorn){
                   console.log("I LOVE PPC: " + pricePerCorn);
                   updateCash(localStorage.getItem('Email'), (pricePerCorn * cornSellAmount));
               });
-              localStorage.setItem('cornStorage', cornQuant-cornSellAmount);
+              localStorage.setItem('cornStorage', cornQuant - cornSellAmount);
               console.log(localStorage.getItem('cornStorage'));
               cornQuant = localStorage.getItem('cornStorage');
               document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
@@ -336,23 +309,62 @@
         }
 
         function sellFutures(){
-              var futureSellAmount = document.getElementById("future-amount").value;
-              if (parseInt(futuresOwned)<parseInt(futureSellAmount)) {
+            var futureSellAmount = document.getElementById("future-amount").value;
+            if (parseInt(futuresOwned) < parseInt(futureSellAmount)) {
                 console.log("selling failed");
-              } else {
+            } else {
                 calculateCornPrice(function(pricePerCorn){
                     console.log("I LOVE PPC: " + pricePerCorn);
                     updateCash(localStorage.getItem('Email'), (pricePerCorn * futureSellAmount));
                 });
-                localStorage.setItem('cornStorage', cornQuant-cornSellAmount);
-                futuresOwned-=parseInt(futureSellAmount)
+                localStorage.setItem('cornStorage', cornQuant - futureSellAmount);
+                futuresOwned -= parseInt(futureSellAmount);
                 document.querySelector("label[for='future-amount']").textContent = "You have: " + cornQuant + " ears of corn";
             }
             getCash(mailE);
-          }
+        }
+
+        document.getElementById('calculateScoreBtn').addEventListener('click', async () => {
+            const numFutures = document.getElementById('numFutures').value;
+            const action = document.getElementById('action').value;
+
+            const response = await fetch('http://localhost:6942/api/commodities/calculate_score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ num_futures: numFutures, action: action })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                document.getElementById('scoreResult').innerText = `Score: ${data.score}`;
+            } else {
+                document.getElementById('scoreResult').innerText = `Error: ${data.error}`;
+            }
+        });
+
+        document.getElementById('generateGraphBtn').addEventListener('click', async () => {
+            const numHistoricalPoints = document.getElementById('numHistoricalPoints').value;
+            const numPredictedPoints = document.getElementById('numPredictedPoints').value;
+
+            const response = await fetch('http://localhost:6942/api/commodities/generate_graph', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ num_historical_points: numHistoricalPoints, num_predicted_points: numPredictedPoints })
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                document.getElementById('graphImage').src = url;
+            } else {
+                const data = await response.json();
+                document.getElementById('graphResult').innerText = `Error: ${data.error}`;
+            }
+        });
     </script>
 </body>
 </html>
-
-
-
