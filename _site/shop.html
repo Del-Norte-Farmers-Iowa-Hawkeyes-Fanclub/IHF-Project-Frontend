@@ -45,7 +45,7 @@
             margin: 80px auto 0; /* Increased margin-top to push content down */
             padding: 0 20px;
         }
-        .convert-form, .betting-button, .products, .homeButton, .home {
+        .convert-form, .betting-button, .products, .homeButton, .home, .futureDiv {
             margin: 20px 0;
             text-align: center;
         }
@@ -95,7 +95,7 @@
             padding: 10px;
             margin: 5px;
         }
-        .betting-button, .homeButton {
+        .betting-button, .homeButton, .futureDiv {
             margin-top: 40px;
         }
         .products {
@@ -118,16 +118,23 @@
             <button class="button" id="homeButton" onclick="myFunction()">Return to Home</button>
         </div>
         <div class="convert-form">
-            <label for="corn-amount">I'll sell:</label>
+            <label for="corn-amount">Futures to buy</label>
             <select name="crop" id="crop">
                 <option value="corn">Corn</option>
               </select>
             <input type="number" id="corn-amount" name="corn-amount" min="1" value="1">
-            <button type="submit" class="button" onclick="sellCrop()">Convert to Dollars</button>
+            <button type="submit" class="button" onclick="sellCorn()">Convert to Dollars</button>
         </div>
         <div class="crop">
             <label class="crop-amount" for="crop-amount">You have: </label>
             <br><label for="money">$ </label>
+            <br><label for="futures">You have: 0 corn futures</label>
+        </div>
+        <div class="futureDiv">
+            <label for="fut">Futures to buy/sell: </label>
+            <input type="number" id="future-amount" name="future-amount" min="1" value="1">
+            <br><button class="button" onclick="buyFutures()">Buy Futures!</button>
+            <button class="button" onclick="sellFutures()">Sell your futures!</button>
         </div>
         <div class="betting-button">
             <a href="http://localhost:4000/statsfortheuser.html" class="button">NBA Fantasy Betting</a>
@@ -158,13 +165,19 @@
     </div>
 
 
+
+
     <!-- <div class="shop-container">
         <h1>SHOP</h1>
+
+
 
 
         <div id="return">
             <button id="home" onclick="myFunction()">Return to Home</button>
         </div>
+
+
 
 
         <div id="cornSell">
@@ -173,14 +186,19 @@
     </div>
 
 
+
+
      -->
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
+        var futuresOwned = parseInt(0);
         var pricePerCorn = 4;
         var cornQuant = localStorage.getItem('cornStorage');
         const mailE = localStorage.getItem('Email');
         getCash(mailE);
+        calculateCornPrice();
         document.querySelector("label[for='crop-amount']").textContent = "You have: " + cornQuant + " ears of corn";
+        document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
         function myFunction(){
             document.getElementById("home");
              window.location.href = '/game.html';
@@ -188,7 +206,7 @@
         }
        
         function updateCash(email, cash) {
-            fetch('https://ihf.stu.nighthawkcodingsociety.com/api/person/cashUpdate', {
+            fetch('http://localhost:6942/api/person/cashUpdate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -211,8 +229,10 @@
         }
 
 
+
+
         function getCash(email) {
-            fetch('https://ihf.stu.nighthawkcodingsociety.com/api/person/getCash', {
+            fetch('http://localhost:6942/api/person/getCash', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -229,7 +249,7 @@
             })
             .then(data => {
                 console.log(data);
-                document.querySelector("label[for='money']").textContent = "You have $" + JSON.stringify(data);
+                document.querySelector("label[for='money']").textContent = "You have $" + parseInt(data);
             })
             .catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
@@ -239,9 +259,13 @@
        
 
 
+
+
         function setCorn() {
             document.querySelector("label[for='corn-amount']").textContent = "Corn Cobs to Sell:";
         }
+
+
 
 
         function sellCrop() {
@@ -250,6 +274,21 @@
                 sellCorn();
             }
         }
+
+
+        function buyFutures() {
+            var cash = document.querySelector("label[for='money']").textContent.substring(10);
+            var futureBuyAmount = parseInt(document.getElementById("future-amount").value);
+            console.log(cash);
+            if (cash>=pricePerCorn*parseInt(futureBuyAmount)) {
+                updateCash(mailE, -pricePerCorn*parseInt(futureBuyAmount));
+                futuresOwned+=futureBuyAmount;
+                document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
+                getCash(mailE);
+            }
+        }
+
+
 
 
         function calculateCornPrice(callback) {
@@ -277,23 +316,43 @@
         });
        
         }
+
         function sellCorn(){
-              console.log("corn: " + cornQuant);
-              var cornSellAmount = document.getElementById("corn-amount").value;
-              if (parseInt(cornQuant)<parseInt(cornSellAmount)) {
+            console.log("corn: " + cornQuant);
+            var cornSellAmount = document.getElementById("corn-amount").value;
+            if (parseInt(cornQuant)<parseInt(cornSellAmount)) {
+              console.log("selling failed");
+            } else {
+              calculateCornPrice(function(pricePerCorn){
+                  console.log("I LOVE PPC: " + pricePerCorn);
+                  updateCash(localStorage.getItem('Email'), (pricePerCorn * cornSellAmount));
+              });
+              localStorage.setItem('cornStorage', cornQuant-cornSellAmount);
+              console.log(localStorage.getItem('cornStorage'));
+              cornQuant = localStorage.getItem('cornStorage');
+              document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
+          }
+          getCash(mailE);
+        }
+
+        function sellFutures(){
+              var futureSellAmount = document.getElementById("future-amount").value;
+              if (parseInt(futuresOwned)<parseInt(futureSellAmount)) {
                 console.log("selling failed");
               } else {
                 calculateCornPrice(function(pricePerCorn){
                     console.log("I LOVE PPC: " + pricePerCorn);
-                    updateCash(localStorage.getItem('Email'), (pricePerCorn * cornSellAmount));
+                    updateCash(localStorage.getItem('Email'), (pricePerCorn * futureSellAmount));
                 });
                 localStorage.setItem('cornStorage', cornQuant-cornSellAmount);
-                console.log(localStorage.getItem('cornStorage'));
-                cornQuant = localStorage.getItem('cornStorage');
-                document.querySelector("label[for='crop-amount']").textContent = "You have: " + cornQuant + " ears of corn";
+                futuresOwned-=parseInt(futureSellAmount)
+                document.querySelector("label[for='future-amount']").textContent = "You have: " + cornQuant + " ears of corn";
             }
             getCash(mailE);
           }
     </script>
 </body>
 </html>
+
+
+
