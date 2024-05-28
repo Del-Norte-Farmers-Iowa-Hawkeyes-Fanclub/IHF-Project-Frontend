@@ -328,12 +328,12 @@
             const numFutures = document.getElementById('numFutures').value;
             const action = document.getElementById('action').value;
 
-            const response = await fetch('http://localhost:6942/api/commodities/calculate_score', {
+            const response = await fetch('http://localhost:8086/api/commodities/calculate_score', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ num_futures: numFutures, action: action })
+                body: JSON.stringify({ "num_futures": parseInt(numFutures), "action": action })
             });
 
             const data = await response.json();
