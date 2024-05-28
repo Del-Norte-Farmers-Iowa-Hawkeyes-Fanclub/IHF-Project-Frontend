@@ -235,7 +235,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const startButton = document.getElementById("startVersus");
             startButton.addEventListener("click", function () {
-                const emailA = "mirzahbeg123@gmail.com"
+                const emailA = localStorage.getItem("Email");
                 const emailB = "toby@gmail.com";
 
                 console.log(`Comparing scores for: ${emailA} vs ${emailB}`);
