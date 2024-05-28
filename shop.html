@@ -162,7 +162,7 @@
             <button id="generateGraphBtn" class="button">Generate Graph</button>
             
             <div id="graphResult">
-                <img id="graphImage" src="" alt="Futures Graph">
+                <img id="graphImage" src="test_image.png" alt="Futures Graph">
             </div>
         </div>
         <div class="betting-button">
@@ -348,23 +348,31 @@
             const numHistoricalPoints = document.getElementById('numHistoricalPoints').value;
             const numPredictedPoints = document.getElementById('numPredictedPoints').value;
 
-            const response = await fetch('http://localhost:6942/api/commodities/generate_graph', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ num_historical_points: numHistoricalPoints, num_predicted_points: numPredictedPoints })
-            });
+            const myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
 
-            if (response.ok) {
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                document.getElementById('graphImage').src = url;
-            } else {
-                const data = await response.json();
-                document.getElementById('graphResult').innerText = `Error: ${data.error}`;
-            }
-        });
+                const raw = JSON.stringify({
+                "num_historical_points": parseInt(numHistoricalPoints),
+                "num_predicted_points": parseInt(numPredictedPoints),
+                "filename": "test_image.png"
+                });
+
+                const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow"
+                };
+
+                fetch("http://localhost:8086/api/commodities/generate_graph", requestOptions)
+                .then((response) => response.blob())
+                .then((blob) => {
+                    const imageUrl = URL.createObjectURL(blob);
+                    const imageElement = document.getElementById("graphImage");
+                    imageElement.src = imageUrl;
+                 })
+                .catch((error) => console.error(error));
+                        });
     </script>
 </body>
 </html>
