@@ -39,7 +39,7 @@ class Leaderboard extends Phaser.Scene {
         this.cameras.main.fadeIn(250, 0, 0, 0);
         
         // Add leaderboard text
-        this.add.bitmapText(100, 110, 'arcade', 'Eco Score | Profit | Primary-Crop | Username').setTint(0x000000);
+        this.add.bitmapText(100, 110, 'arcade', 'Eco Score | Profit | Crop Quantity | Username').setTint(0x000000);
 
         // Display scores
         for (let i = 0; i < 10; i++) {
@@ -70,7 +70,7 @@ class Leaderboard extends Phaser.Scene {
 // Perform AJAX request to get scores data
 $.ajax({
     type: 'GET',
-    url: 'http://localhost:6942/api/person/eco',
+    url: 'http://localhost:6942/api/person/cash',
     beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlcm1pdHNhY3R1YWxseXByb25vdW5jZWR3aXRoYVRIVUhAZ21haWwuY29tIiwiaWF0IjoxNzA3MjQ4NTE2LCJleHAiOjE3MDcyNjY1MTZ9.dLWvLwp8UyRMa3kiB5h7R0ms5Tp2ppA-VUuoA2Ys2bU');
     },

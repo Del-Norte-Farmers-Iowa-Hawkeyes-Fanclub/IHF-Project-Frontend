@@ -1,6 +1,3 @@
----
-layout: header
----
 
 <html lang="en">
 <head>
@@ -20,11 +17,6 @@ layout: header
             max-width: 1200px;
             margin: auto;
             padding: 20px;
-        }
-        .header {
-            background: #00529B;
-            color: #fff;
-            padding: 20px 0;
             text-align: center;
         }
         .input-group {
@@ -46,9 +38,6 @@ layout: header
         }
         .input-group button:hover {
             background-color: #003D79;
-        }
-        #calendar {
-            margin-bottom: 40px;
         }
         .comment-section, .calendar-section {
             background-color: white;
@@ -95,6 +84,17 @@ layout: header
         .suggestion-item:hover {
             background-color: #f0f0f0;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
@@ -102,15 +102,27 @@ layout: header
     </div>
     <div class="container">
         <div class="calendar-section">
-            <h2>NBA Schedule Calendar</h2>
-            <div class="input-group">
-                <input type="text" id="seasonInput" placeholder="Enter Season Year (e.g., 2024)">
-                <button onclick="fetchSchedule()">Load Schedule</button>
-            </div>
-            <div id='calendar'></div>
+            <h1>Launch Page</h1>
         </div>
         <div class="comment-section">
-            <h2>Comments</h2>
+            <h2>Leaderboard</h2>
+            <button onclick="fetchData('cashAlt')">Sort by Cash</button>
+            <button onclick="fetchData('ecoAlt')">Sort by Eco</button>
+            <button onclick="fetchData('cropsAlt')">Sort by Crop Quantity</button>
+            
+            <table id="leaderboard">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Cash</th>
+                        <th>Eco</th>
+                        <th>Crop Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
             <input type="text" id="gameNameInput" placeholder="Enter game name to view comments" oninput="filterSuggestions()">
             <div id="suggestions" class="suggestions"></div>
             <button onclick="fetchComments()">Load Comments</button>
@@ -123,136 +135,7 @@ layout: header
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                events: []
-            });
-            calendar.render();
-
-            window.fetchSchedule = function() {
-                const season = document.getElementById('seasonInput').value;
-                const url = `http://localhost:8062/api/nba/schedule/${season}`;
-
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        const events = data.map(game => {
-                            // Directly use 'Day' from the game object for the 'start' property
-                            // Ensure 'Day' exists and is a valid date string
-                            if (!game.Day || isNaN(new Date(game.Day).getTime())) {
-                                console.error('Invalid or missing date for game:', game);
-                                return null; // Skip this game entry
-                            }
-                            return {
-                                title: `${game.AwayTeam} @ ${game.HomeTeam}`,
-                                start: game.Day, // Use the ISO string directly
-                            };
-                        }).filter(event => event); // Filter out null entries
-
-                        calendar.removeAllEvents();
-                        calendar.addEventSource(events);
-                    })
-                    .catch(error => console.error('Error fetching schedule:', error));
-            };
-
-
-        });
-
-
-        function fetchComments() {
-            const gameName = document.getElementById('gameNameInput').value;
-            fetch(`http://localhost:8062/api/comments/${encodeURIComponent(gameName)}`)
-                .then(response => response.json())
-                .then(data => {
-                    const commentsDiv = document.getElementById('comments');
-                    commentsDiv.innerHTML = ''; // Clear existing comments
-                    data.forEach(comment => {
-                        const commentDiv = document.createElement('div');
-                        commentDiv.classList.add('comment');
-                        commentDiv.innerHTML = `<strong>${comment.userName}</strong>: ${comment.text}`;
-                        commentsDiv.appendChild(commentDiv);
-                    });
-                })
-                .catch(error => console.error('Error fetching comments:', error));
-        }
-
-        function postComment() {
-            const userName = document.getElementById('userName').value;
-            const gameName = document.getElementById('gameNameInput').value; // Use the same game name for posting
-            const text = document.getElementById('text').value;
-
-            const comment = { userName, gameName, text, timestamp: new Date().toISOString() };
-
-            fetch('http://localhost:8062/api/comments/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(comment),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-                fetchComments(); // Refresh comments after posting
-            })
-            .catch((error) => {
-                console.error('Error posting comment:', error);
-            });
-        }
-
-        function deleteComment(id) {
-            fetch(`http://localhost:8062/api/comments/${id}`, {
-                method: 'DELETE',
-            })
-            .then(() => {
-                console.log('Deleted successfully');
-                fetchComments(); // Refresh comments list
-            })
-            .catch(error => console.error('Error deleting comment:', error));
-        }
-
-        function updateComment(id) {
-            const userName = document.getElementById('userName').value;
-            const gameName = document.getElementById('gameNameInput').value;
-            const text = document.getElementById('text').value;
-            const comment = { userName, gameName, text, timestamp: new Date().toISOString() };
-
-            fetch(`http://localhost:8062/api/comments/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(comment),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Updated successfully:', data);
-                fetchComments(); // Refresh comments list
-            })
-            .catch(error => console.error('Error updating comment:', error));
-        }
-        const gameNames = ["Lakers vs Clippers", "Warriors vs Suns", "Nets vs Knicks", "Heat vs Celtics", "Bucks vs 76ers"];
-
-        function filterSuggestions() {
-            const input = document.getElementById('gameNameInput').value.toLowerCase();
-            const suggestionsContainer = document.getElementById('suggestions');
-            suggestionsContainer.innerHTML = ''; // Clear previous suggestions
-
-            // Filter and display suggestions
-            const filteredGameNames = gameNames.filter(name => name.toLowerCase().includes(input));
-            filteredGameNames.forEach(name => {
-                const div = document.createElement('div');
-                div.textContent = name;
-                div.classList.add('suggestion-item');
-                div.onclick = function() {
-                    document.getElementById('gameNameInput').value = name;
-                    suggestionsContainer.innerHTML = ''; // Clear suggestions after selection
-                };
-                suggestionsContainer.appendChild(div);
-            });
-        }
+        
     </script>
 </body>
 </html>
