@@ -230,7 +230,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const startButton = document.getElementById("startVersus");
             startButton.addEventListener("click", function () {
-                const emailA = localStorage.getItem("Email");
+                let emailA = localStorage.getItem("Email");
                 const emailB = "toby@gmail.com";
 
                 console.log(`Comparing scores for: ${emailA} vs ${emailB}`);
@@ -307,22 +307,27 @@
                 });
         }
 
-        async function updateCash(email, amount) {
-            const requestOptions = {
-                method: "POST",
+        async function updateCash(email, cash) {
+            fetch('http://localhost:6942/api/person/cashUpdate', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ "email": email, "cash": amount })
-            };
-
-            try {
-                const response = await fetch("http://localhost:6942/api/person/cashUpdate", requestOptions);
-                const result = await response.json();
-                console.log("Cash updated:", result);
-            } catch (error) {
-                console.error("Error updating cash:", error);
-            }
+                body: JSON.stringify({
+                    "email": email,
+                    "cash": cash
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Cash updated successfully ');
+                } else {
+                    console.error('Failed to update cash');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
 
         async function updateEcoScore(email, amount) {
