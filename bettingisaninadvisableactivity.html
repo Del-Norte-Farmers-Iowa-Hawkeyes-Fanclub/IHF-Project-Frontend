@@ -49,7 +49,7 @@
 <body>
     <div class="container">
         <h1>NBA Game Betting</h1>
-        <div class="cash-display">Cash Remaining: <span>$50</span></div>
+        <div class="cash-display">Cash Remaining: <span id="cashAmount">$500</span></div>
 
         <div class="game">
             <h3>Lakers vs. Celtics</h3>
@@ -73,7 +73,7 @@
                 return;
             }
             try {
-                const response = await fetch('http://localhost:6942/api/person/getCash', {
+                const response = await fetch('https://ihf.stu.nighthawkcodingsociety.com/api/person/getCash', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: userEmail })
