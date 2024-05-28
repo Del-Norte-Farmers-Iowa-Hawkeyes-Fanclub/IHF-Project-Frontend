@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Battle</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 30px;
+        }
+
+        .side {
+            width: 45%;
+            margin: 0 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .slot {
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .slot:hover {
+            background-color: #f0f0f0;
+        }
+
+        .selectedSlot {
+            background-color: lightblue;
+        }
+
+        .playerSelected {
+            background-color: lightgreen;
+        }
+
+        .playerStats {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 100;
+        }
+
+        .slot:hover .playerStats {
+            display: block;
+        }
+
+        #playerSearchContainer {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #playerSearchInput {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 70%;
+            margin-right: 10px;
+        }
+
+        #searchResults {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .searchResult {
+            padding: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .searchResult:hover {
+            background-color: #f0f0f0;
+        }
+
+        #turnIndicator {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #startVersus {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #startVersus:hover {
+            background-color: #0056b3;
+        }
+
+        .resultContainer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result {
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        #comment-section {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+
+        #comments {
+            margin-bottom: 20px;
+        }
+
+        .comment {
+            background-color: #f2f2f2;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: blue;
+            color: white;
+            cursor: pointer;
+        }
+
+        .exitButton {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px !important;
+            background-color: red !important;
+        }
+
+        .resetButton {
+            position: absolute;
+            top: 0;
+            right: 50px;
+            width: 50px !important;
+            background-color: rgb(115, 0, 255) !important;
+        }
+
+        #drawSpace {
+            position: fixed;
+            bottom: 10%;
+            left: 24.5%;
+            z-index: 9999;
+            background-color: #000;
+            border: 10px solid #0000FF;
+            height: 800px;
+            width: 50%;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Fantasy Battle</h1>
+    <div id="projectedFantasyPoints"></div>
+    <div id="playerSearchContainer">
+        <input type="text" id="playerSearchInput" placeholder="Enter player name">
+        <div id="searchResults"></div>
+    </div>
+    <div class="container">
+        <div class="side sideA">
+            <h2>Mirza Beg</h2>
+            <div class="slots" id="teamASlots">
+                <!-- Team A slots will be dynamically generated here -->
+            </div>
+        </div>
+        <div class="side sideB">
+            <h2>Thomas Edison</h2>
+        </div>
+    </div>
+    <button id="startVersus">Start Battle</button>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const startButton = document.getElementById("startVersus");
+            startButton.addEventListener("click", function () {
+                const emailA = localStorage.getItem("Email");
+                const emailB = "toby@gmail.com";
+
+                compareFantasyScores(emailA, emailB);
+            });
+
+        });
+
+        function compareFantasyScores(emailA, emailB) {
+            const requestOptions = {
+                method: "GET",
+                redirect: "follow"
+            };
+
+            Promise.all([
+                fetch(`http://localhost:6942/api/person/getFantasyScore?email=${emailA}`, requestOptions)
+                    .then(response => response.json()),
+                fetch(`http://localhost:6942/api/person/getFantasyScore?email=${emailB}`, requestOptions)
+                    .then(response => response.json())
+            ])
+                .then(([scoreA, scoreB]) => {
+                    const resultContainer = document.createElement("div");
+                    resultContainer.classList.add("resultContainer");
+
+                    const resultA = document.createElement("div");
+                    resultA.classList.add("result");
+                    resultA.textContent = `Team A Score: ${scoreA.score}`;
+                    resultContainer.appendChild(resultA);
+
+                    const resultB = document.createElement("div");
+                    resultB.classList.add("result");
+                    resultB.textContent = `Team B Score: ${scoreB.score}`;
+                    resultContainer.appendChild(resultB);
+
+                    document.body.appendChild(resultContainer);
+
+                    if (scoreA.score > scoreB.score) {
+                        updateCash(emailA, 5);
+                        resultContainer.appendChild(document.createElement("div")).textContent = "Team A Wins!";
+                    } else if (scoreA.score < scoreB.score) {
+                        updateCash(emailA, -5);
+                        resultContainer.appendChild(document.createElement("div")).textContent = "Team B Wins!";
+                    } else {
+                        resultContainer.appendChild(document.createElement("div")).textContent = "It's a Draw!";
+                    }
+                })
+                .catch(error => console.error("Error comparing fantasy scores:", error));
+        }
+
+        function updateCash(email, amount) {
+            const requestOptions = {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, amount })
+            };
+
+            fetch("http://localhost:6942/api/person/updateCash", requestOptions)
+                .then(response => response.json())
+                .then(result => console.log("Cash updated:", result))
+                .catch(error => console.error("Error updating cash:", error));
+        }
+    </script>
+</body>
+
+</html>
