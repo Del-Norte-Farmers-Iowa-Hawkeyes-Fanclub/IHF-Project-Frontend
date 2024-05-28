@@ -65,29 +65,53 @@
             password
         };
         
-        fetch('https://ihf.stu.nighthawkcodingsociety.com/authenticate', {
+        fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/authenticate', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json' 
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(data),
         })
         .then(response => {
             if (response.ok) {
-                // Handle successful login
+                // Handle successful login for the first request
                 console.log('Login successful');
                 localStorage.setItem('Email', email);
                 console.log(email);
+                
+                const flaskData = {
+                    "uid": email,
+                    "password": password
+                };
+                // Make the second request only if the first one is successful
+                return fetch('https://flask-ihf.stu.nighthawkcodingsociety.com/api/users/authenticate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(flaskData),
+                });
+            } else {
+                // Handle login error for the first request
+                console.log('Login failed');
+                return Promise.reject('First request failed');
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Handle successful login for the second request
+                console.log('Second login successful');
                 window.top.location.href = 'http://localhost:4000/game.html';
             } else {
-                // Handle login error
-                console.log('Login failed');
+                // Handle login error for the second request
+                console.log('Second login failed');
             }
         })
         .catch(error => {
-            // Handle network error
-            console.log('Network error');
+            // Handle network error or first request failure
+            console.log('Network error or first request failed', error);
         });
+        
     }
 </script>
 </html>

@@ -207,7 +207,7 @@ layout: header
     <script>
         async function fetchPlayerStats(playerId) {
             try {
-                const response = await fetch(`http://localhost:8062/api/nba/playerseason?player_ids=${playerId}`);
+                const response = await fetch(`http://localhost:6942/api/nba/playerseason?player_ids=${playerId}`);
                 
                 if (!response.ok) {
                     throw new Error('Failed to fetch player stats');
@@ -316,7 +316,7 @@ layout: header
     var [firstName, lastName] = playerName.split(" ");
 
     try {
-        const response = await fetch(`http://localhost:8062/api/players?firstName=${firstName}&lastName=${lastName}`);
+        const response = await fetch(`http://localhost:6942/api/players?firstName=${firstName}&lastName=${lastName}`);
 
         if (!response.ok) {
             throw new Error('Network response was not ok');

@@ -41,7 +41,7 @@ layout: header
 
     <script>
         function fetchNBAPlayers() {
-            fetch('http://localhost:8062/api/nba/playersall')
+            fetch('http://localhost:6942/api/nba/playersall')
                 .then(response => response.json())
                 .then(data => {
                     displayPlayers(data);

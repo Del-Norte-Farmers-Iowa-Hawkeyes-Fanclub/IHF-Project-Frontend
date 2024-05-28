@@ -133,7 +133,7 @@ layout: header
 
             window.fetchSchedule = function() {
                 const season = document.getElementById('seasonInput').value;
-                const url = `http://localhost:8062/api/nba/schedule/${season}`;
+                const url = `http://localhost:6942/api/nba/schedule/${season}`;
 
                 fetch(url)
                     .then(response => response.json())
@@ -163,7 +163,7 @@ layout: header
 
         function fetchComments() {
             const gameName = document.getElementById('gameNameInput').value;
-            fetch(`http://localhost:8062/api/comments/${encodeURIComponent(gameName)}`)
+            fetch(`http://localhost:6942/api/comments/${encodeURIComponent(gameName)}`)
                 .then(response => response.json())
                 .then(data => {
                     const commentsDiv = document.getElementById('comments');
@@ -185,7 +185,7 @@ layout: header
 
             const comment = { userName, gameName, text, timestamp: new Date().toISOString() };
 
-            fetch('http://localhost:8062/api/comments/', {
+            fetch('http://localhost:6942/api/comments/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ layout: header
         }
 
         function deleteComment(id) {
-            fetch(`http://localhost:8062/api/comments/${id}`, {
+            fetch(`http://localhost:6942/api/comments/${id}`, {
                 method: 'DELETE',
             })
             .then(() => {
@@ -219,7 +219,7 @@ layout: header
             const text = document.getElementById('text').value;
             const comment = { userName, gameName, text, timestamp: new Date().toISOString() };
 
-            fetch(`http://localhost:8062/api/comments/${id}`, {
+            fetch(`http://localhost:6942/api/comments/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

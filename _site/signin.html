@@ -94,7 +94,8 @@ nav ul li a:hover {
 
   <div>
 
-      <body>
+      // Login frontend
+<body>
     <section>
         <div class="signin-box">
             <div class="signin-value">
@@ -123,15 +124,15 @@ nav ul li a:hover {
     </section>
 
     <script>
-        const login_url = "http://localhost:8062/authenticate";
+        const login_url = "http://localhost:6942/authenticate";
         // prepare URL
         //var url = "https://spring.nighthawkcodingsociety.com/api/person/";
         // Uncomment next line for localhost testing
-        const read_url = "http://localhost:8062/api/person/";
+        const read_url = "http://localhost:6942/api/person/";
         //var url = "https://spring.nighthawkcodingsociety.com/api/person/";
         // Uncomment next line for localhost testing
-        const post_url = "http://localhost:8062/api/person/post";
-        const put_url = "http://localhost:8062/api/person/update";
+        const post_url = "http://localhost:6942/api/person/post";
+        const put_url = "http://localhost:6942/api/person/update";
         let currentField = "emailField";
 
         // //
@@ -165,7 +166,7 @@ nav ul li a:hover {
                 read_pull(); //
             }
 
-        
+        // Submit function
         const signinForm = document.getElementById("signinForm");
         signinForm.addEventListener("submit", function (e) {
         login_user(e);
@@ -404,6 +405,7 @@ button{
     text-decoration: underline;
 }
 </style>
+
 
   </div>
 </body>
