@@ -260,6 +260,7 @@
        let currentSlot;
        let currentPlayer = 'A';
        let selectedPlayers = [];  // Array to keep track of selected players
+       let projectedScore = 0;
 
        $(document).ready(function() {
            $(".slot").click(function() {
@@ -286,6 +287,7 @@
 
            $("#submitTeams").click(function() {
                sendTeamData();
+               prepareAndSendTeamData();
            });
 
            $("#searchResults").on('click', '.searchResult', function() {
@@ -427,7 +429,7 @@
            let jsonString = JSON.stringify(dataToSend);
            console.log("Sending JSON payload to backend:", jsonString);
        
-           fetch("https://spring-ihf.stu.nighthawkcodingsociety.com/api/simulateup", {
+           fetch("http://localhost:6942/api/simulateup", {
                method: "POST",
                headers: {
                    "Content-Type": "application/json",
@@ -453,7 +455,9 @@
        
                const teamAResult = $("<div>").addClass("result").text("Team A Projected Fantasy Score: " + projectedFantasyPointsTeamA);
                const teamBResult = $("<div>").addClass("result").text("CPU Projected Fantasy Score: " + projectedFantasyPointsTeamB);
-       
+                
+                projectedScore = projectedFantasyPointsTeamA[0];
+
                resultContainer.append(teamAResult, teamBResult);
                $("#projectedFantasyPoints").append(resultContainer);
            })
@@ -576,7 +580,7 @@
                return;
            }
 
-           const response = await fetch("https://spring-ihf.stu.nighthawkcodingsociety.com/api/player-vs-computer", {
+           const response = await fetch("http://localhost:6942/api/player-vs-computer", {
                method: "POST",
                headers: {
                    "Content-Type": "application/json",
@@ -593,6 +597,88 @@
 
            toggleTurn(); // Switch the turn to Team A after CPU selection
        }
+
+       async function prepareAndSendTeamData() {
+        try {
+            const teamData = await prepareTeamData();
+            console.log("Team data:", teamData);
+    
+            const email = localStorage.getItem("Email");
+    
+            const playersData = {
+                "email": email
+            };
+            
+            $('.sideA .slot').each(function() {
+                const slotId = $(this).attr('id');
+                const playerName = $(this).hasClass('playerSelected') ? $(this).text() : null;
+                if (playerName) {
+                    playersData[slotId] = playerName;
+                }
+            });
+            
+    
+            console.log("Players data:", playersData);
+    
+            // Prepare data for the fantasy score
+            const fantasyScoreData = {
+                "email": email,
+                "score": projectedScore
+            };
+    
+            console.log("Fantasy score data:", fantasyScoreData);
+    
+            // Send the players data to the backend
+            await sendPlayersData(playersData);
+    
+            // Send the fantasy score data to the backend
+            await sendFantasyScore(fantasyScoreData);
+    
+            console.log("Team data and fantasy score submitted successfully!");
+        } catch (error) {
+            console.error("Error preparing and sending team data:", error);
+        }
+    }
+    
+    function getPlayerName(team, position) {
+        const player = team.find(player => player.position === position);
+        return player ? player.name : "";
+    }
+    
+    async function sendPlayersData(playersData) {
+        try {
+            const response = await fetch("http://localhost:6942/api/person/setPlayers", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(playersData)
+            });
+            if (!response.ok) {
+                throw new Error("Failed to send players data to the backend");
+            }
+        } catch (error) {
+            console.error("Error sending players data:", error);
+        }
+    }
+    
+    async function sendFantasyScore(fantasyScoreData) {
+        try {
+            const response = await fetch("http://localhost:6942/api/person/setFantasyScore/", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(fantasyScoreData)
+            });
+            if (!response.ok) {
+                throw new Error("Failed to send fantasy score data to the backend");
+            }
+        } catch (error) {
+            console.error("Error sending fantasy score data:", error);
+        }
+    }
+    
 
    </script>
 </body>
