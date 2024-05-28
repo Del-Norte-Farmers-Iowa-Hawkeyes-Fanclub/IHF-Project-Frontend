@@ -101,7 +101,7 @@
         .products {
             padding-bottom: 100px; /* Added more padding to lift content above the fixed footer */
         }
-        .crop {
+        .crop, .futureDiv {
             text-align: center;
         }
     </style>
@@ -192,6 +192,7 @@
      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script>
         var futuresOwned = parseInt(0);
+        console.log(typeof futuresOwned);
         var pricePerCorn = 4;
         var cornQuant = localStorage.getItem('cornStorage');
         const mailE = localStorage.getItem('Email');
@@ -339,6 +340,22 @@
             }
             getCash(mailE);
           }
+
+          function sellFutures(){
+            var futureSellAmount = document.getElementById("future-amount").value;
+            console.log(futuresOwned);
+            if (parseInt(futuresOwned)<parseInt(futureSellAmount)) {
+              console.log("selling failed");
+            } else {
+              calculateCornPrice(function(pricePerCorn){
+                  console.log("I LOVE PPC: " + pricePerCorn);
+                  updateCash(localStorage.getItem('Email'), (pricePerCorn * futureSellAmount));
+              });
+              futuresOwned-=parseInt(futureSellAmount)
+              document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
+          }
+          getCash(mailE);
+        }
     </script>
 </body>
 </html>
