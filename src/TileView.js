@@ -121,7 +121,7 @@ update(time, delta) {
               
     //       };
           
-    //       fetch('http://localhost:6942/cropQuantityUpdate', {
+    //       fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/cropQuantityUpdate', {
     //           method: 'POST',
     //           headers: {
     //               'Content-Type': 'application/json' 
@@ -151,7 +151,7 @@ update(time, delta) {
     //       }
 
 
-    //     fetch('http://localhost:6942/ecoUpdate', {
+    //     fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/ecoUpdate', {
     //         method: 'POST',
     //         headers: {
     //             'Content-Type': 'application/json' 

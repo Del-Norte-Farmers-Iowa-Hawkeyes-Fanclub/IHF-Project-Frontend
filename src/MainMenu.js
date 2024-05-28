@@ -67,7 +67,7 @@ class MainMenu extends Phaser.Scene {
                 email: email, 
             }
     
-            const response = await fetch("http://localhost:6942/api/person/getEco", {
+            const response = await fetch("https://spring-ihf.stu.nighthawkcodingsociety.com/api/person/getEco", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -133,7 +133,7 @@ class MainMenu extends Phaser.Scene {
 
     clickShop() {
         EPT.Sfx.play('click');
-        window.top.location.href = 'http://localhost:4000/shop.html';
+        window.top.location.href = 'https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/shop.html';
     }
 
     clickStart() {
