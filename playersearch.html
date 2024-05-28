@@ -27,7 +27,7 @@ layout: header
     <script>
         async function fetchPlayerIdByName(playerName) {
             try {
-                const response = await fetch(`http://localhost:6942/api/players?search=${playerName}`);
+                const response = await fetch(`https://spring-ihf.stu.nighthawkcodingsociety.com/api/players?search=${playerName}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch data from backend');
                 }
@@ -41,7 +41,7 @@ layout: header
 
         async function fetchPlayerStatistics(playerID) {
             try {
-                const response = await fetch(`http://localhost:6942/api/nba/playerseason?player_ids=${playerID}`);
+                const response = await fetch(`https://spring-ihf.stu.nighthawkcodingsociety.com/api/nba/playerseason?player_ids=${playerID}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch data from backend');
                 }

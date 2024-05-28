@@ -46,7 +46,7 @@
                         <i class="fa-solid fa-lock"></i>
                         <input type="password" name="password" placeholder="Password">
                     </div>
-                    <p>No Account? <a href="http://localhost:4000/signup.html">Click Here!</a></p>
+                    <p>No Account? <a href="https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/signup.html">Click Here!</a></p>
 
                 </div>
             </form>
@@ -65,7 +65,7 @@
             password
         };
         
-        fetch('http://localhost:6942/authenticate', {
+        fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/authenticate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -101,7 +101,7 @@
             if (response.ok) {
                 // Handle successful login for the second request
                 console.log('Second login successful');
-                window.top.location.href = 'http://localhost:4000/game.html';
+                window.top.location.href = 'https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/game.html';
             } else {
                 // Handle login error for the second request
                 console.log('Second login failed');

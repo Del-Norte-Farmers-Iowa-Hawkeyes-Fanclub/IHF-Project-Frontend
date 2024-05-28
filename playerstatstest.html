@@ -41,7 +41,7 @@ layout: header
 
     <script>
         function fetchNBAPlayers() {
-            fetch('http://localhost:6942/api/nba/playersall')
+            fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/api/nba/playersall')
                 .then(response => response.json())
                 .then(data => {
                     displayPlayers(data);

@@ -87,8 +87,8 @@
             console.log(`Fetching event with ID: ${currentEventId}`);
             updateAgeImage(currentEventId); // Add this line to update the image
             const apiEndpoint = (chosenPath === 'basketball')
-                ? `http://localhost:6942/api/bitlife/basketball/event/${currentEventId}`
-                : `http://localhost:6942/api/bitlife/farmer/event/${currentEventId}`;
+                ? `https://spring-ihf.stu.nighthawkcodingsociety.com/api/bitlife/basketball/event/${currentEventId}`
+                : `https://spring-ihf.stu.nighthawkcodingsociety.com/api/bitlife/farmer/event/${currentEventId}`;
             fetch(apiEndpoint)
                 .then(response => {
                     if (!response.ok) {
@@ -165,7 +165,7 @@
                 return;
             }
 
-            fetch('http://localhost:6942/api/bitlife/scores', {
+            fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/api/bitlife/scores', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -191,7 +191,7 @@
                 return;
             }
 
-            fetch(`http://localhost:6942/api/bitlife/scores/${type}`)
+            fetch(`https://spring-ihf.stu.nighthawkcodingsociety.com/api/bitlife/scores/${type}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Network response was not ok for ${type} leaderboard`);
