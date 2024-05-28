@@ -311,15 +311,15 @@
 
         async function updateCash(email, amount) {
             const requestOptions = {
-                method: "PUT",
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ email, amount })
+                body: JSON.stringify({ "email":email, "cash":amount })
             };
 
             try {
-                const response = await fetch("http://localhost:6942/api/person/updateCash", requestOptions);
+                const response = await fetch("http://localhost:6942/api/person/cashUpdate", requestOptions);
                 const result = await response.json();
                 console.log("Cash updated:", result);
             } catch (error) {
@@ -333,7 +333,7 @@
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ email, amount })
+                body: JSON.stringify({ email, "cash": amount })
             };
 
             try {
