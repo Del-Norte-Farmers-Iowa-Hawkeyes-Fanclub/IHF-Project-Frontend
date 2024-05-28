@@ -45,7 +45,7 @@
             margin: 80px auto 0; /* Increased margin-top to push content down */
             padding: 0 20px;
         }
-        .convert-form, .betting-button, .products, .homeButton, .home, .futureDiv {
+        .convert-form, .betting-button, .products, .homeButton, .home {
             margin: 20px 0;
             text-align: center;
         }
@@ -323,34 +323,19 @@
         }
 
         function sellCorn(){
-            console.log("corn: " + cornQuant);
-            var cornSellAmount = document.getElementById("corn-amount").value;
-            if (parseInt(cornQuant)<parseInt(cornSellAmount)) {
-              console.log("selling failed");
-            } else {
-              calculateCornPrice(function(pricePerCorn){
-                  console.log("I LOVE PPC: " + pricePerCorn);
-                  updateCash(localStorage.getItem('Email'), (pricePerCorn * cornSellAmount));
-              });
-              localStorage.setItem('cornStorage', cornQuant-cornSellAmount);
-              console.log(localStorage.getItem('cornStorage'));
-              cornQuant = localStorage.getItem('cornStorage');
-              document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
-          }
-          getCash(mailE);
-        }
-
-        function sellFutures(){
-              var futureSellAmount = document.getElementById("future-amount").value;
-              if (parseInt(futuresOwned)<parseInt(futureSellAmount)) {
+              console.log("corn: " + cornQuant);
+              var cornSellAmount = document.getElementById("corn-amount").value;
+              if (parseInt(cornQuant)<parseInt(cornSellAmount)) {
                 console.log("selling failed");
               } else {
                 calculateCornPrice(function(pricePerCorn){
                     console.log("I LOVE PPC: " + pricePerCorn);
-                    updateCash(localStorage.getItem('Email'), (pricePerCorn * futureSellAmount));
+                    updateCash(localStorage.getItem('Email'), (pricePerCorn * cornSellAmount));
                 });
-                futuresOwned-=parseInt(futureSellAmount)
-                document.querySelector("label[for='future-amount']").textContent = "You have: " + futuresOwned + " ears of corn";
+                localStorage.setItem('cornStorage', cornQuant-cornSellAmount);
+                console.log(localStorage.getItem('cornStorage'));
+                cornQuant = localStorage.getItem('cornStorage');
+                document.querySelector("label[for='crop-amount']").textContent = "You have: " + cornQuant + " ears of corn";
             }
             getCash(mailE);
           }
