@@ -281,10 +281,15 @@
             var futureBuyAmount = parseInt(document.getElementById("future-amount").value);
             console.log(cash);
             if (cash>=pricePerCorn*parseInt(futureBuyAmount)) {
-                updateCash(mailE, -pricePerCorn*parseInt(futureBuyAmount));
+                calculateCornPrice(function(pricePerCorn){
+                    console.log("I LOVE PPC: " + pricePerCorn);
+                    updateCash(mailE, -pricePerCorn*parseInt(futureBuyAmount));
+                });
                 futuresOwned+=futureBuyAmount;
                 document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
                 getCash(mailE);
+            } else {
+                console.log("Buying failed");
             }
         }
 
@@ -336,20 +341,20 @@
         }
 
         function sellFutures(){
-              var futureSellAmount = document.getElementById("future-amount").value;
-              if (parseInt(futuresOwned)<parseInt(futureSellAmount)) {
-                console.log("selling failed");
-              } else {
-                calculateCornPrice(function(pricePerCorn){
-                    console.log("I LOVE PPC: " + pricePerCorn);
-                    updateCash(localStorage.getItem('Email'), (pricePerCorn * futureSellAmount));
-                });
-                localStorage.setItem('cornStorage', cornQuant-cornSellAmount);
-                futuresOwned-=parseInt(futureSellAmount)
-                document.querySelector("label[for='future-amount']").textContent = "You have: " + cornQuant + " ears of corn";
-            }
-            getCash(mailE);
+            var futureSellAmount = document.getElementById("future-amount").value;
+            console.log(futuresOwned);
+            if (parseInt(futuresOwned)<parseInt(futureSellAmount)) {
+              console.log("selling failed");
+            } else {
+              calculateCornPrice(function(pricePerCorn){
+                  console.log("I LOVE PPC: " + pricePerCorn);
+                  updateCash(localStorage.getItem('Email'), (pricePerCorn * futureSellAmount));
+              });
+              futuresOwned-=parseInt(futureSellAmount)
+              document.querySelector("label[for='futures']").textContent = "You have: " + futuresOwned + " corn futures";
           }
+          getCash(mailE);
+        }
     </script>
 </body>
 </html>
