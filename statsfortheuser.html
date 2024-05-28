@@ -218,7 +218,6 @@ layout: header
         margin-top: 10px;
     }
 </style>
-
 <body>
 
     <h1 style="margin-top: 100px; text-align: center;">
@@ -255,46 +254,46 @@ layout: header
             <h1>Sports Betting</h1>
             <div class="cash-display">Cash Remaining: <span id="cashAmount">$0</span></div>
             <div class="betting-container-small">
-            <!-- NBA Betting -->
-            <div class="game">
-                <h2>NBA Game Betting</h2>
-                <h3>Lakers vs. Celtics</h3>
-                <input type="number" class="bet-input" id="betAmountNBA1" placeholder="Bet Amount">
-                <button class="bet-button"
-                    onclick="placeBet('Lakers vs. Celtics', document.getElementById('betAmountNBA1').value)">Bet</button>
+                <!-- NBA Betting -->
+                <div class="game">
+                    <h2>NBA Game Betting</h2>
+                    <h3>Lakers vs. Celtics</h3>
+                    <input type="number" class="bet-input" id="betAmountNBA1" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Lakers vs. Celtics', document.getElementById('betAmountNBA1').value)">Bet</button>
 
-                <h3>Nets vs. Bucks</h3>
-                <input type="number" class="bet-input" id="betAmountNBA2" placeholder="Bet Amount">
-                <button class="bet-button"
-                    onclick="placeBet('Nets vs. Bucks', document.getElementById('betAmountNBA2').value)">Bet</button>
+                    <h3>Nets vs. Bucks</h3>
+                    <input type="number" class="bet-input" id="betAmountNBA2" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Nets vs. Bucks', document.getElementById('betAmountNBA2').value)">Bet</button>
+                </div>
+
+                <div class="game">
+                    <h2>March Madness Betting</h2>
+                    <h3>Gonzaga vs. Baylor</h3>
+                    <input type="number" class="bet-input" id="betAmountMM1" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Gonzaga vs. Baylor', document.getElementById('betAmountMM1').value)">Bet</button>
+
+                    <h3>Michigan vs. UCLA</h3>
+                    <input type="number" class="bet-input" id="betAmountMM2" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Michigan vs. UCLA', document.getElementById('betAmountMM2').value)">Bet</button>
+                </div>
+
+                <div class="game">
+                    <h2>NCAA Betting</h2>
+                    <h3>Duke vs. North Carolina</h3>
+                    <input type="number" class="bet-input" id="betAmountNCAA1" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Duke vs. North Carolina', document.getElementById('betAmountNCAA1').value)">Bet</button>
+
+                    <h3>Kentucky vs. Kansas</h3>
+                    <input type="number" class="bet-input" id="betAmountNCAA2" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Kentucky vs. Kansas', document.getElementById('betAmountNCAA2').value)">Bet</button>
+                </div>
             </div>
-
-            <div class="game">
-                <h2>March Madness Betting</h2>
-                <h3>Gonzaga vs. Baylor</h3>
-                <input type="number" class="bet-input" id="betAmountMM1" placeholder="Bet Amount">
-                <button class="bet-button"
-                    onclick="placeBet('Gonzaga vs. Baylor', document.getElementById('betAmountMM1').value)">Bet</button>
-
-                <h3>Michigan vs. UCLA</h3>
-                <input type="number" class="bet-input" id="betAmountMM2" placeholder="Bet Amount">
-                <button class="bet-button"
-                    onclick="placeBet('Michigan vs. UCLA', document.getElementById('betAmountMM2').value)">Bet</button>
-            </div>
-
-            <div class="game">
-                <h2>NCAA Betting</h2>
-                <h3>Duke vs. North Carolina</h3>
-                <input type="number" class="bet-input" id="betAmountNCAA1" placeholder="Bet Amount">
-                <button class="bet-button"
-                    onclick="placeBet('Duke vs. North Carolina', document.getElementById('betAmountNCAA1').value)">Bet</button>
-
-                <h3>Kentucky vs. Kansas</h3>
-                <input type="number" class="bet-input" id="betAmountNCAA2" placeholder="Bet Amount">
-                <button class="bet-button"
-                    onclick="placeBet('Kentucky vs. Kansas', document.getElementById('betAmountNCAA2').value)">Bet</button>
-            </div>
-        </div>
         </li>
     </ul>
     <script>
@@ -375,7 +374,6 @@ layout: header
             }
         }
 
-
         async function updateEco() {
             const newEco = document.getElementById('updateEco').value;
             if (!userEmail || newEco === '') {
@@ -436,6 +434,7 @@ layout: header
                 displayDiv.innerText = 'Failed to compare stats. Please try again.';
             }
         }
+
         async function getGames() {
             const url = 'https://api.the-odds-api.com/v4/sports/basketball_nba/odds?bookmakers=draftkings&markets=h2h&oddsFormat=american&apiKey=192b45e0a31758ac8b513084d90192ad';
         
@@ -449,6 +448,7 @@ layout: header
                 console.error('Error fetching NBA stats:', error);
             }
         }
+
         function parseData(data) {
             const formattedData = data.map(game => {
                 const team1 = game.home_team;
@@ -480,7 +480,8 @@ layout: header
                 bettingContainer.appendChild(gameDiv);
             });
         }
-        async function placeBet(gameName, betAmount,team,odd,date) {
+
+        async function placeBet(gameName, betAmount, team, odd, date) {
             betAmount = parseFloat(betAmount);
             if (isNaN(betAmount) || betAmount <= 0) {
                 alert('Invalid bet amount');
@@ -511,14 +512,12 @@ layout: header
                     console.log("Game Name:", gameName);
                     console.log("Team Picked:", team);
                     console.log("Odd:", odd);
-                    console.log("Date:", date.substring(0,10));
+                    console.log("Date:", date.substring(0, 10));
                     console.log("Bet Amount:", betAmount);
                     console.log("Old Cash:", userCash);
 
                     var newCash = userCash - betAmount;
                     console.log("Remaining Cash:", newCash)
-                    
-
 
                     if (!userEmail || newCash === '') {
                         document.getElementById('statsDisplay').innerText = 'Missing username or new cash value.';
@@ -556,12 +555,6 @@ layout: header
                 }
             }
         }
-
-
-
-
-
-
 
         if (userEmail) {
             fetchCash(); // Automatically fetch cash on page load
