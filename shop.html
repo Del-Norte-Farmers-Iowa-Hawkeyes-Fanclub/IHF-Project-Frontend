@@ -255,12 +255,6 @@
                 console.error('There was a problem with the fetch operation:', error);
             });
         }
-       
-       
-
-
-
-
         function setCorn() {
             document.querySelector("label[for='corn-amount']").textContent = "Corn Cobs to Sell:";
         }
@@ -288,8 +282,47 @@
             }
         }
 
+        document.getElementById('calculateScoreBtn').addEventListener('click', async () => {
+            const numFutures = document.getElementById('numFutures').value;
+            const action = document.getElementById('action').value;
 
+            const response = await fetch('/api/calculate_score', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ num_futures: numFutures, action: action })
+            });
 
+            const data = await response.json();
+            if (response.ok) {
+                document.getElementById('scoreResult').innerText = Score: ${data.score};
+            } else {
+                document.getElementById('scoreResult').innerText = Error: ${data.error};
+            }
+        });
+
+        document.getElementById('generateGraphBtn').addEventListener('click', async () => {
+            const numHistoricalPoints = document.getElementById('numHistoricalPoints').value;
+            const numPredictedPoints = document.getElementById('numPredictedPoints').value;
+
+            const response = await fetch('/api/generate_graph', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ num_historical_points: numHistoricalPoints, num_predicted_points: numPredictedPoints })
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                document.getElementById('graphImage').src = url;
+            } else {
+                const data = await response.json();
+                document.getElementById('graphResult').innerText = Error: ${data.error};
+            }
+        });
 
         function calculateCornPrice(callback) {
             // getting corn futures price
