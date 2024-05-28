@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitLife Simulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="light-theme">
+    <div class="main-container">
+        <div class="leaderboards">
+            <details class="leaderboard">
+                <summary>Basketball Leaderboard</summary>
+                <ul id="basketballLeaderboardList"></ul>
+            </details>
+            <details class="leaderboard">
+                <summary>Farmer Leaderboard</summary>
+                <ul id="farmingLeaderboardList"></ul>
+            </details>
+        </div>
+
+        <div class="container">
+            <h2>BitLife Simulator</h2>
+            <div class="initial-choice" id="initialChoice">
+                <button onclick="choosePath('basketball')">Basketball</button>
+                <button onclick="choosePath('farming')">Farming</button>
+            </div>
+            <div class="gameplay" id="gameplay" style="display: none;">
+                <img id="ageImage" src="img/baby (1).png" alt="Age Image" style="width: 100px; height: 100px;">
+                <div class="question" id="question">Loading...</div>
+                <div class="options">
+                    <button id="option1">Option 1</button>
+                    <button id="option2">Option 2</button>
+                </div>
+                <div class="trackers">
+                    <div class="progress-container">
+                        <label for="moneyProgress">Money: $<span id="moneyCounter">0</span></label>
+                        <progress id="moneyProgress" value="0" max="100"></progress>
+                    </div>
+                    <div class="progress-container">
+                        <label for="healthProgress">Health: <span id="healthCounter">100</span></label>
+                        <progress id="healthProgress" value="100" max="100"></progress>
+                    </div>
+                    <div class="progress-container">
+                        <label for="educationProgress">Education: <span id="educationCounter">0</span></label>
+                        <progress id="educationProgress" value="0" max="100"></progress>
+                    </div>
+                </div>
+                <div class="end-game" id="endGame">
+                    <input type="text" id="playerName" placeholder="Enter your name">
+                    <button onclick="submitScore()">Submit Score</button>
+                </div>
+            </div>
+        </div>
+
+        <button id="themeSwitcher" onclick="toggleTheme()">Switch to Dark Mode</button>
+    </div>
+
+    <div class="animation-container">
+        <img src="img/basketball-player.png" alt="Basketball Animation" class="animation basketball-animation">
+        <img src="img/farmer (1).png" alt="Farmer Animation" class="animation farmer-animation">
+    </div>
+
+    <script>
+        let currentEventId = 0;
+        let currentMoney = 0;
+        let currentHealth = 100;
+        let currentEducation = 0;
+        let scoreSubmitted = false;
+        let isDarkMode = false;
+        let chosenPath = '';
+
+        function choosePath(path) {
+            chosenPath = path;
+            currentEventId = (path === 'basketball') ? 1 : 1;  // Starting ID for basketball and farming
+            document.getElementById('initialChoice').style.display = 'none';
+            document.getElementById('gameplay').style.display = 'block';
+            fetchEvent();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchLeaderboard('basketball');
+            fetchLeaderboard('farming');
+        });
+
+        function fetchEvent() {
+            console.log(`Fetching event with ID: ${currentEventId}`);
+            updateAgeImage(currentEventId); // Add this line to update the image
+            const apiEndpoint = (chosenPath === 'basketball')
+                ? `http://localhost:6942/api/bitlife/basketball/event/${currentEventId}`
+                : `http://localhost:6942/api/bitlife/farmer/event/${currentEventId}`;
+            fetch(apiEndpoint)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(event => {
+                    if (!event || !event.id) {
+                        throw new Error('Invalid event data');
+                    }
+                    displayEvent(event);
+                })
+                .catch(error => {
+                    console.error('Error fetching event:', error);
+                    endGame();
+                });
+        }
+
+        function displayEvent(event) {
+            console.log('Displaying event:', event);
+            document.getElementById('question').textContent = event.question;
+            document.getElementById('option1').textContent = event.option1;
+            document.getElementById('option2').textContent = event.option2;
+
+            document.getElementById('option1').onclick = () => chooseOption(1, event);
+            document.getElementById('option2').onclick = () => chooseOption(2, event);
+        }
+
+        function chooseOption(option, event) {
+            console.log('Choosing option:', option, 'for event:', event);
+            if (option === 1) {
+                currentMoney += event.moneyOption1 || 0;
+                currentHealth += event.healthOption1 || 0;
+                currentEducation += event.educationOption1 || 0;
+                currentEventId +=1;
+            } else {
+                currentMoney += event.moneyOption2 || 0;
+                currentHealth += event.healthOption2 || 0;
+                currentEducation += event.educationOption2 || 0;
+                currentEventId +=1 ;
+            }
+            console.log(`Next event ID: ${currentEventId}, Current money: ${currentMoney}, Current health: ${currentHealth}, Current education: ${currentEducation}`);
+            document.getElementById('moneyProgress').value = currentMoney;
+            document.getElementById('moneyCounter').textContent = currentMoney;
+            document.getElementById('healthProgress').value = currentHealth;
+            document.getElementById('healthCounter').textContent = currentHealth;
+            document.getElementById('educationProgress').value = currentEducation;
+            document.getElementById('educationCounter').textContent = currentEducation;
+
+            updateAgeImage(currentEventId); // Add this line to update the image
+
+            if (currentEventId === 0 || currentEventId == null) {
+                endGame();
+            } else {
+                fetchEvent();
+            }
+        }
+
+        function endGame() {
+            document.getElementById('question').textContent = 'You have completed your life and it is over. You ended with $' + currentMoney;
+            document.getElementById('option1').style.display = 'none';
+            document.getElementById('option2').style.display = 'none';
+            document.getElementById('endGame').style.display = 'block';
+            fetchLeaderboard(chosenPath);
+        }
+
+        function submitScore() {
+            const playerName = document.getElementById('playerName').value;
+            const scoreType = chosenPath;  // 'basketball' or 'farmer'
+
+            if (scoreSubmitted) {
+                alert('Score already submitted.');
+                return;
+            }
+
+            fetch('http://localhost:6942/api/bitlife/scores', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ playerName: playerName, score: currentMoney, type: scoreType })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Score submitted:', data);
+                    scoreSubmitted = true;
+                    fetchLeaderboard(scoreType);
+                })
+                .catch(error => console.error('Error submitting score:', error));
+        }
+
+        function fetchLeaderboard(type) {
+            console.log(`Fetching ${type} leaderboard`);
+            const leaderboardList = document.getElementById(`${type}LeaderboardList`);
+            console.log('Leaderboard list element:', leaderboardList);
+
+            if (!leaderboardList) {
+                console.error(`Element with id '${type}LeaderboardList' not found`);
+                return;
+            }
+
+            fetch(`http://localhost:6942/api/bitlife/scores/${type}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok for ${type} leaderboard`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(`${type} leaderboard data:`, data);
+                    leaderboardList.innerHTML = '';
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(score => {
+                            const li = document.createElement('li');
+                            li.textContent = `${score.playerName}: $${score.score}`;
+                            leaderboardList.appendChild(li);
+                        });
+                    } else {
+                        // If the leaderboard is empty, show a placeholder message
+                        const li = document.createElement('li');
+                        li.textContent = 'No scores yet. Be the first to submit a score!';
+                        leaderboardList.appendChild(li);
+                    }
+                })
+                .catch(error => console.error(`Error fetching ${type} leaderboard:`, error));
+        }
+
+        function toggleTheme() {
+            const mainContainer = document.querySelector('.main-container');
+            const themeSwitcher = document.getElementById('themeSwitcher');
+            if (isDarkMode) {
+                mainContainer.classList.remove('dark-theme');
+                mainContainer.classList.add('light-theme');
+                themeSwitcher.textContent = 'Switch to Dark Mode';
+            } else {
+                mainContainer.classList.remove('light-theme');
+                mainContainer.classList.add('dark-theme');
+                themeSwitcher.textContent = 'Switch to Light Mode';
+            }
+            isDarkMode = !isDarkMode;
+        }
+
+        function updateAgeImage(eventId) {
+            const ageImage = document.getElementById('ageImage');
+            if (chosenPath === 'basketball') {
+                if (eventId < 10) {
+                    ageImage.src = 'img/baby (1).png';
+                } else if (eventId < 20) {
+                    ageImage.src = 'img/basketball-player.png';
+                } else if (eventId < 41) {
+                    ageImage.src = 'img/basketball-player.png';
+                } else {
+                    ageImage.src = 'img/grave.png';
+                }
+            } 
+            
+            else if (chosenPath === 'farming') {
+                if (eventId < 10) {
+                    ageImage.src = 'img/baby (1).png';
+                } else if (eventId < 20) {
+                    ageImage.src = 'img/farmer (1).png';
+                } else if (eventId < 38) {
+                    ageImage.src = 'img/farmer (1).png';
+                } else {
+                    ageImage.src = 'img/grave.png';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
