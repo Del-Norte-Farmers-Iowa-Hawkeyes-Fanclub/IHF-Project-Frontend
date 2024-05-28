@@ -92,7 +92,6 @@
                 document.getElementById('cashAmount').textContent = 'Error fetching cash.';
             }
         }
-
         async function placeBet(amount, betType) {
             let cash = parseInt(localStorage.getItem('userCash'), 10);
             if (cash >= amount) {
