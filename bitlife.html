@@ -56,6 +56,11 @@
         <button id="themeSwitcher" onclick="toggleTheme()">Switch to Dark Mode</button>
     </div>
 
+    <div class="animation-container">
+        <img src="img/basketball-player.png" alt="Basketball Animation" class="animation basketball-animation">
+        <img src="img/farmer (1).png" alt="Farmer Animation" class="animation farmer-animation">
+    </div>
+
     <script>
         let currentEventId = 0;
         let currentMoney = 0;
@@ -237,8 +242,8 @@
                     ageImage.src = 'img/baby (1).png';
                 } else if (eventId < 20) {
                     ageImage.src = 'img/basketball-player.png';
-                } else if (eventId < 30) {
-                    ageImage.src = 'img/old-man.png';
+                } else if (eventId < 40) {
+                    ageImage.src = 'img/basketball-player.png';
                 } else {
                     ageImage.src = 'img/grave.png';
                 }
@@ -249,8 +254,8 @@
                     ageImage.src = 'img/baby (1).png';
                 } else if (eventId < 20) {
                     ageImage.src = 'img/farmer (1).png';
-                } else if (eventId < 30) {
-                    ageImage.src = 'img/old-man.png';
+                } else if (eventId < 37) {
+                    ageImage.src = 'img/farmer (1).png';
                 } else {
                     ageImage.src = 'img/grave.png';
                 }

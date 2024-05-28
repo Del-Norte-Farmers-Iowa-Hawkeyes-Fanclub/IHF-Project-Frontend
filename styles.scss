@@ -28,6 +28,7 @@ $dark-text-color: #f4f4f4;
     margin: 0;
     background-color: $background-color;
     color: $text-color;
+    position: relative;
   }
 
   .main-container {
@@ -38,6 +39,7 @@ $dark-text-color: #f4f4f4;
     width: 100%;
     height: 100%;
     padding: 20px;
+    z-index: 1;
   }
 
   .container {
@@ -189,6 +191,28 @@ $dark-text-color: #f4f4f4;
     }
   }
 
+  .animation-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    z-index: 0;
+
+    .animation {
+      width: 100px;
+      height: 100px;
+    }
+
+    .basketball-animation {
+      animation: moveLeftRight 5s linear infinite alternate;
+    }
+
+    .farmer-animation {
+      animation: moveRightLeft 5s linear infinite alternate;
+    }
+  }
+
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -204,6 +228,24 @@ $dark-text-color: #f4f4f4;
     }
     to {
       transform: translateX(0);
+    }
+  }
+
+  @keyframes moveLeftRight {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(50px);
+    }
+  }
+
+  @keyframes moveRightLeft {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50px);
     }
   }
 }
