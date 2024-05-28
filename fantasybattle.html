@@ -211,7 +211,6 @@
         }
     </style>
 </head>
-
 <body>
     <h1>Fantasy Battle</h1>
     <div id="projectedFantasyPoints"></div>
@@ -235,8 +234,10 @@
         document.addEventListener("DOMContentLoaded", function () {
             const startButton = document.getElementById("startVersus");
             startButton.addEventListener("click", function () {
-                const emailA = localStorage.getItem("Email");
+                const emailA = "mirzahbeg123@gmail.com"
                 const emailB = "toby@gmail.com";
+
+                console.log(`Comparing scores for: ${emailA} vs ${emailB}`);
 
                 compareFantasyScores(emailA, emailB);
             });
@@ -251,40 +252,64 @@
 
             Promise.all([
                 fetch(`http://localhost:6942/api/person/getFantasyScore?email=${emailA}`, requestOptions)
-                    .then(response => response.json()),
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error fetching score for ${emailA}`);
+                        }
+                        return response.json();
+                    }),
                 fetch(`http://localhost:6942/api/person/getFantasyScore?email=${emailB}`, requestOptions)
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error fetching score for ${emailB}`);
+                        }
+                        return response.json();
+                    })
             ])
                 .then(([scoreA, scoreB]) => {
+                    console.log(`Score for ${emailA}: ${scoreA}`);
+                    console.log(`Score for ${emailB}: ${scoreB}`);
+
+                    if (scoreA === undefined || scoreB === undefined) {
+                        throw new Error("One or both scores are undefined");
+                    }
+
                     const resultContainer = document.createElement("div");
                     resultContainer.classList.add("resultContainer");
 
                     const resultA = document.createElement("div");
                     resultA.classList.add("result");
-                    resultA.textContent = `Team A Score: ${scoreA.score}`;
+                    resultA.textContent = `Team A Score: ${scoreA}`;
                     resultContainer.appendChild(resultA);
 
                     const resultB = document.createElement("div");
                     resultB.classList.add("result");
-                    resultB.textContent = `Team B Score: ${scoreB.score}`;
+                    resultB.textContent = `Team B Score: ${scoreB}`;
                     resultContainer.appendChild(resultB);
 
                     document.body.appendChild(resultContainer);
 
-                    if (scoreA.score > scoreB.score) {
+                    if (scoreA > scoreB) {
                         updateCash(emailA, 5);
+                        updateEcoScore(emailA, 10);
                         resultContainer.appendChild(document.createElement("div")).textContent = "Team A Wins!";
-                    } else if (scoreA.score < scoreB.score) {
+                    } else if (scoreA < scoreB) {
                         updateCash(emailA, -5);
                         resultContainer.appendChild(document.createElement("div")).textContent = "Team B Wins!";
                     } else {
                         resultContainer.appendChild(document.createElement("div")).textContent = "It's a Draw!";
                     }
                 })
-                .catch(error => console.error("Error comparing fantasy scores:", error));
+                .catch(error => {
+                    console.error("Error comparing fantasy scores:", error);
+                    const resultContainer = document.createElement("div");
+                    resultContainer.classList.add("resultContainer");
+                    resultContainer.textContent = `Error: ${error.message}`;
+                    document.body.appendChild(resultContainer);
+                });
         }
 
-        function updateCash(email, amount) {
+        async function updateCash(email, amount) {
             const requestOptions = {
                 method: "PUT",
                 headers: {
@@ -293,10 +318,31 @@
                 body: JSON.stringify({ email, amount })
             };
 
-            fetch("http://localhost:6942/api/person/updateCash", requestOptions)
-                .then(response => response.json())
-                .then(result => console.log("Cash updated:", result))
-                .catch(error => console.error("Error updating cash:", error));
+            try {
+                const response = await fetch("http://localhost:6942/api/person/updateCash", requestOptions);
+                const result = await response.json();
+                console.log("Cash updated:", result);
+            } catch (error) {
+                console.error("Error updating cash:", error);
+            }
+        }
+
+        async function updateEcoScore(email, amount) {
+            const requestOptions = {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, amount })
+            };
+
+            try {
+                const response = await fetch("http://localhost:6942/api/person/updateEcoScore", requestOptions);
+                const result = await response.json();
+                console.log("Eco Score updated:", result);
+            } catch (error) {
+                console.error("Error updating eco score:", error);
+            }
         }
     </script>
 </body>
