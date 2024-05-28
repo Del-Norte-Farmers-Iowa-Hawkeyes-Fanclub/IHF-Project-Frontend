@@ -165,7 +165,7 @@
                 return;
             }
 
-            fetch('http://localhost:8012/api/bitlife/scores', {
+            fetch('http://localhost:6942/api/bitlife/scores', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -191,7 +191,7 @@
                 return;
             }
 
-            fetch(`http://localhost:8012/api/bitlife/scores/${type}`)
+            fetch(`http://localhost:6942/api/bitlife/scores/${type}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`Network response was not ok for ${type} leaderboard`);
