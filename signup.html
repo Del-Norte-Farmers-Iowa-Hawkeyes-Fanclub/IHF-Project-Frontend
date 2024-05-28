@@ -54,7 +54,7 @@ document.querySelector("#signup-btn").addEventListener("click", async (e) => {
     localStorage.setItem('email', email);
 
     try {
-        const response = await fetch("http://localhost:8012/api/person/post", {
+        const response = await fetch("http://localhost:6942/api/person/post", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
