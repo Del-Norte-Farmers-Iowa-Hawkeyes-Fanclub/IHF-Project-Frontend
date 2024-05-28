@@ -65,7 +65,7 @@
             password
         };
         
-        fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/authenticate', {
+        fetch('http://localhost:6942/authenticate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -84,7 +84,7 @@
                     "password": password
                 };
                 // Make the second request only if the first one is successful
-                return fetch('https://flask-ihf.stu.nighthawkcodingsociety.com/api/users/authenticate', {
+                return fetch('http://localhost:8086/api/users/authenticate', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
