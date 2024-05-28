@@ -49,7 +49,7 @@
 <body>
     <div class="container">
         <h1>NBA Game Betting</h1>
-        <div class="cash-display">Cash Remaining: <span id="cashAmount">$500</span></div>
+        <div class="cash-display">Cash Remaining: <span>$50</span></div>
 
         <div class="game">
             <h3>Lakers vs. Celtics</h3>
@@ -65,7 +65,7 @@
     </div>
 
     <script>
-        const userEmail = localStorage.getItem('userEmail');
+        const userEmail = localStorage.getItem('userEmail') || 'user@example.com';  // Set a default for testing
 
         async function fetchCash() {
             if (!userEmail) {
@@ -73,7 +73,7 @@
                 return;
             }
             try {
-                const response = await fetch('https://ihf.stu.nighthawkcodingsociety.com/api/person/getCash', {
+                const response = await fetch('/api/person/getCash', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: userEmail })
@@ -87,6 +87,7 @@
                 }
                 const cash = data.cash;
                 document.getElementById('cashAmount').textContent = `$${cash}`;
+                localStorage.setItem('userCash', cash);  // Store cash locally
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
                 document.getElementById('cashAmount').textContent = 'Error fetching cash.';
@@ -95,15 +96,37 @@
 
         async function placeBet(amount, betType) {
             let cash = parseInt(localStorage.getItem('userCash'), 10);
+            if (!userEmail) {
+                alert('No username found. Please sign in.');
+                return;
+            }
             if (cash >= amount) {
-                cash -= amount;
-                localStorage.setItem('userCash', cash);
-                document.getElementById('cashAmount').textContent = `$${cash}`;
-                alert(`You placed a $${amount} bet on the ${betType}. Remaining cash: $${cash}`);
+                try {
+                    const response = await fetch('/api/person/placeBet', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: userEmail, amount, betType })
+                    });
+                    if (!response.ok) {
+                        throw new Error(`Server responded with ${response.status}`);
+                    }
+                    const data = await response.json();
+                    if (data.cash === undefined) {
+                        throw new Error('Cash value is undefined.');
+                    }
+                    cash = data.cash;
+                    localStorage.setItem('userCash', cash);
+                    document.getElementById('cashAmount').textContent = `$${cash}`;
+                    alert(`You placed a $${amount} bet on the ${betType}. Remaining cash: $${cash}`);
+                } catch (error) {
+                    console.error('There was a problem with the fetch operation:', error);
+                    alert('Error placing bet.');
+                }
             } else {
                 alert('Insufficient cash to place this bet.');
             }
         }
+
         fetchCash(); // Fetch cash on page load
     </script>
 </body>
