@@ -127,18 +127,19 @@
         #startVersus {
             display: block;
             margin: 20px auto;
-            padding: 10px 20px;
+            padding: 15px 30px;
             background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            font-size: 18px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         #startVersus:hover {
             background-color: #0056b3;
+            transform: scale(1.05);
         }
 
         .resultContainer {
@@ -148,66 +149,60 @@
 
         .result {
             margin-bottom: 10px;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
+            color: #333;
         }
 
-        #comment-section {
-            margin: auto;
-            width: 50%;
-            padding: 10px;
-        }
-
-        #comments {
-            margin-bottom: 20px;
-        }
-
-        .comment {
-            background-color: #f2f2f2;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-
-        input,
-        textarea {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: blue;
-            color: white;
-            cursor: pointer;
-        }
-
-        .exitButton {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 50px !important;
-            background-color: red !important;
-        }
-
-        .resetButton {
-            position: absolute;
-            top: 0;
-            right: 50px;
-            width: 50px !important;
-            background-color: rgb(115, 0, 255) !important;
-        }
-
-        #drawSpace {
+        .popup-overlay {
             position: fixed;
-            bottom: 10%;
-            left: 24.5%;
-            z-index: 9999;
-            background-color: #000;
-            border: 10px solid #0000FF;
-            height: 800px;
-            width: 50%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
             border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 80%;
+        }
+
+        .popup-content h2 {
+            margin-top: 0;
+            color: #007BFF;
+            font-size: 24px;
+        }
+
+        .popup-content p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .popup-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .popup-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -235,7 +230,7 @@
         document.addEventListener("DOMContentLoaded", function () {
             const startButton = document.getElementById("startVersus");
             startButton.addEventListener("click", function () {
-                const emailA = "mirzahbeg123@gmail.com"
+                let emailA = localStorage.getItem("Email");
                 const emailB = "toby@gmail.com";
 
                 console.log(`Comparing scores for: ${emailA} vs ${emailB}`);
@@ -312,22 +307,27 @@
                 });
         }
 
-        async function updateCash(email, amount) {
-            const requestOptions = {
-                method: "POST",
+        async function updateCash(email, cash) {
+            fetch('http://localhost:6942/api/person/cashUpdate', {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/json"
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ "email": email, "cash": amount })
-            };
-
-            try {
-                const response = await fetch("http://localhost:6942/api/person/cashUpdate", requestOptions);
-                const result = await response.json();
-                console.log("Cash updated:", result);
-            } catch (error) {
-                console.error("Error updating cash:", error);
-            }
+                body: JSON.stringify({
+                    "email": email,
+                    "cash": cash
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Cash updated successfully ');
+                } else {
+                    console.error('Failed to update cash');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
 
         async function updateEcoScore(email, amount) {
@@ -363,10 +363,30 @@
                     throw new Error(`Error fetching cash for ${email}`);
                 }
                 const cash = await response.json();
-                alert(`User Cash: ${cash}`);
+                showPopup(`User Cash: $${cash}`);
             } catch (error) {
                 console.error("Error fetching user cash:", error);
-                alert("Error fetching user cash.");
+                showPopup("Error fetching user cash.");
+            }
+        }
+
+        function showPopup(message) {
+            const overlay = document.createElement('div');
+            overlay.className = 'popup-overlay';
+            overlay.innerHTML = `
+                <div class="popup-content">
+                    <h2>Cash Update</h2>
+                    <p>${message}</p>
+                    <button class="popup-button" onclick="closePopup()">Close</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function closePopup() {
+            const overlay = document.querySelector('.popup-overlay');
+            if (overlay) {
+                document.body.removeChild(overlay);
             }
         }
     </script>
