@@ -198,7 +198,7 @@
         }
        
         function updateCash(email, cash) {
-            fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/api/person/cashUpdate', {
+            fetch('http://localhost:6942/api/person/cashUpdate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -221,7 +221,7 @@
         }
 
         function getCash(email) {
-            fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/api/person/getCash', {
+            fetch('http://localhost:6942/api/person/getCash', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

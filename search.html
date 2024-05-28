@@ -126,7 +126,7 @@
             var playerId = document.getElementById("playerId").value;
 
             // Assuming your backend is running on localhost:8062
-            fetch(`https://spring-ihf.stu.nighthawkcodingsociety.com/api/nba/players/${playerId}`)
+            fetch(`http://localhost:6942/api/nba/players/${playerId}`)
                 .then(response => response.json())
                 .then(data => {
                     displayPlayerInfo(data);

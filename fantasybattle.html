@@ -247,14 +247,14 @@
             };
 
             Promise.all([
-                fetch(`https://spring-ihf.stu.nighthawkcodingsociety.com/api/person/getFantasyScore?email=${emailA}`, requestOptions)
+                fetch(`http://localhost:6942/api/person/getFantasyScore?email=${emailA}`, requestOptions)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Error fetching score for ${emailA}`);
                         }
                         return response.json();
                     }),
-                fetch(`https://spring-ihf.stu.nighthawkcodingsociety.com/api/person/getFantasyScore?email=${emailB}`, requestOptions)
+                fetch(`http://localhost:6942/api/person/getFantasyScore?email=${emailB}`, requestOptions)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error(`Error fetching score for ${emailB}`);
@@ -308,7 +308,7 @@
         }
 
         async function updateCash(email, cash) {
-            fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/api/person/cashUpdate', {
+            fetch('http://localhost:6942/api/person/cashUpdate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -340,7 +340,7 @@
             };
 
             try {
-                const response = await fetch("https://spring-ihf.stu.nighthawkcodingsociety.com/api/person/updateEcoScore", requestOptions);
+                const response = await fetch("http://localhost:6942/api/person/updateEcoScore", requestOptions);
                 const result = await response.json();
                 console.log("Eco Score updated:", result);
             } catch (error) {
@@ -358,7 +358,7 @@
             };
 
             try {
-                const response = await fetch("https://spring-ihf.stu.nighthawkcodingsociety.com/api/person/getCash", requestOptions);
+                const response = await fetch("http://localhost:6942/api/person/getCash", requestOptions);
                 if (!response.ok) {
                     throw new Error(`Error fetching cash for ${email}`);
                 }

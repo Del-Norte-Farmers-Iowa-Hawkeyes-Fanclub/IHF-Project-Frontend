@@ -101,7 +101,7 @@ layout: header
 
     <script>
         async function fetchPlayerStats(playerId, season) {
-            const response = await fetch(`https://spring-ihf.stu.nighthawkcodingsociety.com/games/${playerId}/${season}`);
+            const response = await fetch(`http://localhost:6942/games/${playerId}/${season}`);
             const data = await response.json();
             return data.data;
         }

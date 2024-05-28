@@ -40,7 +40,7 @@
 
             window.fetchSchedule = function() {
                 const season = document.getElementById('seasonInput').value;
-                const url = `https://spring-ihf.stu.nighthawkcodingsociety.com/api/nba/schedule/${season}`;
+                const url = `http://localhost:6942/api/nba/schedule/${season}`;
 
                 fetch(url)
                     .then(response => response.json())
