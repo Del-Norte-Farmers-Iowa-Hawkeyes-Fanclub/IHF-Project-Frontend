@@ -95,7 +95,7 @@
                         throw new Error('Network response was not ok');
                     }
                     return response.json();
-                })
+                }) 
                 .then(event => {
                     if (!event || !event.id) {
                         throw new Error('Invalid event data');
