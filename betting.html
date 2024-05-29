@@ -142,9 +142,6 @@
 
         function calculateFantasyPoints(height, weight) {
     // Check if height and weight are provided and are non-empty strings
-    if (typeof height !== 'string' || typeof weight !== 'string' || !height.trim() || !weight.trim()) {
-        return 0; // Return 0 if height or weight is not provided or is not a string
-    }
 
     // Extract feet and inches from the height
     var heightParts = height.split("-");
