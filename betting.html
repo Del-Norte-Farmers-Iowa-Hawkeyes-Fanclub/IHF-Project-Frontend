@@ -173,15 +173,15 @@ async function placeBet(betOption) {
         var playerId = document.getElementById("playerId").value;
         const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
         const data = await response.json();
-        var fantasyPointsActual = calculateFantasyPoints(data.height, data.weight) + getRandomNumber(-5, 5);
+        var fantasyPointsActual = fantasyPointsPredicted + getRandomNumber(-5, 5);
 
         let cash = parseInt(document.getElementById('cashAmount').textContent.replace('$', ''), 10);
         if (cash >= 100) {
             cash -= 100;
             document.getElementById('cashAmount').textContent = `$${cash}`;
             
-            if ((betOption === 'over' && fantasyPointsActual > calculateFantasyPoints(data.height, data.weight)) ||
-                (betOption === 'under' && fantasyPointsActual < calculateFantasyPoints(data.height, data.weight))) {
+            if ((betOption === 'over' && getRandomNumber(-5, 5)>0) ||
+                (betOption === 'under' && getRandomNumber(-5, 5)<0)) {
                 cash += 200; // Win $100
                 document.getElementById('cashAmount').textContent = `$${cash}`;
                 alert(`Congratulations! You won $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
