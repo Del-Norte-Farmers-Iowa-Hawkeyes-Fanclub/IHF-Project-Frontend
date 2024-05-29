@@ -141,9 +141,9 @@
         }
 
         function calculateFantasyPoints(height, weight) {
-    // Check if height is defined and not empty
-    if (!height || !weight) {
-        return 0; // Return 0 if height or weight is not defined
+    // Check if height and weight are provided and are non-empty strings
+    if (typeof height !== 'string' || typeof weight !== 'string' || !height.trim() || !weight.trim()) {
+        return 0; // Return 0 if height or weight is not provided or is not a string
     }
 
     // Extract feet and inches from the height
@@ -163,6 +163,7 @@
     var fantasyPoints = Math.round((heightFactor + weightFactor) * 10); // Example calculation
     return fantasyPoints;
 }
+
 
         function getRandomNumber(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
