@@ -62,7 +62,7 @@
 <body>
     <div class="container">
         <h1>NBA Fantasy Betting</h1>
-        <div class="cash-display">Cash Remaining: <span id="cashAmount">$500</span></div>
+        <div class="cash-display">Cash Remaining: <span id="cashAmount">$50</span></div>
 
         <div id="playerInfo" style="display: none;">
             <!-- Display player information and statistics here -->
@@ -74,10 +74,10 @@
             <button type="button" onclick="searchPlayer()">Search</button>
         </form>
 
-        <div class="game" id="game">
+        <div class="game" id="game" style="display: none;">
             <h3>Player Fantasy Points Betting</h3>
-            <button class="bet-button" onclick="placeBet(100, 'Over 25 Fantasy Points')">Over 25 Fantasy Points (-$100)</button>
-            <button class="bet-button" onclick="placeBet(100, 'Under 25 Fantasy Points')">Under 25 Fantasy Points (-$100)</button>
+            <button class="bet-button" onclick="placeBet('over')">Over Predicted Fantasy Points (-$100)</button>
+            <button class="bet-button" onclick="placeBet('under')">Under Predicted Fantasy Points (-$100)</button>
         </div>
     </div>
 
@@ -104,7 +104,10 @@
             var playerInfoContainer = document.getElementById("playerInfo");
 
             // Calculate fantasy points based on height and weight
-            var fantasyPoints = calculateFantasyPoints(playerInfo.height, playerInfo.weight);
+            var predictedFantasyPoints = calculateFantasyPoints(playerInfo.height, playerInfo.weight);
+
+            // Generate actual fantasy points (predicted + random number from -5 to 5)
+            var actualFantasyPoints = predictedFantasyPoints + Math.floor(Math.random() * 11) - 5;
 
             // Extract relevant information from the provided structure
             var playerName = `${playerInfo.first_name} ${playerInfo.last_name}`;
@@ -123,7 +126,8 @@
                         <th>Height</th>
                         <th>Weight</th>
                         <th>Team</th>
-                        <th>Fantasy Points</th>
+                        <th>Predicted Fantasy Points</th>
+                        <th>Actual Fantasy Points</th>
                     </tr>
                     <tr>
                         <td>${playerName}</td>
@@ -131,7 +135,8 @@
                         <td>${height}</td>
                         <td>${weight} lbs</td>
                         <td>${teamName}</td>
-                        <td>${fantasyPoints}</td>
+                        <td>${predictedFantasyPoints}</td>
+                        <td>${actualFantasyPoints}</td>
                     </tr>
                 </table>
             `;
@@ -147,13 +152,13 @@
             return fantasyPoints;
         }
 
-        async function placeBet(amount, betType) {
+        async function placeBet(betType) {
             try {
                 let cash = parseInt(document.getElementById('cashAmount').textContent.replace('$', ''), 10);
-                if (cash >= amount) {
-                    cash -= amount;
+                if (cash >= 100) {
+                    cash -= 100;
                     document.getElementById('cashAmount').textContent = `$${cash}`;
-                    alert(`You placed a $${amount} bet on ${betType}. Remaining cash: $${cash}`);
+                    alert(`You placed a bet on ${betType} predicted fantasy points. Good luck! Remaining cash: $${cash}`);
                 } else {
                     throw new Error('Insufficient cash to place this bet.');
                 }
