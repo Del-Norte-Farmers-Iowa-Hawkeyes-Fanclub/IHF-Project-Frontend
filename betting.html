@@ -44,12 +44,25 @@
             text-align: center;
             margin-top: 20px;
         }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>NBA Fantasy Betting</h1>
-        <div class="cash-display">Cash Remaining: <span id="cashAmount">$200</span></div>
+        <div class="cash-display">Cash Remaining: <span id="cashAmount">$500</span></div>
 
         <div id="playerInfo" style="display: none;">
             <!-- Display player information and statistics here -->
@@ -90,6 +103,9 @@
         function displayPlayerInfo(playerInfo) {
             var playerInfoContainer = document.getElementById("playerInfo");
 
+            // Calculate fantasy points based on height and weight
+            var fantasyPoints = calculateFantasyPoints(playerInfo.height, playerInfo.weight);
+
             // Extract relevant information from the provided structure
             var playerName = `${playerInfo.first_name} ${playerInfo.last_name}`;
             var position = playerInfo.position || 'N/A';
@@ -97,8 +113,9 @@
             var weight = playerInfo.weight || 'N/A';
             var teamName = playerInfo.team ? playerInfo.team.full_name : 'Unknown Team';
 
-            // Extract player statistics
+            // Display player information and characteristics
             var tableHtml = `
+                <h2>Player Information</h2>
                 <table>
                     <tr>
                         <th>Name</th>
@@ -106,6 +123,7 @@
                         <th>Height</th>
                         <th>Weight</th>
                         <th>Team</th>
+                        <th>Fantasy Points</th>
                     </tr>
                     <tr>
                         <td>${playerName}</td>
@@ -113,10 +131,20 @@
                         <td>${height}</td>
                         <td>${weight} lbs</td>
                         <td>${teamName}</td>
+                        <td>${fantasyPoints}</td>
                     </tr>
                 </table>
             `;
             playerInfoContainer.innerHTML = tableHtml;
+            playerInfoContainer.style.display = "block";
+        }
+
+        function calculateFantasyPoints(height, weight) {
+            // Example calculation (you can adjust this formula)
+            var heightFactor = parseInt(height, 10) / 12; // Convert height to feet
+            var weightFactor = parseInt(weight, 10) / 200; // Normalize weight
+            var fantasyPoints = Math.round((heightFactor + weightFactor) * 10); // Example calculation
+            return fantasyPoints;
         }
 
         async function placeBet(amount, betType) {
