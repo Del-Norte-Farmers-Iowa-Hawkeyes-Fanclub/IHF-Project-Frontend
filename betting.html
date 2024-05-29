@@ -141,12 +141,23 @@
         }
 
         function calculateFantasyPoints(height, weight) {
-            // Example calculation (you can adjust this formula)
-            var heightFactor = parseInt(height, 10) / 12; // Convert height to feet
-            var weightFactor = parseInt(weight, 10) / 200; // Normalize weight
-            var fantasyPoints = Math.round((heightFactor + weightFactor) * 10); // Example calculation
-            return fantasyPoints;
-        }
+    // Extract feet and inches from the height
+    var heightParts = height.split("-");
+    var feet = parseInt(heightParts[0], 10);
+    var inches = parseInt(heightParts[1], 10);
+
+    // Convert height to inches
+    var totalHeightInches = feet * 12 + inches;
+
+    // Parse weight to integer
+    var totalWeight = parseInt(weight, 10);
+
+    // Example calculation (you can adjust this formula)
+    var heightFactor = totalHeightInches / 12; // Convert height to feet
+    var weightFactor = totalWeight / 200; // Normalize weight
+    var fantasyPoints = Math.round((heightFactor + weightFactor) * 10); // Example calculation
+    return fantasyPoints;
+}
 
         function getRandomNumber(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
