@@ -141,16 +141,21 @@
         }
 
         function calculateFantasyPoints(height, weight) {
+    // Check if height is defined and not empty
+    if (!height || !weight) {
+        return 0; // Return 0 if height or weight is not defined
+    }
+
     // Extract feet and inches from the height
     var heightParts = height.split("-");
-    var feet = parseInt(heightParts[0], 10);
-    var inches = parseInt(heightParts[1], 10);
+    var feet = parseInt(heightParts[0], 10) || 0; // Use 0 if feet is not a valid number
+    var inches = parseInt(heightParts[1], 10) || 0; // Use 0 if inches is not a valid number
 
     // Convert height to inches
     var totalHeightInches = feet * 12 + inches;
 
     // Parse weight to integer
-    var totalWeight = parseInt(weight, 10);
+    var totalWeight = parseInt(weight, 10) || 0; // Use 0 if weight is not a valid number
 
     // Example calculation (you can adjust this formula)
     var heightFactor = totalHeightInches / 12; // Convert height to feet
