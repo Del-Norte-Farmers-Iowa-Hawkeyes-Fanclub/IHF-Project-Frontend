@@ -76,8 +76,10 @@
 
         <div class="game" id="game" style="display: none;">
             <h3>Player Fantasy Points Betting</h3>
-            <button class="bet-button" onclick="placeBet('over')">Over Predicted Fantasy Points (-$100)</button>
-            <button class="bet-button" onclick="placeBet('under')">Under Predicted Fantasy Points (-$100)</button>
+            <label for="betAmount">Bet Amount: </label>
+            <input type="number" id="betAmount" name="betAmount" min="1" max="500" required>
+            <button class="bet-button" onclick="placeBet('over')">Over Predicted Fantasy Points</button>
+            <button class="bet-button" onclick="placeBet('under')">Under Predicted Fantasy Points</button>
         </div>
     </div>
 
@@ -177,17 +179,19 @@
                 var fantasyPointsActual = calculateActualFantasyPoints(data.stats);
 
                 let cash = parseInt(document.getElementById('cashAmount').textContent.replace('$', ''), 10);
-                if (cash >= 100) {
-                    cash -= 100;
+                let betAmount = parseInt(document.getElementById('betAmount').value, 10);
+                
+                if (cash >= betAmount) {
+                    cash -= betAmount;
                     document.getElementById('cashAmount').textContent = `$${cash}`;
                     
                     if ((betOption === 'over' && fantasyPointsActual > fantasyPointsPredicted) ||
                         (betOption === 'under' && fantasyPointsActual < fantasyPointsPredicted)) {
-                        cash += 200; // Win $100
+                        cash += betAmount * 2; // Win double the bet amount
                         document.getElementById('cashAmount').textContent = `$${cash}`;
-                        alert(`Congratulations! You won $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
+                        alert(`Congratulations! You won $${betAmount}. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
                     } else {
-                        alert(`You lost $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
+                        alert(`You lost $${betAmount}. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
                     }
                 } else {
                     throw new Error('Insufficient cash to place this bet.');
