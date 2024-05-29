@@ -26,7 +26,7 @@
                         <i class="fa-solid fa-lock"></i>
                         <input type="password" placeholder="Password">
                     </div>
-                    <p>Have an Account? <a href="https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/">Click Here!</a></p>
+                    <p>Have an Account? <a href="http://localhost:4001/">Click Here!</a></p>
 
                 </div>
                 <button type="submit" class="btn" id="signup-btn">Sign Up</button>
@@ -54,7 +54,7 @@ document.querySelector("#signup-btn").addEventListener("click", async (e) => {
     localStorage.setItem('email', email);
 
     try {
-        const response = await fetch("https://spring-ihf.stu.nighthawkcodingsociety.com/api/person/post", {
+        const response = await fetch("http://localhost:6942/api/person/post", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -64,7 +64,7 @@ document.querySelector("#signup-btn").addEventListener("click", async (e) => {
 
         if (response.ok) {
             console.log("Account created successfully!");
-            window.location.href = 'https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/index.html';
+            window.location.href = 'http://localhost:4001/index.html';
         } else {
             console.error("Failed to create account.");
         }

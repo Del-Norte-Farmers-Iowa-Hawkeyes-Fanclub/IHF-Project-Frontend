@@ -1,5 +1,7 @@
 let controls;
 let worldLayer;
+let corn = 0;
+let eco = 0;
 
 // Register Leaderboard as a GameObjectFactory
 Phaser.GameObjects.GameObjectFactory.register('World', function () {
@@ -16,9 +18,9 @@ class World extends Phaser.Scene {
   
 preload() {
     
-    this.load.image("tiles", "../assets/tilesets/tilesets.png");
+    this.load.image("tiles", "../assets/tilesets/FarmTiles.png");
     // this.load.image("farmTiles", "../assets/tilesets/farm-tileset.png");
-    this.load.tilemapTiledJSON("map", "../assets/tilemaps/untitled.json");
+    this.load.tilemapTiledJSON("map", "../assets/tilemaps/NewFarm.json");
     
     
   }
@@ -83,105 +85,141 @@ update(time, delta) {
       worldLayer.putTileAtWorldXY(37, worldPoint.x, worldPoint.y);
     }
     
-    // // Generate a unique growth state tile
-    // let uniqueGrowthStateTile = 0;
     
-    // // Function to generate a unique growth state tile
-    // function generateUniqueGrowthStateTile() {
-    //   // Generate a random number within a specific range
-    //   const randomNum = Phaser.Math.Between(1, 100);
+    // Function to generate a unique growth state tile
+    function generateUniqueGrowthStateTile() {
+      // Generate a random number within a specific range
+      const randomNum = Phaser.Math.Between(1, 100);
       
-    //   // Assign a specific growth state tile based on the random number
-    //   if (randomNum <= 25) {
-    //     return 1; // Growth state 1
-    //   } else if (randomNum <= 50) {
-    //     return 2; // Growth state 2
-    //   } else if (randomNum <= 75) {
-    //     return 3; // Growth state 3
-    //   } else {
-    //     return 4; // Growth state 4
-    //   }
-    // }
+      // Assign a specific growth state tile based on the random number
+      if (randomNum <= 25) {
+        return 1; // Growth state 1
+      } else if (randomNum <= 50) {
+        return 2; // Growth state 2
+      } else if (randomNum <= 75) {
+        return 3; // Growth state 3
+      } else {
+        return 4; // Growth state 4
+      }
+    }
 
-    // // Execute the code every 3 seconds
-    // this.time.addEvent({
-    //   delay: 3000,
-    //   loop: true,
-    //   callback: function() {
-    //     // determining all tiles that are 37 
-    //     worldLayer.forEachTile(function(tile) {
-    //       if (tile.index === 37) {
-    //         uniqueGrowthStateTile = generateUniqueGrowthStateTile();
+    // Execute the code every 3 seconds
+    this.time.addEvent({
+      delay: 3000,
+      loop: true,
+      callback: function() {
+        // determining all tiles that are 37 
+        worldLayer.forEachTile(function(tile) {
+          if (tile.index === 117) {
             
-    //         let email = localStorage.getItem("Email");
-    //         let cropQuantity = uniqueGrowthStateTile*200;
-    //         const data = {
-    //           email,
-    //           cropQuantity,
-              
-    //       };
-          
-    //       fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/cropQuantityUpdate', {
-    //           method: 'POST',
-    //           headers: {
-    //               'Content-Type': 'application/json' 
-    //           },
-    //           body: JSON.stringify(data),
-    //       })
-    //       .then(response => {
-    //           if (response.ok) {
-    //               // Handle successful login
-    //               console.log('Crop Update successful');
-                  
-    //           } else {
-    //               // Handle login error
-    //               console.log('Crop Update failed');
-    //           }
-    //       })
-    //       .catch(error => {
-    //           // Handle network error
-    //           console.log('Network error');
-    //       });
-
-    //       let eco = uniqueGrowthStateTile*2;
-
-    //       let data2 = {
-    //         email,
-    //         eco,
-    //       }
+            // Update World layer
+            worldLayer.putTileAt(tile.x, tile.y, 37);
+            corn += 1*generateUniqueGrowthStateTile();
+            eco += 2*generateUniqueGrowthStateTile();
+          }
 
 
-    //     fetch('https://spring-ihf.stu.nighthawkcodingsociety.com/ecoUpdate', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json' 
-    //         },
-    //         body: JSON.stringify(data2),
-    //     })
-    //     .then(response => {
-    //         if (response.ok) {
-    //             // Handle successful login
-    //             console.log('Eco Update Successful');
-                
-    //         } else {
-    //             // Handle login error
-    //             console.log('Eco Update Failed');
-    //         }
-    //     })
-    //     .catch(error => {
-    //         // Handle network error
-    //         console.log('Network error');
-    //     });
+        });
+      }
+    });
 
-    //       }
-    //     });
-    //   }
-    // });
-
-
+    // Execute the code every 3 seconds
+      this.time.addEvent({
+        delay: 3000,
+        loop: true,
+        callback: function() {
+        // determining all tiles that are 37 
+          worldLayer.forEachTile(function(tile) {
+          if (tile.index === 37) {          
+            // Update World layer
+            worldLayer.putTileAt(tile.x, tile.y, 38);
+            corn += 10*generateUniqueGrowthStateTile();
+            eco += 2*generateUniqueGrowthStateTile();
+          }
+          });
+        }
+      }); 
+    // New Time Event
+        // Execute the code every 3 seconds
+        this.time.addEvent({
+          delay: 3000,
+          loop: true,
+          callback: function() {
+            // determining all tiles that are 37 
+            worldLayer.forEachTile(function(tile) {
+              if (tile.index === 38) {
+                                
+                // Update World layer
+                worldLayer.putTileAt(tile.x, tile.y, 28);
+                worldLayer.putTileAt(tile.x, tile.y-1, 40);
+                corn += 10*generateUniqueGrowthStateTile();
+                eco += 2*generateUniqueGrowthStateTile();
     
+              }
+    
+    
+            });
+          }
+        });
     
   }
 
 }
 
+  setInterval(() => {
+    let email = localStorage.getItem("Email");
+    let cropQuantity = corn;
+    const data = {
+      email,
+      cropQuantity,
+    };
+
+    fetch('http://localhost:6942/api/person/cropQuantityUpdate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data),
+    })
+      .then(response => {
+        if (response.ok) {
+          // Handle successful login
+          console.log('Crop Update successful');
+
+        } else {
+          // Handle login error
+          console.log('Crop Update failed');
+        }
+      })
+      .catch(error => {
+        // Handle network error
+        console.log('Network error');
+      });
+
+    let data2 = {
+      email,
+      eco,
+    }
+
+    fetch('http://localhost:6942/api/person/ecoUpdate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data2),
+    })
+      .then(response => {
+        if (response.ok) {
+          // Handle successful login
+          console.log('Eco Update Successful');
+
+        } else {
+          // Handle login error
+          console.log('Eco Update Failed');
+        }
+      })
+      .catch(error => {
+        // Handle network error
+        console.log('Network error');
+      });
+  }, 10000);
