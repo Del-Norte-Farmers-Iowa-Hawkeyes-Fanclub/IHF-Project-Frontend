@@ -110,40 +110,43 @@ update(time, delta) {
       worldLayer.forEachTile(function(tile) {
         if (tile.index === 133) {          
           // Update World layer
-          worldLayer.putTileAt(tile.x, tile.y, 145);
+          console.log("update");
+          worldLayer.putTileAt(145, tile.x, tile.y);
           corn += 10*generateUniqueGrowthStateTile();
-          eco += 2*generateUniqueGrowthStateTile();
+          eco = 1;
         }
       });
-    }, 3000);
+    }, 5000);
 
     // New Time Event
     // Execute the code every 3 seconds
     setInterval(() => {
-      // determining all tiles that are 37 
+      // determining all tiles that are 145 
       worldLayer.forEachTile(function(tile) {
         if (tile.index === 145) {
           // Update World layer
-          worldLayer.putTileAt(tile.x, tile.y, 887);
+          console.log("update");
+          worldLayer.putTileAt(887, tile.x, tile.y);
           corn += 10*generateUniqueGrowthStateTile();
-          eco += 2*generateUniqueGrowthStateTile();
+          eco = 1;
         }
       });
-    }, 3000);
+    }, 8000);
 
     // New Time Event
     // Execute the code every 3 seconds
     setInterval(() => {
-      // determining all tiles that are 37 
+      // determining all tiles that are 887 
       worldLayer.forEachTile(function(tile) {
         if (tile.index === 887) {
           // Update World layer
-          worldLayer.putTileAt(tile.x, tile.y, 853);
+          console.log("update");
+          worldLayer.putTileAt(853, tile.x, tile.y);
           corn += 20*generateUniqueGrowthStateTile();
-          eco += 2*generateUniqueGrowthStateTile();
+          eco = 1;
         }
       });
-    }, 3000);
+    }, 11000);
     
   }
 
