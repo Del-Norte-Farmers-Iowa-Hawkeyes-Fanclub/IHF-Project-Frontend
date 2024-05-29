@@ -83,67 +83,70 @@
 
     <script>
         async function searchPlayer() {
-            var playerId = document.getElementById("playerId").value;
+    var playerId = document.getElementById("playerId").value;
 
-            // Fetch player data
-            try {
-                const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
-                const data = await response.json();
-                if (data.status) {
-                    throw new Error(data.status);
-                }
-                displayPlayerInfo(data.data);
-                document.getElementById("game").style.display = "block";
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error fetching player data. Please try again.');
-            }
+    // Fetch player data
+    try {
+        const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
+        const data = await response.json();
+        if (data.status) {
+            throw new Error(data.status);
         }
+        displayPlayerInfo(data.data);
+        document.getElementById("game").style.display = "block";
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error fetching player data. Please try again.');
+    }
+}
 
-        function displayPlayerInfo(playerInfo) {
-            var playerInfoContainer = document.getElementById("playerInfo");
+function displayPlayerInfo(playerInfo) {
+    var playerInfoContainer = document.getElementById("playerInfo");
 
-            // Calculate fantasy points based on height and weight
-            var fantasyPointsPredicted = calculateFantasyPoints(playerInfo.height, playerInfo.weight);
-            var fantasyPointsActual = fantasyPointsPredicted + getRandomNumber(-5, 5);
+    // Calculate fantasy points based on height and weight
+    var fantasyPointsPredicted = calculateFantasyPoints(playerInfo.height, playerInfo.weight);
+    var fantasyPointsActual = fantasyPointsPredicted + getRandomNumber(-5, 5);
 
-            // Extract relevant information from the provided structure
-            var playerName = `${playerInfo.first_name} ${playerInfo.last_name}`;
-            var position = playerInfo.position || 'N/A';
-            var height = playerInfo.height || 'N/A';
-            var weight = playerInfo.weight || 'N/A';
-            var teamName = playerInfo.team ? playerInfo.team.full_name : 'Unknown Team';
+    // Extract relevant information from the provided structure
+    var playerName = `${playerInfo.first_name} ${playerInfo.last_name}`;
+    var position = playerInfo.position || 'N/A';
+    var height = playerInfo.height || 'N/A';
+    var weight = playerInfo.weight || 'N/A';
+    var teamName = playerInfo.team ? playerInfo.team.full_name : 'Unknown Team';
 
-            // Display player information and characteristics
-            var tableHtml = `
-                <h2>Player Information</h2>
-                <table>
-                    <tr>
-                        <th>Name</th>
-                        <th>Position</th>
-                        <th>Height</th>
-                        <th>Weight</th>
-                        <th>Team</th>
-                        <th>Predicted Fantasy Points</th>
-                    </tr>
-                    <tr>
-                        <td>${playerName}</td>
-                        <td>${position}</td>
-                        <td>${height}</td>
-                        <td>${weight} lbs</td>
-                        <td>${teamName}</td>
-                        <td>${fantasyPointsPredicted}</td>
-                    </tr>
-                </table>
-            `;
-            playerInfoContainer.innerHTML = tableHtml;
-            playerInfoContainer.style.display = "block";
-        }
+    // Display player information and characteristics
+    var tableHtml = `
+        <h2>Player Information</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Height</th>
+                <th>Weight</th>
+                <th>Team</th>
+                <th>Predicted Fantasy Points</th>
+            </tr>
+            <tr>
+                <td>${playerName}</td>
+                <td>${position}</td>
+                <td>${height}</td>
+                <td>${weight} lbs</td>
+                <td>${teamName}</td>
+                <td>${fantasyPointsPredicted}</td>
+            </tr>
+        </table>
+    `;
+    playerInfoContainer.innerHTML = tableHtml;
+    playerInfoContainer.style.display = "block";
+}
 
-        function calculateFantasyPoints(height, weight) {
+function calculateFantasyPoints(height, weight) {
     // Check if height and weight are provided and are non-empty strings
+    if (!height || !weight) {
+        return 0; // Return 0 if height or weight is not defined
+    }
 
-    // Extract feet and inches from the height
+    // Split height string into feet and inches
     var heightParts = height.split("-");
     var feet = parseInt(heightParts[0], 10) || 0; // Use 0 if feet is not a valid number
     var inches = parseInt(heightParts[1], 10) || 0; // Use 0 if inches is not a valid number
@@ -161,38 +164,37 @@
     return fantasyPoints;
 }
 
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-        function getRandomNumber(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+async function placeBet(betOption) {
+    try {
+        var playerId = document.getElementById("playerId").value;
+        const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
+        const data = await response.json();
+        var fantasyPointsActual = calculateFantasyPoints(data.height, data.weight) + getRandomNumber(-5, 5);
 
-        async function placeBet(betOption) {
-            try {
-                var playerId = document.getElementById("playerId").value;
-                const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
-                const data = await response.json();
-                var fantasyPointsActual = calculateFantasyPoints(data.height, data.weight) + getRandomNumber(-5, 5);
-
-                let cash = parseInt(document.getElementById('cashAmount').textContent.replace('$', ''), 10);
-                if (cash >= 100) {
-                    cash -= 100;
-                    document.getElementById('cashAmount').textContent = `$${cash}`;
-                    
-                    if ((betOption === 'over' && fantasyPointsActual > calculateFantasyPoints(data.height, data.weight)) ||
-                        (betOption === 'under' && fantasyPointsActual < calculateFantasyPoints(data.height, data.weight))) {
-                        cash += 200; // Win $100
-                        document.getElementById('cashAmount').textContent = `$${cash}`;
-                        alert(`Congratulations! You won $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
-                    } else {
-                        alert(`You lost $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
-                    }
-                } else {
-                    throw new Error('Insufficient cash to place this bet.');
-                }
-            } catch (error) {
-                console.error('Error:', error.message);
-                alert(error.message);
+        let cash = parseInt(document.getElementById('cashAmount').textContent.replace('$', ''), 10);
+        if (cash >= 100) {
+            cash -= 100;
+            document.getElementById('cashAmount').textContent = `$${cash}`;
+            
+            if ((betOption === 'over' && fantasyPointsActual > calculateFantasyPoints(data.height, data.weight)) ||
+                (betOption === 'under' && fantasyPointsActual < calculateFantasyPoints(data.height, data.weight))) {
+                cash += 200; // Win $100
+                document.getElementById('cashAmount').textContent = `$${cash}`;
+                alert(`Congratulations! You won $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
+            } else {
+                alert(`You lost $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
             }
+        } else {
+            throw new Error('Insufficient cash to place this bet.');
         }
+    } catch (error) {
+        console.error('Error:', error.message);
+        alert(error.message);
+    }
+}
     </script>
 </body>
