@@ -62,7 +62,7 @@
 <body>
     <div class="container">
         <h1>NBA Fantasy Betting</h1>
-        <div class="cash-display">Cash Remaining: <span id="cashAmount">$500</span></div>
+        <div class="cash-display">Cash Remaining: <span id="cashAmount">$50</span></div>
 
         <div id="playerInfo" style="display: none;">
             <!-- Display player information and statistics here -->
@@ -168,9 +168,9 @@
                         (betOption === 'under' && fantasyPointsActual < calculateFantasyPoints(data.height, data.weight))) {
                         cash += 200; // Win $100
                         document.getElementById('cashAmount').textContent = `$${cash}`;
-                        alert(`Congratulations! You won $100. Remaining cash: $${cash}`);
+                        alert(`Congratulations! You won $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
                     } else {
-                        alert(`You lost $100. Remaining cash: $${cash}`);
+                        alert(`You lost $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
                     }
                 } else {
                     throw new Error('Insufficient cash to place this bet.');
@@ -182,4 +182,3 @@
         }
     </script>
 </body>
-</html>
