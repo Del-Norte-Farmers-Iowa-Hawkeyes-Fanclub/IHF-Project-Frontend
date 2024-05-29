@@ -18,9 +18,9 @@ class World extends Phaser.Scene {
   
 preload() {
     
-    this.load.image("tiles", "../assets/tilesets/FarmTiles.png");
+    this.load.image("tiles", "../assets/tilesets/farm-map.png");
     // this.load.image("farmTiles", "../assets/tilesets/farm-tileset.png");
-    this.load.tilemapTiledJSON("map", "../assets/tilemaps/NewFarm.json");
+    this.load.tilemapTiledJSON("map", "../assets/tilemaps/testMap2.json");
     
     
   }
@@ -37,7 +37,7 @@ create() {
 
 
     // const tileset = map.addTilesetImage("tiles");
-    const tileset = map.addTilesetImage("tilesets","tiles");
+    const tileset = map.addTilesetImage("farm-map","tiles");
     // const farmTileset = map.addTilesetImage("farm-tileset","farmTiles");
     
 
@@ -82,7 +82,7 @@ update(time, delta) {
     
     // Draw tiles (only within the groundLayer)
     if (this.input.manager.activePointer.isDown) {
-      worldLayer.putTileAtWorldXY(37, worldPoint.x, worldPoint.y);
+      worldLayer.putTileAtWorldXY(133, worldPoint.x, worldPoint.y);
     }
     
     
@@ -103,64 +103,47 @@ update(time, delta) {
       }
     }
 
-    // Execute the code every 3 seconds
-    this.time.addEvent({
-      delay: 3000,
-      loop: true,
-      callback: function() {
-        // determining all tiles that are 37 
-        worldLayer.forEachTile(function(tile) {
-          if (tile.index === 117) {
-            
-            // Update World layer
-            worldLayer.putTileAt(tile.x, tile.y, 37);
-            corn += 1*generateUniqueGrowthStateTile();
-            eco += 2*generateUniqueGrowthStateTile();
-          }
-
-
-        });
-      }
-    });
 
     // Execute the code every 3 seconds
-      this.time.addEvent({
-        delay: 3000,
-        loop: true,
-        callback: function() {
-        // determining all tiles that are 37 
-          worldLayer.forEachTile(function(tile) {
-          if (tile.index === 37) {          
-            // Update World layer
-            worldLayer.putTileAt(tile.x, tile.y, 38);
-            corn += 10*generateUniqueGrowthStateTile();
-            eco += 2*generateUniqueGrowthStateTile();
-          }
-          });
+    setInterval(() => {
+      // determining all tiles that are 37 
+      worldLayer.forEachTile(function(tile) {
+        if (tile.index === 133) {          
+          // Update World layer
+          worldLayer.putTileAt(tile.x, tile.y, 145);
+          corn += 10*generateUniqueGrowthStateTile();
+          eco += 2*generateUniqueGrowthStateTile();
         }
-      }); 
+      });
+    }, 3000);
+
     // New Time Event
-        // Execute the code every 3 seconds
-        this.time.addEvent({
-          delay: 3000,
-          loop: true,
-          callback: function() {
-            // determining all tiles that are 37 
-            worldLayer.forEachTile(function(tile) {
-              if (tile.index === 38) {
-                                
-                // Update World layer
-                worldLayer.putTileAt(tile.x, tile.y, 28);
-                worldLayer.putTileAt(tile.x, tile.y-1, 40);
-                corn += 10*generateUniqueGrowthStateTile();
-                eco += 2*generateUniqueGrowthStateTile();
-    
-              }
-    
-    
-            });
-          }
-        });
+    // Execute the code every 3 seconds
+    setInterval(() => {
+      // determining all tiles that are 37 
+      worldLayer.forEachTile(function(tile) {
+        if (tile.index === 145) {
+          // Update World layer
+          worldLayer.putTileAt(tile.x, tile.y, 887);
+          corn += 10*generateUniqueGrowthStateTile();
+          eco += 2*generateUniqueGrowthStateTile();
+        }
+      });
+    }, 3000);
+
+    // New Time Event
+    // Execute the code every 3 seconds
+    setInterval(() => {
+      // determining all tiles that are 37 
+      worldLayer.forEachTile(function(tile) {
+        if (tile.index === 887) {
+          // Update World layer
+          worldLayer.putTileAt(tile.x, tile.y, 853);
+          corn += 20*generateUniqueGrowthStateTile();
+          eco += 2*generateUniqueGrowthStateTile();
+        }
+      });
+    }, 3000);
     
   }
 
