@@ -181,8 +181,8 @@
                     cash -= 100;
                     document.getElementById('cashAmount').textContent = `$${cash}`;
                     
-                    if ((betOption === 'over' && fantasyPointsActual < fantasyPointsPredicted) ||
-                        (betOption === 'under' && fantasyPointsActual > fantasyPointsPredicted)) {
+                    if ((betOption === 'over' && fantasyPointsActual > fantasyPointsPredicted) ||
+                        (betOption === 'under' && fantasyPointsActual < fantasyPointsPredicted)) {
                         cash += 200; // Win $100
                         document.getElementById('cashAmount').textContent = `$${cash}`;
                         alert(`Congratulations! You won $100. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
