@@ -33,6 +33,9 @@ class MainMenu extends Phaser.Scene {
 
         this.buttonStart = new Button(EPT.world.width-20, EPT.world.height-20, 'button-start', this.clickStart, this);
         this.buttonStart.setOrigin(1, 1);
+
+        this.buttonShop = new Button(EPT.world.width-20, EPT.world.height-20, 'button-shop', this.clickShop, this);
+        this.buttonShop.setOrigin(1, 25);
         
         this.buttonStart.x = EPT.world.width+this.buttonStart.width+20;
         this.tweens.add({targets: this.buttonStart, x: EPT.world.width-20, duration: 500, ease: 'Back'});
@@ -43,8 +46,12 @@ class MainMenu extends Phaser.Scene {
         this.buttonSettings.y = -this.buttonSettings.height-20;
         this.tweens.add({targets: this.buttonSettings, y: 20, duration: 500, ease: 'Back'});
 
+
         this.buttonShop = new Button(300,500, 'clickme', this.clickShop, this);       
         this.cameras.main.fadeIn(250);
+        // this.buttonShop = new Button(300,500, 'shop', this.clickShop, this);       
+        // this.cameras.main.fadeIn(250);
+
 
         if(!this.bgFilesLoaded) {
             this.time.addEvent({
@@ -58,7 +65,7 @@ class MainMenu extends Phaser.Scene {
     }
 
     async getData() {
-        var email = localStorage.getItem('email');
+        var email = localStorage.getItem('Email');
         try {
             if (!email){
                 throw new Error("Email is missing from local storage");
@@ -67,7 +74,7 @@ class MainMenu extends Phaser.Scene {
                 email: email, 
             }
     
-            const response = await fetch("http://localhost:6942/api/person/getEco", {
+            const response = await fetch("https://ihf.stu.nighthawkcodingsociety.com/api/person/getEco", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

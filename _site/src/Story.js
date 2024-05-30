@@ -85,8 +85,7 @@ class Story extends Phaser.Scene {
             }, this);
             //sidebar.add(tile, false, tileKey); // Add tile with a name
         });
-    }
-
+    
     displayWeekButton() {
         //const weekButton = this.add.text(700, 500, 'Next Week', { fontSize: '24px', fill: '#fff' }).setInteractive();
         const weekButton = this.add.image(this.tileSize*this.mapSize + 250, this.tileSize * 6 + 100, 'week-button').setInteractive();
@@ -98,6 +97,37 @@ class Story extends Phaser.Scene {
 
         // Display current week
         this.weekText = this.add.text(900, 50, `Week: ${this.week}`, { fontSize: '24px', fill: '#fff' });
+    }
+    
+    async postData(eco) {
+        var email = localStorage.getItem('Email');
+        
+        try {
+            if (!email) {
+                throw new Error("Email is missing from local storage");
+            }
+    
+            var data = { 
+                email: email, 
+                eco: eco
+            }
+    
+            const response = await fetch("http://localhost:6942/api/person/ecoUpdate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+    
+            if (response.ok) {
+                console.log("eco successful");
+            } else {
+                console.error("eco failed");
+            }
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
     }
 
     handlePointerDown(pointer) {

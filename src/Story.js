@@ -100,6 +100,40 @@ class Story extends Phaser.Scene {
         this.weekText = this.add.text(900, 50, `Week: ${this.week}`, { fontSize: '24px', fill: '#fff' });
     }
 
+    
+    async postData(eco) {
+        var email = localStorage.getItem('Email');
+        
+        try {
+            if (!email) {
+                throw new Error("Email is missing from local storage");
+            }
+    
+            var data = { 
+                email: email, 
+                eco: eco
+            }
+    
+            const response = await fetch("http://localhost:6942/api/person/ecoUpdate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+    
+            if (response.ok) {
+                console.log("eco successful");
+            } else {
+                console.error("eco failed");
+            }
+        } catch (error) {
+            console.error("An error occurred:", error);
+        }
+    }
+    
+
+
     handlePointerDown(pointer) {
         if (this.selectedTile) { // Changed to use 'this.selectedTile'
             const row = Math.floor(pointer.y / 60);

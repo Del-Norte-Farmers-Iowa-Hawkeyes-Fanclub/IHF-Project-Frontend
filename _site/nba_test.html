@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Stats</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Add Chart.js -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        table th {
+            background-color: #f2f2f2;
+        }
+
+        #fantasyScore {
+            font-size: 24px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <input type="text" id="playerName" placeholder="Enter player name">
+    <button id="fetchButton">Get Player Stats</button>
+    <div id="fantasyScore"></div>
+    <h3>General Info</h3>
+    <table id="playerTable">
+        <thead>
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h3>Last 20 Games Stats</h3>
+    <table id="statsLast20Games">
+        <thead>
+            <tr>
+                <th>Game</th>
+                <th>Points</th>
+                <th>Rebounds</th>
+                <th>Assists</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h3>Detailed Stats</h3>
+    <table id="detailedstatsTable">
+        <thead>
+            <tr>
+                <th>Stat</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <!-- Add Canvas for Chart -->
+    <canvas id="statsChart" width="400" height="200"></canvas>
+
+    <script>
+        $(document).ready(function () {
+            $("#fetchButton").click(function () {
+                const playerName = $("#playerName").val().split(" ");
+                const firstName = playerName[0];
+                const lastName = playerName[1];
+
+                $.getJSON(`https://www.balldontlie.io/api/v1/players?search=${firstName}%20${lastName}`, function (data) {
+                    if (data.data.length > 0) {
+                        const player = data.data[0];
+                        displayGeneralInfo(player);
+
+                        fetchGameStats(player.id);
+
+                        // Fetch detailed stats using player's ID for the 2022 season
+                        $.getJSON(`https://www.balldontlie.io/api/v1/season_averages?season=2022&player_ids[]=${player.id}`, function (statsData) {
+                            if (statsData.data && statsData.data.length > 0) {
+                                displayDetailedStats(statsData.data[0]);
+                                const fantasyRating = computeFantasyRating(statsData.data[0]);
+                                $("#fantasyScore").html(`Fantasy Rating: ${fantasyRating}/6`);
+                            } else {
+                                alert("Detailed stats not available for this player.");
+                            }
+                        });
+                    } else {
+                        alert("Player not found.");
+                    }
+                }).fail(function () {
+                    console.error("Error fetching player data.");
+                });
+            });
+        });
+
+        function displayGeneralInfo(player) {
+            const playerTable = $("#playerTable tbody");
+            playerTable.html(`
+                <tr><td>Name</td><td>${player.first_name} ${player.last_name}</td></tr>
+                <tr><td>Position</td><td>${player.position}</td></tr>
+                <tr><td>Height</td><td>${player.height_feet} ft ${player.height_inches} in</td></tr>
+                <tr><td>Weight</td><td>${player.weight_pounds} lbs</td></tr>
+                <tr><td>Team</td><td>${player.team.full_name}</td></tr>
+            `);
+        }
+
+        function fetchGameStats(playerId) {
+            const currentYear = new Date().getFullYear();
+            const seasonYear = (new Date().getMonth() >= 9) ? currentYear : currentYear - 1; // NBA season starts in October
+
+            $.getJSON(`https://www.balldontlie.io/api/v1/stats?seasons[]=${seasonYear}&player_ids[]=${playerId}&per_page=100`, function (gamesData) {
+                if (gamesData.data && gamesData.data.length > 0) {
+                    const statsMap = {
+                        points: [],
+                        rebounds: [],
+                        assists: []
+                    };
+
+                    // Sort games by date and take the last 20 games
+                    const sortedGames = gamesData.data.sort((a, b) => new Date(b.game.date) - new Date(a.game.date));
+                    const last20Games = sortedGames.slice(0, 20);
+
+                    last20Games.forEach(game => {
+                        statsMap.points.push(game.pts ?? 0);
+                        statsMap.rebounds.push(game.reb ?? 0);
+                        statsMap.assists.push(game.ast ?? 0);
+                    });
+
+                    displayLast20GameStats(statsMap);
+                    drawChart(statsMap); // Call drawChart function with statsMap data
+                    sendStatsToBackend(statsMap); // Function to send data to backend
+                } else {
+                    alert("Game stats not available for this player.");
+                }
+            }).fail(function () {
+                console.error("Error fetching game stats.");
+            });
+        }
+
+        function sendStatsToBackend(statsMap) {
+            const jsonPayload = JSON.stringify(statsMap);
+            console.log("Sending JSON payload to backend:", jsonPayload); // Log the stringified JSON
+
+            fetch('https://yourbackend.com/api/playerstats', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: jsonPayload,
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json(); // or .text() if the response is not JSON
+                })
+                .then(data => {
+                    console.log("Stats successfully sent to the backend.", data);
+                })
+                .catch(error => {
+                    console.error("Error sending stats to the backend.", error);
+                });
+        }
+
+        function displayLast20GameStats(statsMap) {
+            const statsTable = $("#statsLast20Games tbody");
+            statsTable.empty(); // Clear previous data
+
+            for (let i = 0; i < 20; i++) {
+                const row = `
+                    <tr>
+                        <td>Game ${i + 1}</td>
+                        <td>${statsMap.points[i] ?? 0}</td>
+                        <td>${statsMap.rebounds[i] ?? 0}</td>
+                        <td>${statsMap.assists[i] ?? 0}</td>
+                    </tr>
+                `;
+                statsTable.append(row);
+            }
+        }
+
+        function displayDetailedStats(stats) {
+            const statsTable = $("#detailedstatsTable tbody");
+            statsTable.empty(); // Clear previous data
+
+            const statNames = {
+                "games_played": "Games Played",
+                "player_id": "Player ID",
+                "season": "Season",
+                "min": "Minutes Played",
+                "fgm": "Field Goals Made",
+                "fga": "Field Goals Attempted",
+                "fg3m": "Three-Point Field Goals Made",
+                "fg3a": "Three-Point Field Goals Attempted",
+                "ftm": "Free Throws Made",
+                "fta": "Free Throws Attempted",
+                "oreb": "Offensive Rebounds",
+                "dreb": "Defensive Rebounds",
+                "reb": "Total Rebounds",
+                "ast": "Assists",
+                "stl": "Steals",
+                "blk": "Blocks",
+                "turnover": "Turnovers",
+                "pf": "Personal Fouls",
+                "pts": "Points",
+                "fg_pct": "Field Goal Percentage",
+                "fg3_pct": "Three-Point Field Goal Percentage",
+                "ft_pct": "Free Throw Percentage"
+            };
+
+            for (const key in statNames) {
+                if (stats[key] !== undefined) {
+                    const row = `<tr><td>${statNames[key]}</td><td>${stats[key]}</td></tr>`;
+                    statsTable.append(row);
+                }
+            }
+        }
+
+        function computeFantasyRating(stats) {
+            // Weights for each stat
+            const weights = {
+                pts: 0.2,
+                reb: 0.15,
+                ast: 0.15,
+                stl: 0.1,
+                blk: 0.1,
+                fg_pct: 0.1,
+                ft_pct: 0.1,
+                fg3_pct: 0.05,
+                turnover: -0.05  // Negative weight since turnovers are bad
+            };
+
+            // Normalize each stat to a scale of 0 to 1
+            // For simplicity, we'll use some arbitrary max values for normalization
+            const normalizedStats = {
+                pts: stats.pts / 30,
+                reb: stats.reb / 15,
+                ast: stats.ast / 10,
+                stl: stats.stl / 5,
+                blk: stats.blk / 5,
+                fg_pct: stats.fg_pct,
+                ft_pct: stats.ft_pct,
+                fg3_pct: stats.fg3_pct,
+                turnover: stats.turnover / 5
+            };
+
+            // Compute the weighted sum
+            let rawScore = 0;
+            for (const key in weights) {
+                rawScore += normalizedStats[key] * weights[key];
+            }
+
+            // Scale the raw score to a rating out of 10
+            const rating = Math.min(Math.max(rawScore * 10, 0), 10);
+
+            return rating.toFixed(1);  // Return the rating rounded to one decimal place
+        }
+
+        // Function to draw Chart.js chart
+        function drawChart(statsMap) {
+            const ctx = document.getElementById('statsChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({ length: 20 }, (_, i) => `Game ${i + 1}`),
+                    datasets: [{
+                        label: 'Points',
+                        data: statsMap.points,
+                        borderColor: 'rgb(255, 99, 132)',
+                        borderWidth: 1,
+                        fill: false
+                    }, {
+                        label: 'Rebounds',
+                        data: statsMap.rebounds,
+                        borderColor: 'rgb(54, 162, 235)',
+                        borderWidth: 1,
+                        fill: false
+                    }, {
+                        label: 'Assists',
+                        data: statsMap.assists,
+                        borderColor: 'rgb(75, 192, 192)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

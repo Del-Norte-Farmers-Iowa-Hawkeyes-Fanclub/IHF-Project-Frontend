@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Fantasy Betting</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .game {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #e9e9e9;
+            border-radius: 5px;
+        }
+        .bet-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .bet-button:hover {
+            background-color: #45a049;
+        }
+        .cash-display {
+            text-align: center;
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NBA Fantasy Betting</h1>
+        <div class="cash-display">Cash Remaining: <span id="cashAmount">$500</span></div>
+
+        <div id="playerInfo" style="display: none;">
+            <!-- Display player information and statistics here -->
+        </div>
+
+        <form id="searchForm">
+            <label for="playerId">Enter Player ID:</label>
+            <input type="text" id="playerId" name="playerId" required>
+            <button type="button" onclick="searchPlayer()">Search</button>
+        </form>
+
+        <div class="game" id="game" style="display: none;">
+            <h3>Player Fantasy Points Betting</h3>
+            <label for="betAmount">Bet Amount: </label>
+            <input type="number" id="betAmount" name="betAmount" min="1" max="500" required>
+            <button class="bet-button" onclick="placeBet('over')">Over Predicted Fantasy Points</button>
+            <button class="bet-button" onclick="placeBet('under')">Under Predicted Fantasy Points</button>
+        </div>
+    </div>
+
+    <script>
+        async function searchPlayer() {
+            var playerId = document.getElementById("playerId").value;
+
+            // Fetch player data
+            try {
+                const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
+                const data = await response.json();
+                if (data.status) {
+                    throw new Error(data.status);
+                }
+                displayPlayerInfo(data.data);
+                document.getElementById("game").style.display = "block";
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error fetching player data. Please try again.');
+            }
+        }
+
+        function displayPlayerInfo(playerInfo) {
+            var playerInfoContainer = document.getElementById("playerInfo");
+
+            // Calculate fantasy points based on height and weight
+            var fantasyPointsPredicted = calculateFantasyPoints(playerInfo.height, playerInfo.weight);
+
+            // Extract relevant information from the provided structure
+            var playerName = `${playerInfo.first_name} ${playerInfo.last_name}`;
+            var position = playerInfo.position || 'N/A';
+            var height = playerInfo.height || 'N/A';
+            var weight = playerInfo.weight || 'N/A';
+            var teamName = playerInfo.team ? playerInfo.team.full_name : 'Unknown Team';
+
+            // Display player information and characteristics
+            var tableHtml = `
+                <h2>Player Information</h2>
+                <table>
+                    <tr>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Height</th>
+                        <th>Weight</th>
+                        <th>Team</th>
+                        <th>Predicted Fantasy Points</th>
+                    </tr>
+                    <tr>
+                        <td>${playerName}</td>
+                        <td>${position}</td>
+                        <td>${height}</td>
+                        <td>${weight} lbs</td>
+                        <td>${teamName}</td>
+                        <td>${fantasyPointsPredicted}</td>
+                    </tr>
+                </table>
+            `;
+            playerInfoContainer.innerHTML = tableHtml;
+            playerInfoContainer.style.display = "block";
+        }
+
+        function calculateFantasyPoints(height, weight) {
+            // Check if height and weight are provided and are non-empty strings
+            if (!height || !weight) {
+                return 0; // Return 0 if height or weight is not defined
+            }
+
+            // Split height string into feet and inches
+            var heightParts = height.split("-");
+            var feet = parseInt(heightParts[0], 10) || 0; // Use 0 if feet is not a valid number
+            var inches = parseInt(heightParts[1], 10) || 0; // Use 0 if inches is not a valid number
+
+            // Convert height to inches
+            var totalHeightInches = feet * 12 + inches;
+
+            // Parse weight to integer
+            var totalWeight = parseInt(weight, 10) || 0; // Use 0 if weight is not a valid number
+
+            // Example calculation (you can adjust this formula)
+            var heightFactor = totalHeightInches / 12; // Convert height to feet
+            var weightFactor = totalWeight / 200; // Normalize weight
+            var fantasyPoints = Math.round((heightFactor + weightFactor) * 10);
+            fantasyPoints = fantasyPoints / 2; // Example calculation
+            return fantasyPoints;
+        }
+
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        async function placeBet(betOption) {
+            try {
+                var playerId = document.getElementById("playerId").value;
+                const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
+                const data = await response.json();
+                var fantasyPointsPredicted = calculateFantasyPoints(data.height, data.weight);
+                var fantasyPointsActual = calculateActualFantasyPoints(data.stats);
+
+                let cash = parseInt(document.getElementById('cashAmount').textContent.replace('$', ''), 10);
+                let betAmount = parseInt(document.getElementById('betAmount').value, 10);
+                
+                if (cash >= betAmount) {
+                    cash -= betAmount;
+                    document.getElementById('cashAmount').textContent = `$${cash}`;
+                    
+                    if ((betOption === 'over' && fantasyPointsActual > fantasyPointsPredicted) ||
+                        (betOption === 'under' && fantasyPointsActual < fantasyPointsPredicted)) {
+                        cash += betAmount * 2; // Win double the bet amount
+                        document.getElementById('cashAmount').textContent = `$${cash}`;
+                        alert(`Congratulations! You won $${betAmount}. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
+                    } else {
+                        alert(`You lost $${betAmount}. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
+                    }
+                } else {
+                    throw new Error('Insufficient cash to place this bet.');
+                }
+            } catch (error) {
+                console.error('Error:', error.message);
+                alert(error.message);
+            }
+        }
+
+        function calculateActualFantasyPoints(stats) {
+            if (!stats) {
+                return getRandomNumber(20, 60); // Return a random number if stats are not available
+            }
+
+            // Example calculation based on stats
+            const points = stats.points || 0;
+            const rebounds = stats.rebounds || 0;
+            const assists = stats.assists || 0;
+            const steals = stats.steals || 0;
+            const blocks = stats.blocks || 0;
+            const turnovers = stats.turnovers || 0;
+
+            // Example fantasy points calculation
+            return points + rebounds * 1.2 + assists * 1.5 + steals * 3 + blocks * 3 - turnovers * 2;
+        }
+    </script>
+</body>
+</html>
