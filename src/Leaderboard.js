@@ -69,7 +69,7 @@ class Leaderboard extends Phaser.Scene {
 // Perform AJAX request to get scores data
 $.ajax({
     type: 'GET',
-    url: 'https://ihf.stu.nighthawkcodingsociety.com/api/person/eco',
+    url: 'http://localhost:6942/api/person/eco',
     beforeSend: function(xhr) {
         xhr.setRequestHeader('Authorization', 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlcm1pdHNhY3R1YWxseXByb25vdW5jZWR3aXRoYVRIVUhAZ21haWwuY29tIiwiaWF0IjoxNzA3MjQ4NTE2LCJleHAiOjE3MDcyNjY1MTZ9.dLWvLwp8UyRMa3kiB5h7R0ms5Tp2ppA-VUuoA2Ys2bU');
     },
