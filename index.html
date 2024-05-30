@@ -26,7 +26,7 @@
         <script src="src/Settings.js"></script>
         <script src="src/Story.js"></script>
         <script src="src/Game.js"></script>
-
+        <script src="src/TileView.js"></script>
         <script src="src/Leaderboard.js"></script>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style1.css">
@@ -46,7 +46,7 @@
                         <i class="fa-solid fa-lock"></i>
                         <input type="password" name="password" placeholder="Password">
                     </div>
-                    <p>No Account? <a href="https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/account.html">Click Here!</a></p>
+                    <p>No Account? <a href="http://localhost:4000/signup.html">Click Here!</a></p>
 
                 </div>
             </form>
@@ -68,50 +68,26 @@
         fetch('http://localhost:6942/authenticate', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json' 
             },
             body: JSON.stringify(data),
         })
         .then(response => {
             if (response.ok) {
-                // Handle successful login for the first request
+                // Handle successful login
                 console.log('Login successful');
                 localStorage.setItem('Email', email);
                 console.log(email);
-                
-                const flaskData = {
-                    "uid": email,
-                    "password": password
-                };
-                // Make the second request only if the first one is successful
-                return fetch('http://localhost:8086/api/users/authenticate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(flaskData),
-                });
+                window.top.location.href = 'http://localhost:4000/game.html';
             } else {
-                // Handle login error for the first request
+                // Handle login error
                 console.log('Login failed');
-                return Promise.reject('First request failed');
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                // Handle successful login for the second request
-                console.log('Second login successful');
-                window.top.location.href = 'https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/game.html';
-            } else {
-                // Handle login error for the second request
-                console.log('Second login failed');
             }
         })
         .catch(error => {
-            // Handle network error or first request failure
-            console.log('Network error or first request failed', error);
+            // Handle network error
+            console.log('Network error');
         });
-        
     }
 </script>
 </html>

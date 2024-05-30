@@ -1,30 +1,45 @@
-# Agile Manifesto
+# Enclave Phaser Template
 
+Fully mobile responsive, portrait and landscape compatible template for **HTML5 games** written using the [Phaser](https://phaser.io/) 3 game engine. See it online at: [enclavegames.github.io/Enclave-Phaser-Template/](https://enclavegames.github.io/Enclave-Phaser-Template/)
 
+![Enclave Phaser Template](https://enclavegames.github.io/Enclave-Phaser-Template/screens/EPT-MainMenu.png)
 
-1. Individuals and Interactions over Processes and Tools:
+It is my own point of view on building a structure for an HTML5 game. If you think something can be improved feel free to send the pull request.
 
-We prioritize effective communication and collaboration among team members over relying solely on tools and processes. We are going to hold regular meetings and discussion in our Discord Server. This will ensure that we are all on the same page. 
+### Features:
 
+- mobile-first, fully responsive (portrait and landscape)
+- boot, preloader, main menu, settings, story, and gameplay states
+- paused and game over screens
+- sound and music management
+- multilanguage support
+- keyboard shortcuts support
+- WebFont plugin using custom fonts
+- custom Button class
+- highscore via localStorage
+- tweens and animations
+- particle emitter
+- shake, flash, and fade camera effects
+- Progressive Web App support
+- Web Monetization enabled
+- Progressive Loading
 
-2. Working Software WITH Comprehensive Documentation:
+### Progressive Web App:
 
-Our focus is on delivering working software that integrates the farming and NBA ideas effectively while also documenting our errors and processes to ensure retainment of knowledge and new learnings. Prototyping and development are crucial stages where we iterate and refine our ideas. We must make sure to document the following processes:
+Template have [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps#Core_PWA_guides) (PWA) support, turned off by default (see `enablePWA` variable in `start.js` file): manifest file for Add to Home Screen feature, Service Worker for offline use, and notifications template.
 
-1. Integrating Projects into One Platform
+### Web Monetization:
 
-2. Combined Cashflow + Currency System
+[Web Monetization](https://webmonetization.org/) support is turned on in the template. If you want to implement it you can replace the `monetization` meta tag in `index.html` with your own and determine if `document.monetization` is available in the browser to make changes in the source code.
 
+### Progressive Loading:
 
-3. Peer and Teacher Collaboration:
+It's a Phaser-specific Progressive Loading approach, which impoves the initial load time by deferring "anything that's not main menu items" to load in the background as soon as main menu actually appears.
 
-We engage with our classmates, teacher, and potential users throughout the development process to gather feedback and ensure that our integrated platform exceeds expectations. Testing will allow for the refinement of our features and prioritize enhancements.
+### License:
 
+The license in use is **CC BY-SA 3.0** - see `License.txt` for details.
 
-4. Responding to Change over Following a Plan:
+### Kudos:
 
-To start off the trimester, our group has been quite misaligned with group memmbers being absent, ideas being loose, etc. However, we embrace change and adapt our plans as needed based on feedback and insights gathered during the development process. Agile methodologies allow us to respond quickly to new requirements or unexpected challenges, ensuring that our platform will keep moving and become more valuable over time.
-
-
-
-
+If you like what I'm doing and gonna use the template in your project, or just appreciate sharing the code in the open, you can say _"thank you"_ by [buying me a beer](https://www.paypal.me/end3r). Coffee works fine too. Cheers!

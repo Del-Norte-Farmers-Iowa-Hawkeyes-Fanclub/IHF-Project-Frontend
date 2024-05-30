@@ -46,8 +46,12 @@ class MainMenu extends Phaser.Scene {
         this.buttonSettings.y = -this.buttonSettings.height-20;
         this.tweens.add({targets: this.buttonSettings, y: 20, duration: 500, ease: 'Back'});
 
+
+        this.buttonShop = new Button(300,500, 'clickme', this.clickShop, this);       
+        this.cameras.main.fadeIn(250);
         // this.buttonShop = new Button(300,500, 'shop', this.clickShop, this);       
         // this.cameras.main.fadeIn(250);
+
 
         if(!this.bgFilesLoaded) {
             this.time.addEvent({
@@ -136,7 +140,7 @@ class MainMenu extends Phaser.Scene {
 
     clickShop() {
         EPT.Sfx.play('click');
-        window.top.location.href = 'https://del-norte-farmers-iowa-hawkeyes-fanclub.github.io/IHF-Project-Frontend/shop.html';
+        window.top.location.href = 'http://localhost:4000/shop.html';
     }
 
     clickStart() {
@@ -171,13 +175,13 @@ class MainMenu extends Phaser.Scene {
     addFiles() {
         var resources = {
             'image': [
-                ['clickme', 'img/clickme.png'],
                 ['overlay', 'img/overlay.png'],
                 ['button-beer', 'img/button-beer.png'],
                 ['banner-beer', 'img/banner-beer.png'],
                 ['particle', 'img/particle.png']
             ],
             'spritesheet': [
+                ['clickme', 'img/clickme.png', {frameWidth:180,frameHeight:180}],
                 ['button-continue', 'img/button-continue.png', {frameWidth:180,frameHeight:180}],
                 ['button-mainmenu', 'img/button-mainmenu.png', {frameWidth:180,frameHeight:180}],
                 ['button-restart', 'img/button-tryagain.png', {frameWidth:180,frameHeight:180}],

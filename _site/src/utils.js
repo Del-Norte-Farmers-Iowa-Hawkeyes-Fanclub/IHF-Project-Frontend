@@ -261,7 +261,7 @@ EPT.Lang = {
       'gameplay-timeleft': 'Week: ',
       'gameplay-paused': 'PAUSED',
       'gameplay-gameover': 'GAME OVER',
-      'menu-highscore': 'Eco Score: ',
+      'menu-highscore': 'Highscore: ',
       'screen-story-howto': 'Story / how to play\nscreen'
     },
     'pl': {
