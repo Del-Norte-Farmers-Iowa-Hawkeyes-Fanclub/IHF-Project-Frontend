@@ -150,6 +150,7 @@
             <button id="calculateScoreBtn" class="button">Calculate Score</button>
             
             <div id="scoreResult"></div>
+            <div id="explanationResult"></div>
         </div>
         <div class="graph-gen">
             <h2>Generate Futures Graph</h2>
@@ -203,8 +204,8 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "email": email,
-                    "cash": cash
+                    email: email,
+                    cash: cash
                 })
             })
             .then(response => {
@@ -339,10 +340,29 @@
             const data = await response.json();
             if (response.ok) {
                 document.getElementById('scoreResult').innerText = `Score: ${data.score}`;
+                document.getElementById('explanationResult').innerText = `Explanation: ${generateExplanation(data.score, action)}`;
             } else {
                 document.getElementById('scoreResult').innerText = `Error: ${data.error}`;
             }
         });
+
+        function generateExplanation(score, action) {
+            let explanation;
+            if (action === "buy") {
+                if (score > 0) {
+                    explanation = "A positive score indicates that buying the futures is a good decision as the predicted price is expected to increase.";
+                } else {
+                    explanation = "A negative score suggests that buying the futures may not be beneficial as the predicted price is expected to decrease.";
+                }
+            } else if (action === "sell") {
+                if (score > 0) {
+                    explanation = "A positive score suggests that selling the futures is a good decision as the predicted price is expected to decrease.";
+                } else {
+                    explanation = "A negative score indicates that selling the futures may not be beneficial as the predicted price is expected to increase.";
+                }
+            }
+            return explanation;
+        }
 
         document.getElementById('generateGraphBtn').addEventListener('click', async () => {
             const numHistoricalPoints = document.getElementById('numHistoricalPoints').value;

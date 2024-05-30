@@ -1,0 +1,565 @@
+---
+layout: header
+---
+
+<head>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" as="style"
+        type="text/css" crossorigin>
+</head>
+
+<style>
+    .stats-container {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 48%;
+        max-width: 450px;
+        text-align: center;
+        margin-right: 10px;
+    }
+
+    .betting-container {
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 48%;
+        max-width: 450px;
+        text-align: center;
+    }
+
+    h1,
+    h2 {
+        color: #27ae60;
+        margin-bottom: 25px;
+    }
+
+    label,
+    input,
+    button,
+    p,
+    div {
+        margin-top: 15px;
+        width: 100%;
+    }
+
+    input,
+    button {
+        padding: 15px;
+        border-radius: 5px;
+        margin-top: 10px;
+        border: 1px solid #ccc;
+    }
+
+    input {
+        background-color: #fafafa;
+        color: #333;
+    }
+
+    button {
+        background-color: #27ae60;
+        color: #fff;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #218c54;
+    }
+
+    #statsDisplay {
+        text-align: left;
+        background: #f2f2f2;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 20px;
+    }
+
+    input:focus,
+    button:focus {
+        outline: none;
+        border-color: #27ae60;
+    }
+
+    .game {
+        margin: 20px 0;
+        padding: 10px;
+        background-color: #e9e9e9;
+        border-radius: 5px;
+    }
+
+    .bet-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .bet-button:hover {
+        background-color: #45a049;
+    }
+
+    .cash-display {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    /* Style for the ul */
+    .flex-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        /* Distribute items evenly along the main axis */
+        width: 100%;
+        /* Make the ul span the width of the page */
+        list-style: none;
+        padding: 0;
+        margin-top: 10px;
+    }
+
+    /* Style for each li */
+    .flex-container>li {
+        width: calc(50% - 10px);
+        /* Adjust width as needed */
+        margin-bottom: 20px;
+        /* Adjust margin between li elements */
+    }
+
+    /* Ensure equal height for li elements */
+    .stats-container,
+    .betting-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Additional styles for each container */
+    .stats-container h1,
+    .betting-container h1 {
+        margin-bottom: 10px;
+    }
+
+    /* Styling for game divs */
+    .game {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    /* Styling for bet buttons */
+    .bet-button {
+        margin: 5px;
+    }
+
+    /* Styling for cash display */
+    .cash-display {
+        margin-top: 10px;
+    }
+
+
+    .bet-input {
+        width: 80px;
+        /* Adjust width as needed */
+    }
+
+    * Style for the ul */ .flex-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        /* Distribute items evenly along the main axis */
+        width: 100%;
+        /* Make the ul span the width of the page */
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Style for each li */
+    .flex-container>li {
+        width: calc(50% - 10px);
+        /* Adjust width as needed */
+        margin-bottom: 20px;
+        /* Adjust margin between li elements */
+    }
+
+    /* Ensure equal height for li elements */
+    .stats-container,
+    .betting-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Additional styles for each container */
+    .stats-container h1,
+    .betting-container h1 {
+        margin-bottom: 10px;
+    }
+
+    /* Styling for game divs */
+    .game {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    /* Styling for bet buttons */
+    .bet-button {
+        margin: 5px;
+    }
+
+    /* Styling for cash display */
+    .cash-display {
+        margin-top: 10px;
+    }
+</style>
+<body>
+
+    <h1 style="margin-top: 100px; text-align: center;">
+        Stats for the User & Betting
+    </h1>
+    
+    <button onclick="getGames()">Get</button>
+    
+
+    <ul class="flex-container">
+        <li class="stats-container">
+            <h1>User Stats</h1>
+            <label for="username">Username:</label>
+            <input type="text" id="username" readonly>
+
+            <button onclick="fetchCash()">Get Cash</button>
+            <button onclick="fetchEco()">Get Eco Score</button>
+
+            <h2>Update Stats</h2>
+            <input type="number" id="updateCash" placeholder="New Cash Value">
+            <button onclick="updateCash()">Update Cash</button>
+
+            <input type="number" id="updateEco" placeholder="New Eco Score">
+            <button onclick="updateEco()">Update Eco Score</button>
+
+            <h2>Compare Stats</h2>
+            <input type="text" id="compareUsername" placeholder="Username to Compare">
+            <button onclick="compareStats()">Compare</button>
+
+            <div id="statsDisplay"></div>
+        </li>
+
+        <li class="betting-container">
+            <h1>Sports Betting</h1>
+            <div class="cash-display">Cash Remaining: <span id="cashAmount">$0</span></div>
+            <div class="betting-container-small">
+                <!-- NBA Betting -->
+                <div class="game">
+                    <h2>NBA Game Betting</h2>
+                    <h3>Lakers vs. Celtics</h3>
+                    <input type="number" class="bet-input" id="betAmountNBA1" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Lakers vs. Celtics', document.getElementById('betAmountNBA1').value)">Bet</button>
+
+                    <h3>Nets vs. Bucks</h3>
+                    <input type="number" class="bet-input" id="betAmountNBA2" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Nets vs. Bucks', document.getElementById('betAmountNBA2').value)">Bet</button>
+                </div>
+
+                <div class="game">
+                    <h2>March Madness Betting</h2>
+                    <h3>Gonzaga vs. Baylor</h3>
+                    <input type="number" class="bet-input" id="betAmountMM1" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Gonzaga vs. Baylor', document.getElementById('betAmountMM1').value)">Bet</button>
+
+                    <h3>Michigan vs. UCLA</h3>
+                    <input type="number" class="bet-input" id="betAmountMM2" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Michigan vs. UCLA', document.getElementById('betAmountMM2').value)">Bet</button>
+                </div>
+
+                <div class="game">
+                    <h2>NCAA Betting</h2>
+                    <h3>Duke vs. North Carolina</h3>
+                    <input type="number" class="bet-input" id="betAmountNCAA1" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Duke vs. North Carolina', document.getElementById('betAmountNCAA1').value)">Bet</button>
+
+                    <h3>Kentucky vs. Kansas</h3>
+                    <input type="number" class="bet-input" id="betAmountNCAA2" placeholder="Bet Amount">
+                    <button class="bet-button"
+                        onclick="placeBet('Kentucky vs. Kansas', document.getElementById('betAmountNCAA2').value)">Bet</button>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <script>
+        const apiUrl = 'https://ihf.stu.nighthawkcodingsociety.com/api/person';
+        const userEmail = localStorage.getItem('Email');
+        document.getElementById('username').value = userEmail || 'No username found';
+
+        async function fetchCash() {
+            const displayCash = document.getElementById('cashAmount');
+            try {
+                const response = await fetch(`${apiUrl}/getCash`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail })
+                });
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                const cash = await response.text(); // Assuming response is plain text
+                displayCash.textContent = `$${cash}`;
+            } catch (error) {
+                console.error('Error:', error);
+                displayCash.textContent = '$0'; // Reset cash to $0 if an error occurs
+            }
+        }
+
+        async function fetchEco() {
+            const displayEco = document.getElementById('ecoScore');
+            try {
+                const response = await fetch(`${apiUrl}/getEco`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail })
+                });
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                const eco = await response.text(); // Assuming response is plain text
+                displayEco.textContent = eco;
+            } catch (error) {
+                console.error('Error:', error);
+                displayEco.textContent = '0'; // Reset eco score to 0 if an error occurs
+            }
+        }
+
+        async function updateCash() {
+            const newCash = document.getElementById('updateCash').value;
+
+            console.log(newCash)
+            if (!userEmail || newCash === '') {
+                document.getElementById('statsDisplay').innerText = 'Missing username or new cash value.';
+                return;
+            }
+
+            const data = {
+                email: userEmail,
+                cash: parseInt(newCash, 10) // Ensure cash is sent as an integer
+            };
+
+            try {
+                const response = await fetch(`${apiUrl}/cashUpdate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+
+                const result = await response.text(); // Assuming response is plain text
+                console.log(result)
+                document.getElementById('statsDisplay').innerText = result;
+
+                // Update cash in localStorage
+                localStorage.setItem('userCash', newCash);
+                // Update displayed cash amount
+                document.getElementById('cashAmount').textContent = `$${newCash}`;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('statsDisplay').innerText = `Failed to update cash. Error: ${error.message}`;
+            }
+        }
+
+        async function updateEco() {
+            const newEco = document.getElementById('updateEco').value;
+            if (!userEmail || newEco === '') {
+                document.getElementById('statsDisplay').innerText = 'Missing username or new eco score.';
+                return;
+            }
+
+            const data = {
+                email: userEmail,
+                eco: parseInt(newEco, 10) // Ensure eco is sent as an integer
+            };
+
+            try {
+                const response = await fetch(`${apiUrl}/ecoUpdate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+
+                const result = await response.text(); // Assuming response is plain text
+                document.getElementById('statsDisplay').innerText = result;
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('statsDisplay').innerText = `Failed to update eco. Error: ${error.message}`;
+            }
+        }
+
+        async function compareStats() {
+            const compareUsername = document.getElementById('compareUsername').value;
+            const displayDiv = document.getElementById('statsDisplay');
+            if (!compareUsername) {
+                displayDiv.innerText = 'Please enter a username to compare.';
+                return;
+            }
+
+            try {
+                const currentStats = await fetch(`${apiUrl}/post`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail })
+                }).then(res => res.json());
+
+                const compareStats = await fetch(`${apiUrl}/post`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: compareUsername })
+                }).then(res => res.json());
+
+                displayDiv.innerHTML = `
+                    <p><strong>${userEmail}</strong> vs <strong>${compareUsername}</strong></p>
+                    <p>Cash: ${currentStats.cash} vs ${compareStats.cash}</p>
+                    <p>Eco Score: ${currentStats.eco} vs ${compareStats.eco}</p>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                displayDiv.innerText = 'Failed to compare stats. Please try again.';
+            }
+        }
+
+        async function getGames() {
+            const url = 'https://api.the-odds-api.com/v4/sports/basketball_nba/odds?bookmakers=draftkings&markets=h2h&oddsFormat=american&apiKey=192b45e0a31758ac8b513084d90192ad';
+        
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log(data);
+                displayGames(parseData(data));
+        
+            } catch (error) {
+                console.error('Error fetching NBA stats:', error);
+            }
+        }
+
+        function parseData(data) {
+            const formattedData = data.map(game => {
+                const team1 = game.home_team;
+                const team2 = game.away_team;
+                const oddsTeam1 = game.bookmakers[0].markets[0].outcomes[0].price;
+                const oddsTeam2 = game.bookmakers[0].markets[0].outcomes[1].price;
+                const date = game.commence_time;
+                return [`${team1} vs ${team2}`, oddsTeam1, oddsTeam2, date];
+            });
+            return formattedData;
+        }
+        
+        function displayGames(formattedData) {
+            const bettingContainer = document.querySelector('.betting-container-small');
+            bettingContainer.innerHTML = '';
+            formattedData.forEach(game => {
+                const gameDiv = document.createElement('div');
+                gameDiv.className = 'game';
+                const teams = game[0].split(" vs ");
+                gameDiv.innerHTML = `
+                    <h2>NBA Game Betting</h2>
+                    <h3>${teams[0]} vs ${teams[1]}</h3>
+                    <input type="number" class="bet-input" placeholder="Bet Amount">
+                    <div class="odds-buttons">
+                        <button class="teamButton" onclick="placeBet('${game[0]}', this.parentElement.previousElementSibling.value, '${teams[0]}','${game[1]}','${game[3]}')" >${teams[0]} (${game[1]})</button>
+                        <button class="teamButton" onclick="placeBet('${game[0]}', this.parentElement.previousElementSibling.value, '${teams[1]}','${game[2]}','${game[3]}')" >${teams[1]} (${game[2]})</button>
+                    </div>
+                `;
+                bettingContainer.appendChild(gameDiv);
+            });
+        }
+
+        async function placeBet(gameName, betAmount, team, odd, date) {
+            betAmount = parseFloat(betAmount);
+            if (isNaN(betAmount) || betAmount <= 0) {
+                alert('Invalid bet amount');
+                return;
+            }
+
+            const confirmBet = confirm(`Place a $${betAmount.toFixed(2)} bet on ${team} winning in ${gameName}?`);
+            if (confirmBet) {
+                try {
+                    const response = await fetch(`${apiUrl}/getCash`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: userEmail })
+                    });
+                    if (!response.ok) throw new Error('Failed to fetch user cash');
+
+                    const userCashStr = await response.text();
+
+                    let userCash = parseFloat(userCashStr);
+                    if (isNaN(userCash)) {
+                        throw new Error('Invalid user cash');
+                    }
+                    if (userCash < betAmount) {
+                        throw new Error('Insufficient funds');
+                    }
+
+                    console.log(userCash)
+                    console.log("Game Name:", gameName);
+                    console.log("Team Picked:", team);
+                    console.log("Odd:", odd);
+                    console.log("Date:", date.substring(0, 10));
+                    console.log("Bet Amount:", betAmount);
+                    console.log("Old Cash:", userCash);
+
+                    var newCash = userCash - betAmount;
+                    console.log("Remaining Cash:", newCash)
+
+                    if (!userEmail || newCash === '') {
+                        document.getElementById('statsDisplay').innerText = 'Missing username or new cash value.';
+                        return;
+                    }
+
+                    const data = {
+                        email: userEmail,
+                        cash: parseInt(newCash, 10) // Ensure cash is sent as an integer
+                    };
+
+                    try {
+                        const response = await fetch(`${apiUrl}/cashUpdate`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+
+                        if (!response.ok) throw new Error(`Server responded with ${response.status}`);
+
+                        const result = await response.text(); // Assuming response is plain text
+                        document.getElementById('statsDisplay').innerText = result;
+
+                        // Update cash in localStorage
+                        localStorage.setItem('userCash', newCash);
+                        // Update displayed cash amount
+                        document.getElementById('cashAmount').textContent = `$${newCash}`;
+                    } catch (error) {
+                        console.error('Error:', error);
+                        document.getElementById('statsDisplay').innerText = `Failed to update cash. Error: ${error.message}`;
+                    }
+                    alert(`You placed a $${betAmount.toFixed(2)} bet on ${gameName}. Remaining cash: $${newCash.toFixed(2)}`);
+                } catch (error) {
+                    alert('Failed to place bet: ' + error.message);
+                }
+            }
+        }
+
+        if (userEmail) {
+            fetchCash(); // Automatically fetch cash on page load
+        }
+    </script>
+</body>
+
+</html>

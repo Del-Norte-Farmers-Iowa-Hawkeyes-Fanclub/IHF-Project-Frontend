@@ -81,6 +81,14 @@ form p a{
     color:#3c00a0;
 }
 
+.btn{
+    background: #3c00a0;
+    height: 60px;
+    width: 150px;
+    font-family: 'Poppins', sans-serif !important; 
+    border-radius: 30px;
+}
+
 .btn-field{ 
     width: 100%; 
     display: flex;

@@ -1,77 +1,263 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <link rel="stylesheet" href="style1.css">
-    <script src="https://kit.fontawesome.com/61457d4eee.js" crossorigin="anonymous"></script>
-</head>
-<body> 
-    <div class="container">
-        <div class="form-box">
-            <h1>Sign Up</h1>
-            <form> 
-                <div class="input-group">
-                    <div class="input-field">
-                        <i class="fa-solid fa-user"></i>
-                        <input type="text" placeholder="Name">
+---
+layout: header
+---
+
+<body>
+    <section>
+        <div class="signin-box">
+            <div class="signin-value">
+                <form action="" id="signupForm" autocomplete="off">
+                    <h2>Sign Up</h2>
+                    <div class="inputbox">
+                        <input type="text" id="nameInput" name = "name" required>
+                        <label for="nameInput">First and Last Name</label>
                     </div>
-                    <div class="input-field">
-                        <i class="fa-solid fa-baby-carriage"></i>
-                        <input type="text" placeholder="MM-DD-YYYY">
+                    <div class="inputbox" id="emailField" style="display: none;">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="email" id="emailInput" name ="email" required>
+                        <label for="emailInput">Email</label>
                     </div>
-                    <div class="input-field">
-                        <i class="fa-solid fa-envelope"></i>
-                        <input type="email" placeholder="Email">
+                    <div class="inputbox" id="passwordField" style="display: none;">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input type="password" id="passwordInput" name = "password" required>
+                        <label for="passwordInput">Password</label>
                     </div>
-                    <div class="input-field">
-                        <i class="fa-solid fa-lock"></i>
-                        <input type="password" placeholder="Password">
+                    <button onclick="showNextField()">Create Account</button>
+                    <div class="accountexist">
+                        <p>Already have an account? <a href="/Bnba-analysis/signin.html">Sign In</a></p>
                     </div>
-                    <p>Have an Account? <a href="http://localhost:4000/">Click Here!</a></p>
+                    <div class="goback">
+                        <p>Want to go back to homepage? <a href="/nba-analysis/">Home</a></p>
+                    </div>
+                </form>
+            </div>
+    </section>
+    <script>
+        let currentField = "nameInput";
+        const login_url = "http://localhost:8085/authenticate";
+        // prepare URL
+        //var url = "https://spring.nighthawkcodingsociety.com/api/person/";
+        // Uncomment next line for localhost testing
+        const read_url = "http://localhost:8085/api/person/";
+        //var url = "https://spring.nighthawkcodingsociety.com/api/person/";
+        // Uncomment next line for localhost testing
+        const post_url = "http://localhost:8085/api/person/post";
+        const put_url = "http://localhost:8085/api/person/update";
+        function create_user(event) {
+            event.preventDefault();
+            const createBody = {
+            email: document.getElementById("emailInput").value,
+            password: document.getElementById("passwordInput").value,
+            name: document.getElementById("nameInput").value
+        };
+        // url encoding
+        const email = encodeURIComponent(document.getElementById("emailInput").value);
+        const password = encodeURIComponent(document.getElementById("passwordInput").value);
+        const name = encodeURIComponent(document.getElementById("nameInput").value);
 
-                </div>
-                <button type="submit" class="btn" id="signup-btn">Sign Up</button>
-            </form>
-        </div>
-    </div>
-</body>
-<script>
-document.querySelector("#signup-btn").addEventListener("click", async (e) => {
-    e.preventDefault();
-
-    const form = document.querySelector("form");
-    const email = form.querySelector('input[type="email"]').value;
-    const name = form.querySelector('input[type="text"][placeholder="Name"]').value;
-    const password = form.querySelector('input[type="password"]').value;
-    const dob = form.querySelector('input[type="text"][placeholder="MM-DD-YYYY"]').value;
-
-    const data = {
-        email,
-        name,
-        password,
-        dob,
-    };
-
-    localStorage.setItem('email', email);
-
-    try {
-        const response = await fetch("http://localhost:6942/api/person/post", {
-            method: "POST",
+        if (currentField === "nameInput" && nameInput.value.trim() === "") {
+                alert("Please enter your name");
+                return;
+            } else if (currentField === "emailField" && emailInput.value.trim() === "") {
+                alert("Please enter your email");
+                return;
+            } else if (currentField === "passwordField" && passwordInput.value.trim() === "") {
+                alert("Please enter your password");
+                return;
+            }
+        if (currentField === "passwordField") {
+        // updated post url
+        const updatedPostUrl = post_url + `?email=${email}&password=${password}&name=${name}`;
+        // set options for cross origin header request
+        const postOptions = {
+            method: 'POST',
+            mode: 'cors', // no-cors, *cors, same-origin
+            cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: 'include', // include, *same-origin, omit
+            body: JSON.stringify(createBody),
             headers: {
-                "Content-Type": "application/json"
+                "content-type": "application/json",
             },
-            body: JSON.stringify(data)
-        });
+        };
 
-        if (response.ok) {
-            console.log("Account created successfully!");
-            window.location.href = 'http://localhost:4000/index.html';
-        } else {
-            console.error("Failed to create account.");
+        // fetch the API
+        fetch(updatedPostUrl, postOptions)
+            // response is a RESTful "promise" on any successful fetch
+            .then(response => {
+            // check for response errors and display
+            if (response.status === 201){
+                console.log('Account created!');
+                alert("Your account has been created!");
+                window.location.href = "https://jishnus420.github.io/BlogCSA/blogs/signin";
+                return;
+            }
+            if (response.status !== 200) {
+                const errorMsg = 'Database response error: ' + response.status;
+                console.log(errorMsg);
+                return;
+            }
+            // valid response will contain json data
+            response.json().then(data => {
+                console.log(data);
+            })
+        })
         }
-    } catch (error) {
-        console.error("An error occurred:", error);
     }
+
+    function showNextField() {
+            const emailField = document.getElementById("emailField");
+            const passwordField = document.getElementById("passwordField");
+
+            if (currentField === "nameInput") {
+                currentField = "emailField";
+                document.getElementById("emailField").style.display = "block";
+            } else if (currentField === "emailField") {
+                currentField = "passwordField";
+                document.getElementById("passwordField").style.display = "block";
+                document.querySelector("button").textContent = "Create Account";
+            } else if (currentField === "passwordField") {
+                create_user(); // Handle form submission
+            }
+        }
+
+        const signupForm = document.getElementById("signupForm");
+        signupForm.addEventListener("submit", function (e) {
+        create_user(e); // Pass the event object to the create_user function
 });
 
-</script>
-</html>
+    </script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+
+<!-- Styles -->
+
+<style>
+*{
+    margin: 0;
+    padding: 0;
+}
+
+section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    background-position: center;
+    background-size: cover;
+    background-color: #FFFFED;
+}
+
+.signin-box{
+    position: relative;
+    width: 400px;
+    height: 450px;
+    background: transparent;
+    border: 2px solid rgba(204, 128, 128, 0.5);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+h2{
+    font-size: 2em;
+    color: black;
+    text-align: center;
+}
+
+form{
+    padding: 20px;
+    background: none;
+}
+
+.inputbox{
+    position: relative;
+    margin: 30px 0;
+    width: 310px;
+    border-bottom: 2px solid black;
+}
+
+.inputbox label {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    color: black;
+    font-size: 1em;
+    pointer-events: none;
+    transition: 0.5s;
+}
+input:focus ~ label,
+input:valid ~ label{   
+    top: -5px;
+}
+
+.inputbox input {
+    width: 100%;
+    height: 50px;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    padding:0 35px 0 5px;
+    color: black;
+}
+
+.inputbox ion-icon{
+    position: absolute;
+    right: 8px;
+    color: black;
+    font-size: 1.2em;
+    top: 20px;
+}
+
+button{
+    width: 100%;
+    height: 40px 0;
+    border-radius: 40px;
+    background: #cc8080;
+    border: none;
+    outline: none;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.accountexist{
+    font-size: 0.9em;
+    color: black;
+    text-align: center;
+    margin: 25px 0 ;
+}
+
+.accountexist p a{
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+.accountexist p a:hover{
+    text-decoration: underline;
+}
+
+.goback{
+    font-size: 0.9em;
+    color: black;
+    text-align: center;
+    margin: 25px 0 ;
+}
+
+.goback p a{
+    text-decoration: none;
+    color: black;
+    font-weight: 600;
+}
+
+.goback p a:hover{
+    text-decoration: underline;
+}
+
+</style>

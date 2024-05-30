@@ -1,0 +1,104 @@
+---
+layout: header
+---
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBA Player Season Statistics</title>
+    <style>
+        h1 {
+            margin-top: 100px;
+            /* Adjust the value as needed */
+        }
+    </style>
+</head>
+<body>
+    <h1>NBA Player Season Statistics</h1>
+    <div>
+        <label for="searchInput">Search by Player Name:</label>
+        <input type="text" id="searchInput" placeholder="Enter Player Name">
+        <button onclick="searchPlayer()">Search</button>
+    </div>
+</body>
+</html>
+    <div id="playerStats"></div>
+
+    <script>
+        async function fetchPlayerIdByName(playerName) {
+            try {
+                const response = await fetch(`http://localhost:6942/api/players?search=${playerName}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data from backend');
+                }
+                const data = await response.json();
+                return data.data[0].id;
+            } catch (error) {
+                console.error('Error:', error.message);
+                return null;
+            }
+        }
+
+        async function fetchPlayerStatistics(playerID) {
+            try {
+                const response = await fetch(`http://localhost:6942/api/nba/playerseason?player_ids=${playerID}`);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data from backend');
+                }
+                const data = await response.json();
+                displayPlayerStatistics(data);
+            } catch (error) {
+                console.error('Error:', error.message);
+            }
+        }
+
+        function displayPlayerStatistics(data) {
+            const playerStatsDiv = document.getElementById('playerStats');
+            const playerData = data.data[0];
+            const statsHtml = `
+                <h2>Player Statistics for Season ${playerData.season}</h2>
+                <ul>
+                    <li>Points: ${playerData.pts}</li>
+                            <li>Assists: ${playerData.ast}</li>
+                            <li>Turnovers: ${playerData.turnover}</li>
+                            <li>Personal Fouls: ${playerData.pf}</li>
+                            <li>Field Goals Attempted: ${playerData.fga}</li>
+                            <li>Field Goals Made: ${playerData.fgm}</li>
+                            <li>Free Throws Attempted: ${playerData.fta}</li>
+                            <li>Free Throws Made: ${playerData.ftm}</li>
+                            <li>Three-Point Field Goals Attempted: ${playerData.fg3a}</li>
+                            <li>Three-Point Field Goals Made: ${playerData.fg3m}</li>
+                            <li>Rebounds: ${playerData.reb}</li>
+                            <li>Offensive Rebounds: ${playerData.oreb}</li>
+                            <li>Defensive Rebounds: ${playerData.dreb}</li>
+                            <li>Steals: ${playerData.stl}</li>
+                            <li>Blocks: ${playerData.blk}</li>
+                            <li>Field Goal Percentage: ${playerData.fg_pct}</li>
+                            <li>Three-Point Field Goal Percentage: ${playerData.fg3_pct}</li>
+                            <li>Free Throw Percentage: ${playerData.ft_pct}</li>
+                            <li>Minutes: ${playerData.min}</li>
+                            <li>Games Played: ${playerData.games_played}</li>
+                            <li>Player ID: ${playerData.player_id}</li>
+                    <!-- Add more statistics as needed -->
+                </ul>
+            `;
+            playerStatsDiv.innerHTML = statsHtml;
+        }
+
+        async function searchPlayer() {
+            const playerNameInput = document.getElementById('searchInput');
+            const playerName = playerNameInput.value.trim();
+            if (playerName !== '') {
+                const playerId = await fetchPlayerIdByName(playerName);
+                if (playerId !== null) {
+                    fetchPlayerStatistics(playerId);
+                } else {
+                    alert('Player not found. Please try again.');
+                }
+            } else {
+                alert('Please enter a player name.');
+            }
+        }
+    </script>
+</body>
+</html>

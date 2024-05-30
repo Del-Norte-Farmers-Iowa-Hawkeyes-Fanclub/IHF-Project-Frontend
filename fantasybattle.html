@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Battle</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 30px;
+        }
+
+        .side {
+            width: 45%;
+            margin: 0 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .slots {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .slot {
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .slot:hover {
+            background-color: #f0f0f0;
+        }
+
+        .selectedSlot {
+            background-color: lightblue;
+        }
+
+        .playerSelected {
+            background-color: lightgreen;
+        }
+
+        .playerStats {
+            position: absolute;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 100;
+        }
+
+        .slot:hover .playerStats {
+            display: block;
+        }
+
+        #playerSearchContainer {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #playerSearchInput {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 70%;
+            margin-right: 10px;
+        }
+
+        #searchResults {
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .searchResult {
+            padding: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .searchResult:hover {
+            background-color: #f0f0f0;
+        }
+
+        #turnIndicator {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #startVersus {
+            display: block;
+            margin: 20px auto;
+            padding: 15px 30px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        #startVersus:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .resultContainer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result {
+            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 500px;
+            width: 80%;
+        }
+
+        .popup-content h2 {
+            margin-top: 0;
+            color: #007BFF;
+            font-size: 24px;
+        }
+
+        .popup-content p {
+            font-size: 18px;
+            color: #333;
+        }
+
+        .popup-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .popup-button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Fantasy Battle</h1>
+    <div id="projectedFantasyPoints"></div>
+    <div id="playerSearchContainer">
+        <input type="text" id="playerSearchInput" placeholder="Enter player name">
+        <div id="searchResults"></div>
+    </div>
+    <div class="container">
+        <div class="side sideA">
+            <h2>Mirza Beg</h2>
+            <div class="slots" id="teamASlots">
+                <!-- Team A slots will be dynamically generated here -->
+            </div>
+        </div>
+        <div class="side sideB">
+            <h2>Thomas Edison</h2>
+        </div>
+    </div>
+    <button id="startVersus">Start Battle</button>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const startButton = document.getElementById("startVersus");
+            startButton.addEventListener("click", function () {
+                let emailA = localStorage.getItem("Email");
+                const emailB = "toby@gmail.com";
+
+                console.log(`Comparing scores for: ${emailA} vs ${emailB}`);
+
+                compareFantasyScores(emailA, emailB);
+            });
+
+        });
+
+        function compareFantasyScores(emailA, emailB) {
+            const requestOptions = {
+                method: "GET",
+                redirect: "follow"
+            };
+
+            Promise.all([
+                fetch(`http://localhost:6942/api/person/getFantasyScore?email=${emailA}`, requestOptions)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error fetching score for ${emailA}`);
+                        }
+                        return response.json();
+                    }),
+                fetch(`http://localhost:6942/api/person/getFantasyScore?email=${emailB}`, requestOptions)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error fetching score for ${emailB}`);
+                        }
+                        return response.json();
+                    })
+            ])
+                .then(([scoreA, scoreB]) => {
+                    console.log(`Score for ${emailA}: ${scoreA}`);
+                    console.log(`Score for ${emailB}: ${scoreB}`);
+
+                    if (scoreA === undefined || scoreB === undefined) {
+                        throw new Error("One or both scores are undefined");
+                    }
+
+                    const resultContainer = document.createElement("div");
+                    resultContainer.classList.add("resultContainer");
+
+                    const resultA = document.createElement("div");
+                    resultA.classList.add("result");
+                    resultA.textContent = `Team A Score: ${scoreA}`;
+                    resultContainer.appendChild(resultA);
+
+                    const resultB = document.createElement("div");
+                    resultB.classList.add("result");
+                    resultB.textContent = `Team B Score: ${scoreB}`;
+                    resultContainer.appendChild(resultB);
+
+                    document.body.appendChild(resultContainer);
+
+                    if (scoreA > scoreB) {
+                        updateCash(emailA, 5);
+                        updateEcoScore(emailA, 10);
+                        resultContainer.appendChild(document.createElement("div")).textContent = "Team A Wins!";
+                    } else if (scoreA < scoreB) {
+                        updateCash(emailA, -5);
+                        resultContainer.appendChild(document.createElement("div")).textContent = "Team B Wins!";
+                    } else {
+                        resultContainer.appendChild(document.createElement("div")).textContent = "It's a Draw!";
+                    }
+
+                    fetchUserCash(emailA);  // Fetch and display user cash in a pop-up
+                })
+                .catch(error => {
+                    console.error("Error comparing fantasy scores:", error);
+                    const resultContainer = document.createElement("div");
+                    resultContainer.classList.add("resultContainer");
+                    resultContainer.textContent = `Error: ${error.message}`;
+                    document.body.appendChild(resultContainer);
+                });
+        }
+
+        async function updateCash(email, cash) {
+            fetch('http://localhost:6942/api/person/cashUpdate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "email": email,
+                    "cash": cash
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Cash updated successfully ');
+                } else {
+                    console.error('Failed to update cash');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        async function updateEcoScore(email, amount) {
+            const requestOptions = {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ email, "cash": amount })
+            };
+
+            try {
+                const response = await fetch("http://localhost:6942/api/person/updateEcoScore", requestOptions);
+                const result = await response.json();
+                console.log("Eco Score updated:", result);
+            } catch (error) {
+                console.error("Error updating eco score:", error);
+            }
+        }
+
+        async function fetchUserCash(email) {
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ "email": email })
+            };
+
+            try {
+                const response = await fetch("http://localhost:6942/api/person/getCash", requestOptions);
+                if (!response.ok) {
+                    throw new Error(`Error fetching cash for ${email}`);
+                }
+                const cash = await response.json();
+                showPopup(`User Cash: $${cash}`);
+            } catch (error) {
+                console.error("Error fetching user cash:", error);
+                showPopup("Error fetching user cash.");
+            }
+        }
+
+        function showPopup(message) {
+            const overlay = document.createElement('div');
+            overlay.className = 'popup-overlay';
+            overlay.innerHTML = `
+                <div class="popup-content">
+                    <h2>Cash Update</h2>
+                    <p>${message}</p>
+                    <button class="popup-button" onclick="closePopup()">Close</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function closePopup() {
+            const overlay = document.querySelector('.popup-overlay');
+            if (overlay) {
+                document.body.removeChild(overlay);
+            }
+        }
+    </script>
+</body>
+
+</html>
