@@ -57,6 +57,9 @@
         th {
             background-color: #f2f2f2;
         }
+        .bet-log {
+            margin-top: 40px;
+        }
     </style>
 </head>
 <body>
@@ -80,6 +83,25 @@
             <input type="number" id="betAmount" name="betAmount" min="1" max="500" required>
             <button class="bet-button" onclick="placeBet('over')">Over Predicted Fantasy Points</button>
             <button class="bet-button" onclick="placeBet('under')">Under Predicted Fantasy Points</button>
+        </div>
+
+        <div class="bet-log" id="betLog">
+            <h2>Betting Log</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Player ID</th>
+                        <th>Bet Amount</th>
+                        <th>Bet Option</th>
+                        <th>Predicted Points</th>
+                        <th>Actual Points</th>
+                        <th>Outcome</th>
+                    </tr>
+                </thead>
+                <tbody id="betLogBody">
+                    <!-- Log entries will be added here -->
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -180,19 +202,25 @@
 
                 let cash = parseInt(document.getElementById('cashAmount').textContent.replace('$', ''), 10);
                 let betAmount = parseInt(document.getElementById('betAmount').value, 10);
-                
+
                 if (cash >= betAmount) {
                     cash -= betAmount;
                     document.getElementById('cashAmount').textContent = `$${cash}`;
-                    
+
+                    let outcome;
                     if ((betOption === 'over' && fantasyPointsActual > fantasyPointsPredicted) ||
                         (betOption === 'under' && fantasyPointsActual < fantasyPointsPredicted)) {
                         cash += betAmount * 2; // Win double the bet amount
                         document.getElementById('cashAmount').textContent = `$${cash}`;
-                        alert(`Congratulations! You won $${betAmount}. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
+                        outcome = `Win $${betAmount}`;
                     } else {
-                        alert(`You lost $${betAmount}. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
+                        outcome = `Lose $${betAmount}`;
                     }
+
+                    // Log the bet
+                    logBet(playerId, betAmount, betOption, fantasyPointsPredicted, fantasyPointsActual, outcome);
+
+                    alert(`You ${outcome}. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
                 } else {
                     throw new Error('Insufficient cash to place this bet.');
                 }
@@ -217,6 +245,20 @@
 
             // Example fantasy points calculation
             return points + rebounds * 1.2 + assists * 1.5 + steals * 3 + blocks * 3 - turnovers * 2;
+        }
+
+        function logBet(playerId, betAmount, betOption, predictedPoints, actualPoints, outcome) {
+            var betLogBody = document.getElementById("betLogBody");
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${playerId}</td>
+                <td>${betAmount}</td>
+                <td>${betOption}</td>
+                <td>${predictedPoints}</td>
+                <td>${actualPoints}</td>
+                <td>${outcome}</td>
+            `;
+            betLogBody.appendChild(newRow);
         }
     </script>
 </body>
