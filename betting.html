@@ -72,9 +72,9 @@
         </div>
 
         <form id="searchForm">
-            <label for="playerId">Enter Player ID:</label>
-            <input type="text" id="playerId" name="playerId" required>
-            <button type="button" onclick="searchPlayer()">Search</button>
+            <label for="playerName">Enter Player Name:</label>
+            <input type="text" id="playerName" name="playerName" required>
+            <button type="button" onclick="searchPlayerByName()">Search</button>
         </form>
 
         <div class="game" id="game" style="display: none;">
@@ -106,21 +106,34 @@
     </div>
 
     <script>
-        async function searchPlayer() {
-            var playerId = document.getElementById("playerId").value;
+        async function searchPlayerByName() {
+            var playerName = document.getElementById("playerName").value.trim().toLowerCase();
+            var playerId = 1; // Start with the first player ID
+            var found = false;
 
-            // Fetch player data
-            try {
-                const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
-                const data = await response.json();
-                if (data.status) {
-                    throw new Error(data.status);
+            while (!found) {
+                try {
+                    const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
+                    if (!response.ok) {
+                        throw new Error('Player not found');
+                    }
+                    const data = await response.json();
+                    var retrievedPlayerName = `${data.data.first_name} ${data.data.last_name}`.toLowerCase();
+                    if (retrievedPlayerName === playerName) {
+                        found = true;
+                        displayPlayerInfo(data.data);
+                        document.getElementById("game").style.display = "block";
+                    } else {
+                        playerId++;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    playerId++;
                 }
-                displayPlayerInfo(data.data);
-                document.getElementById("game").style.display = "block";
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error fetching player data. Please try again.');
+            }
+
+            if (!found) {
+                alert('Player not found. Please try again.');
             }
         }
 
