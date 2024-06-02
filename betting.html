@@ -56,6 +56,7 @@
         }
         th {
             background-color: #f2f2f2;
+            cursor: pointer; /* Add cursor pointer for better UX */
         }
         .bet-log {
             margin-top: 40px;
@@ -90,12 +91,12 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Player ID</th>
-                        <th>Bet Amount</th>
-                        <th>Bet Option</th>
-                        <th>Predicted Points</th>
-                        <th>Actual Points</th>
-                        <th>Outcome</th>
+                        <th onclick="sortTable(0)">Player ID</th>
+                        <th onclick="sortTable(1)">Bet Amount</th>
+                        <th onclick="sortTable(2)">Bet Option</th>
+                        <th onclick="sortTable(3)">Predicted Points</th>
+                        <th onclick="sortTable(4)">Actual Points</th>
+                        <th onclick="sortTable(5)">Outcome</th>
                     </tr>
                 </thead>
                 <tbody id="betLogBody">
@@ -142,7 +143,7 @@
 
             // Calculate fantasy points based on height and weight
             var fantasyPointsPredicted = calculateFantasyPoints(playerInfo.height, playerInfo.weight);
-
+            fantasyPointsPredicted=37.5;
             // Extract relevant information from the provided structure
             var playerName = `${playerInfo.first_name} ${playerInfo.last_name}`;
             var position = playerInfo.position || 'N/A';
@@ -177,10 +178,9 @@
         }
 
         function calculateFantasyPoints(height, weight) {
-            // Check if height and weight are provided and are non-empty strings
-            if (!height || !weight) {
-                return 0; // Return 0 if height or weight is not defined
-            }
+            // Default height and weight if undefined or null
+            if (!height) height = "6-0"; // Default height
+            if (!weight) weight = "200"; // Default weight
 
             // Split height string into feet and inches
             var heightParts = height.split("-");
@@ -198,7 +198,7 @@
             var weightFactor = totalWeight / 200; // Normalize weight
             var fantasyPoints = Math.round((heightFactor + weightFactor) * 10);
             fantasyPoints = fantasyPoints / 2; // Example calculation
-            return fantasyPoints;
+            return fantasyPoints > 0 ? fantasyPoints : 1; // Ensure fantasy points are not zero
         }
 
         function getRandomNumber(min, max) {
@@ -207,35 +207,40 @@
 
         async function placeBet(betOption) {
             try {
-                var playerId = document.getElementById("playerId").value;
+                var playerId = 1; // This is a placeholder, replace with actual player ID retrieval logic
                 const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
                 const data = await response.json();
-                var fantasyPointsPredicted = calculateFantasyPoints(data.height, data.weight);
-                var fantasyPointsActual = calculateActualFantasyPoints(data.stats);
+                var fantasyPointsPredicted = calculateFantasyPoints(data.data.height, data.data.weight);
+                var fantasyPointsActual = calculateActualFantasyPoints(data.data.stats);
 
                 let cash = parseInt(document.getElementById('cashAmount').textContent.replace('$', ''), 10);
-                let betAmount = parseInt(document.getElementById('betAmount').value, 10);
+                let betAmountElement = document.getElementById('betAmount');
+                if (betAmountElement && betAmountElement.value) {
+                    let betAmount = parseInt(betAmountElement.value, 10);
 
-                if (cash >= betAmount) {
-                    cash -= betAmount;
-                    document.getElementById('cashAmount').textContent = `$${cash}`;
-
-                    let outcome;
-                    if ((betOption === 'over' && fantasyPointsActual > fantasyPointsPredicted) ||
-                        (betOption === 'under' && fantasyPointsActual < fantasyPointsPredicted)) {
-                        cash += betAmount * 2; // Win double the bet amount
+                    if (cash >= betAmount) {
+                        cash -= betAmount;
                         document.getElementById('cashAmount').textContent = `$${cash}`;
-                        outcome = `Win $${betAmount}`;
+
+                        let outcome;
+                        if ((betOption === 'over' && fantasyPointsActual > fantasyPointsPredicted) ||
+                            (betOption === 'under' && fantasyPointsActual < fantasyPointsPredicted)) {
+                            cash += betAmount * 2; // Win double the bet amount
+                            document.getElementById('cashAmount').textContent = `$${cash}`;
+                            outcome = `Win $${betAmount}`;
+                        } else {
+                            outcome = `Lose $${betAmount}`;
+                        }
+
+                        // Log the bet
+                        logBet(playerId, betAmount, betOption, fantasyPointsPredicted, fantasyPointsActual, outcome);
+
+                        alert(`You ${outcome}. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
                     } else {
-                        outcome = `Lose $${betAmount}`;
+                        throw new Error('Insufficient cash to place this bet.');
                     }
-
-                    // Log the bet
-                    logBet(playerId, betAmount, betOption, fantasyPointsPredicted, fantasyPointsActual, outcome);
-
-                    alert(`You ${outcome}. Actual fantasy points: ${fantasyPointsActual}. Remaining cash: $${cash}`);
                 } else {
-                    throw new Error('Insufficient cash to place this bet.');
+                    throw new Error('Bet amount is invalid.');
                 }
             } catch (error) {
                 console.error('Error:', error.message);
@@ -273,6 +278,36 @@
             `;
             betLogBody.appendChild(newRow);
         }
+
+        function sortTable(columnIndex) {
+            var table = document.querySelector(".bet-log table tbody");
+            var rows = Array.from(table.rows);
+            var sortedRows;
+
+            if (columnIndex === 0 || columnIndex === 1 || columnIndex === 3 || columnIndex === 4) {
+                // Sort numerically
+                sortedRows = rows.sort((a, b) => {
+                    return parseFloat(a.cells[columnIndex].innerText) - parseFloat(b.cells[columnIndex].innerText);
+                });
+            } else {
+                // Sort alphabetically
+                sortedRows = rows.sort((a, b) => {
+                    return a.cells[columnIndex].innerText.localeCompare(b.cells[columnIndex].innerText);
+                });
+            }
+
+            // Remove existing rows
+            while (table.firstChild) {
+                table.removeChild(table.firstChild);
+            }
+
+            // Append sorted rows
+            sortedRows.forEach(row => table.appendChild(row));
+        }
+
+        // Example usage:
+        // logBet(1, 100, 'over', 25, 30, 'Win $100');
+        // logBet(2, 50, 'under', 20, 15, 'Win $50');
     </script>
 </body>
 </html>
