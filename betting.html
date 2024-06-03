@@ -56,10 +56,14 @@
         }
         th {
             background-color: #f2f2f2;
-            cursor: pointer; /* Add cursor pointer for better UX */
+            cursor: pointer;
         }
         .bet-log {
             margin-top: 40px;
+        }
+        .sort-options {
+            text-align: center;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -88,6 +92,16 @@
 
         <div class="bet-log" id="betLog">
             <h2>Betting Log</h2>
+            <div class="sort-options">
+                <label for="sortAlgorithm">Choose a sorting algorithm:</label>
+                <select id="sortAlgorithm">
+                    <option value="bubble">Bubble Sort</option>
+                    <option value="selection">Selection Sort</option>
+                    <option value="insertion">Insertion Sort</option>
+                    <option value="merge">Merge Sort</option>
+                    <option value="quick">Quick Sort</option>
+                </select>
+            </div>
             <table>
                 <thead>
                     <tr>
@@ -143,7 +157,7 @@
 
             // Calculate fantasy points based on height and weight
             var fantasyPointsPredicted = calculateFantasyPoints(playerInfo.height, playerInfo.weight);
-            fantasyPointsPredicted=37.5;
+            fantasyPointsPredicted = 37.5;
             // Extract relevant information from the provided structure
             var playerName = `${playerInfo.first_name} ${playerInfo.last_name}`;
             var position = playerInfo.position || 'N/A';
@@ -218,17 +232,16 @@
                 if (betAmountElement && betAmountElement.value) {
                     let betAmount = parseInt(betAmountElement.value, 10);
 
-                    if (cash >= betAmount) {
-                        cash -= betAmount;
-                        document.getElementById('cashAmount').textContent = `$${cash}`;
-
+                    if (!isNaN(betAmount) && betAmount > 0 && betAmount <= cash) {
                         let outcome;
                         if ((betOption === 'over' && fantasyPointsActual > fantasyPointsPredicted) ||
                             (betOption === 'under' && fantasyPointsActual < fantasyPointsPredicted)) {
-                            cash += betAmount * 2; // Win double the bet amount
+                            cash += betAmount; // Win double the bet amount
                             document.getElementById('cashAmount').textContent = `$${cash}`;
                             outcome = `Win $${betAmount}`;
                         } else {
+                            cash -= betAmount;
+                            document.getElementById('cashAmount').textContent = `$${cash}`;
                             outcome = `Lose $${betAmount}`;
                         }
 
@@ -283,17 +296,113 @@
             var table = document.querySelector(".bet-log table tbody");
             var rows = Array.from(table.rows);
             var sortedRows;
+            var algorithm = document.getElementById('sortAlgorithm').value;
 
-            if (columnIndex === 0 || columnIndex === 1 || columnIndex === 3 || columnIndex === 4) {
-                // Sort numerically
-                sortedRows = rows.sort((a, b) => {
-                    return parseFloat(a.cells[columnIndex].innerText) - parseFloat(b.cells[columnIndex].innerText);
-                });
-            } else {
-                // Sort alphabetically
-                sortedRows = rows.sort((a, b) => {
-                    return a.cells[columnIndex].innerText.localeCompare(b.cells[columnIndex].innerText);
-                });
+            function bubbleSort(arr) {
+                let n = arr.length;
+                for (let i = 0; i < n - 1; i++) {
+                    for (let j = 0; j < n - i - 1; j++) {
+                        if (compare(arr[j], arr[j + 1])) {
+                            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                        }
+                    }
+                }
+                return arr;
+            }
+
+            function selectionSort(arr) {
+                let n = arr.length;
+                for (let i = 0; i < n - 1; i++) {
+                    let minIdx = i;
+                    for (let j = i + 1; j < n; j++) {
+                        if (compare(arr[minIdx], arr[j])) {
+                            minIdx = j;
+                        }
+                    }
+                    [arr[minIdx], arr[i]] = [arr[i], arr[minIdx]];
+                }
+                return arr;
+            }
+
+            function insertionSort(arr) {
+                let n = arr.length;
+                for (let i = 1; i < n; i++) {
+                    let key = arr[i];
+                    let j = i - 1;
+                    while (j >= 0 && compare(arr[j], key)) {
+                        arr[j + 1] = arr[j];
+                        j = j - 1;
+                    }
+                    arr[j + 1] = key;
+                }
+                return arr;
+            }
+
+            function mergeSort(arr) {
+                if (arr.length < 2) {
+                    return arr;
+                }
+                const mid = Math.floor(arr.length / 2);
+                const left = mergeSort(arr.slice(0, mid));
+                const right = mergeSort(arr.slice(mid));
+                return merge(left, right);
+            }
+
+            function merge(left, right) {
+                let result = [];
+                while (left.length && right.length) {
+                    if (compare(left[0], right[0])) {
+                        result.push(right.shift());
+                    } else {
+                        result.push(left.shift());
+                    }
+                }
+                return result.concat(left, right);
+            }
+
+            function quickSort(arr) {
+                if (arr.length <= 1) {
+                    return arr;
+                }
+                const pivot = arr[arr.length - 1];
+                const left = [];
+                const right = [];
+                for (const el of arr.slice(0, arr.length - 1)) {
+                    if (compare(el, pivot)) {
+                        right.push(el);
+                    } else {
+                        left.push(el);
+                    }
+                }
+                return [...quickSort(left), pivot, ...quickSort(right)];
+            }
+
+            function compare(rowA, rowB) {
+                if (columnIndex === 0 || columnIndex === 1 || columnIndex === 3 || columnIndex === 4) {
+                    return parseFloat(rowA.cells[columnIndex].innerText) > parseFloat(rowB.cells[columnIndex].innerText);
+                } else {
+                    return rowA.cells[columnIndex].innerText.localeCompare(rowB.cells[columnIndex].innerText) > 0;
+                }
+            }
+
+            switch (algorithm) {
+                case 'bubble':
+                    sortedRows = bubbleSort(rows);
+                    break;
+                case 'selection':
+                    sortedRows = selectionSort(rows);
+                    break;
+                case 'insertion':
+                    sortedRows = insertionSort(rows);
+                    break;
+                case 'merge':
+                    sortedRows = mergeSort(rows);
+                    break;
+                case 'quick':
+                    sortedRows = quickSort(rows);
+                    break;
+                default:
+                    sortedRows = bubbleSort(rows);
             }
 
             // Remove existing rows
@@ -304,10 +413,6 @@
             // Append sorted rows
             sortedRows.forEach(row => table.appendChild(row));
         }
-
-        // Example usage:
-        // logBet(1, 100, 'over', 25, 30, 'Win $100');
-        // logBet(2, 50, 'under', 20, 15, 'Win $50');
     </script>
 </body>
 </html>
