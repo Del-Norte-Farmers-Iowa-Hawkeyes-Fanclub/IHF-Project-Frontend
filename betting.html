@@ -114,7 +114,7 @@
 
             while (!found) {
                 try {
-                    const response = await fetch(`http://localhost:6942/api/nba/players/${playerId}`);
+                    const response = await fetch(`https://spring-ihf.stu.nighthawkcodingsociety.com/api/nba/players/${playerId}`);
                     if (!response.ok) {
                         throw new Error('Player not found');
                     }
