@@ -56,14 +56,10 @@
         }
         th {
             background-color: #f2f2f2;
-            cursor: pointer;
+            cursor: pointer; /* Add cursor pointer for better UX */
         }
         .bet-log {
             margin-top: 40px;
-        }
-        .sort-options {
-            text-align: center;
-            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -92,16 +88,14 @@
 
         <div class="bet-log" id="betLog">
             <h2>Betting Log</h2>
-            <div class="sort-options">
-                <label for="sortAlgorithm">Choose a sorting algorithm:</label>
-                <select id="sortAlgorithm">
-                    <option value="bubble">Bubble Sort</option>
-                    <option value="selection">Selection Sort</option>
-                    <option value="insertion">Insertion Sort</option>
-                    <option value="merge">Merge Sort</option>
-                    <option value="quick">Quick Sort</option>
-                </select>
-            </div>
+            <label for="sortAlgorithm">Select Sorting Algorithm:</label>
+            <select id="sortAlgorithm">
+                <option value="bubble">Bubble Sort</option>
+                <option value="selection">Selection Sort</option>
+                <option value="insertion">Insertion Sort</option>
+                <option value="merge">Merge Sort</option>
+                <option value="quick">Quick Sort</option>
+            </select>
             <table>
                 <thead>
                     <tr>
@@ -157,7 +151,7 @@
 
             // Calculate fantasy points based on height and weight
             var fantasyPointsPredicted = calculateFantasyPoints(playerInfo.height, playerInfo.weight);
-            fantasyPointsPredicted = 37.5;
+            fantasyPointsPredicted=37.5;
             // Extract relevant information from the provided structure
             var playerName = `${playerInfo.first_name} ${playerInfo.last_name}`;
             var position = playerInfo.position || 'N/A';
@@ -195,7 +189,6 @@
             // Default height and weight if undefined or null
             if (!height) height = "6-0"; // Default height
             if (!weight) weight = "200"; // Default weight
-
             // Split height string into feet and inches
             var heightParts = height.split("-");
             var feet = parseInt(heightParts[0], 10) || 0; // Use 0 if feet is not a valid number
@@ -232,16 +225,17 @@
                 if (betAmountElement && betAmountElement.value) {
                     let betAmount = parseInt(betAmountElement.value, 10);
 
-                    if (!isNaN(betAmount) && betAmount > 0 && betAmount <= cash) {
+                    if (cash >= betAmount) {
+                        cash -= betAmount;
+                        document.getElementById('cashAmount').textContent = `$${cash}`;
+
                         let outcome;
                         if ((betOption === 'over' && fantasyPointsActual > fantasyPointsPredicted) ||
                             (betOption === 'under' && fantasyPointsActual < fantasyPointsPredicted)) {
-                            cash += betAmount; // Win double the bet amount
+                            cash += betAmount * 2; // Win double the bet amount
                             document.getElementById('cashAmount').textContent = `$${cash}`;
                             outcome = `Win $${betAmount}`;
                         } else {
-                            cash -= betAmount;
-                            document.getElementById('cashAmount').textContent = `$${cash}`;
                             outcome = `Lose $${betAmount}`;
                         }
 
@@ -296,85 +290,130 @@
             var table = document.querySelector(".bet-log table tbody");
             var rows = Array.from(table.rows);
             var sortedRows;
-            var algorithm = document.getElementById('sortAlgorithm').value;
+
+            var algorithm = document.getElementById("sortAlgorithm").value;
 
             function bubbleSort(arr) {
                 let n = arr.length;
-                for (let i = 0; i < n - 1; i++) {
-                    for (let j = 0; j < n - i - 1; j++) {
-                        if (compare(arr[j], arr[j + 1])) {
-                            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                let i = 0;
+                let j = 0;
+                function bubble() {
+                    if (i < n - 1) {
+                        if (j < n - i - 1) {
+                            if (compare(arr[j], arr[j + 1])) {
+                                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                            }
+                            j++;
+                            setTimeout(bubble, 100); // Adjust the delay here (in milliseconds)
+                        } else {
+                            i++;
+                            j = 0;
+                            setTimeout(bubble, 0); // No delay between iterations
                         }
+                    } else {
+                        displaySortedRows(arr);
                     }
                 }
-                return arr;
+                bubble();
             }
 
             function selectionSort(arr) {
                 let n = arr.length;
-                for (let i = 0; i < n - 1; i++) {
-                    let minIdx = i;
-                    for (let j = i + 1; j < n; j++) {
-                        if (compare(arr[minIdx], arr[j])) {
-                            minIdx = j;
+                let i = 0;
+                function selection() {
+                    if (i < n - 1) {
+                        let minIdx = i;
+                        let j = i + 1;
+                        while (j < n) {
+                            if (compare(arr[minIdx], arr[j])) {
+                                minIdx = j;
+                            }
+                            j++;
                         }
+                        [arr[minIdx], arr[i]] = [arr[i], arr[minIdx]];
+                        i++;
+                        setTimeout(selection, 100); // Adjust the delay here (in milliseconds)
+                    } else {
+                        displaySortedRows(arr);
                     }
-                    [arr[minIdx], arr[i]] = [arr[i], arr[minIdx]];
                 }
-                return arr;
+                selection();
             }
 
             function insertionSort(arr) {
                 let n = arr.length;
-                for (let i = 1; i < n; i++) {
-                    let key = arr[i];
-                    let j = i - 1;
-                    while (j >= 0 && compare(arr[j], key)) {
-                        arr[j + 1] = arr[j];
-                        j = j - 1;
+                let i = 1;
+                function insertion() {
+                    if (i < n) {
+                        let key = arr[i];
+                        let j = i - 1;
+                        while (j >= 0 && compare(arr[j], key)) {
+                            arr[j + 1] = arr[j];
+                            j = j - 1;
+                        }
+                        arr[j + 1] = key;
+                        i++;
+                        setTimeout(insertion, 100); // Adjust the delay here (in milliseconds)
+                    } else {
+                        displaySortedRows(arr);
                     }
-                    arr[j + 1] = key;
                 }
-                return arr;
+                insertion();
             }
 
             function mergeSort(arr) {
-                if (arr.length < 2) {
-                    return arr;
-                }
-                const mid = Math.floor(arr.length / 2);
-                const left = mergeSort(arr.slice(0, mid));
-                const right = mergeSort(arr.slice(mid));
-                return merge(left, right);
-            }
-
-            function merge(left, right) {
-                let result = [];
-                while (left.length && right.length) {
-                    if (compare(left[0], right[0])) {
-                        result.push(right.shift());
-                    } else {
-                        result.push(left.shift());
+                function merge(left, right) {
+                    let result = [];
+                    while (left.length && right.length) {
+                        if (compare(left[0], right[0])) {
+                            result.push(right.shift());
+                        } else {
+                            result.push(left.shift());
+                        }
                     }
+                    return result.concat(left, right);
                 }
-                return result.concat(left, right);
+
+                function mergeSortHelper(arr) {
+                    if (arr.length <= 1) {
+                        return arr;
+                    }
+                    const mid = Math.floor(arr.length / 2);
+                    const left = mergeSortHelper(arr.slice(0, mid));
+                    const right = mergeSortHelper(arr.slice(mid));
+                    return merge(left, right);
+                }
+
+                let sorted = mergeSortHelper(arr);
+                setTimeout(() => {
+                    sortedRows = sorted;
+                    displaySortedRows(sorted);
+                }, 100); // Adjust the delay here (in milliseconds)
             }
 
             function quickSort(arr) {
-                if (arr.length <= 1) {
-                    return arr;
-                }
-                const pivot = arr[arr.length - 1];
-                const left = [];
-                const right = [];
-                for (const el of arr.slice(0, arr.length - 1)) {
-                    if (compare(el, pivot)) {
-                        right.push(el);
-                    } else {
-                        left.push(el);
+                function quickSortHelper(arr, left, right) {
+                    if (left < right) {
+                        const pivot = arr[right];
+                        let i = left - 1;
+                        for (let j = left; j <= right - 1; j++) {
+                            if (compare(arr[j], pivot)) {
+                                i++;
+                                [arr[i], arr[j]] = [arr[j], arr[i]];
+                            }
+                        }
+                        [arr[i + 1], arr[right]] = [arr[right], arr[i + 1]];
+                        const partitionIndex = i + 1;
+                        quickSortHelper(arr, left, partitionIndex - 1);
+                        quickSortHelper(arr, partitionIndex + 1, right);
                     }
                 }
-                return [...quickSort(left), pivot, ...quickSort(right)];
+
+                quickSortHelper(arr, 0, arr.length - 1);
+                setTimeout(() => {
+                    sortedRows = arr;
+                    displaySortedRows(arr);
+                }, 100); // Adjust the delay here (in milliseconds)
             }
 
             function compare(rowA, rowB) {
@@ -385,33 +424,33 @@
                 }
             }
 
+            function displaySortedRows(sortedRows) {
+                // Remove existing rows
+                while (table.firstChild) {
+                    table.removeChild(table.firstChild);
+                }
+
+                // Append sorted rows
+                sortedRows.forEach(row => table.appendChild(row));
+            }
+
             switch (algorithm) {
                 case 'bubble':
-                    sortedRows = bubbleSort(rows);
+                    bubbleSort(rows);
                     break;
                 case 'selection':
-                    sortedRows = selectionSort(rows);
+                    selectionSort(rows);
                     break;
                 case 'insertion':
-                    sortedRows = insertionSort(rows);
+                    insertionSort(rows);
                     break;
                 case 'merge':
-                    sortedRows = mergeSort(rows);
+                    mergeSort(rows);
                     break;
                 case 'quick':
-                    sortedRows = quickSort(rows);
+                    quickSort(rows);
                     break;
-                default:
-                    sortedRows = bubbleSort(rows);
             }
-
-            // Remove existing rows
-            while (table.firstChild) {
-                table.removeChild(table.firstChild);
-            }
-
-            // Append sorted rows
-            sortedRows.forEach(row => table.appendChild(row));
         }
     </script>
 </body>
